@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options Library - Vanilla & Exotics</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <div>
+                    <h1 id="header-title">Options &amp; Exotics</h1>
+                    <p id="header-tagline">Vanilla and exotic payoffs at a glance</p>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="main.html" class="nav-link">Home</a>
+                <a href="structured.html" class="nav-link">Structured</a>
+                <a href="options.html" class="nav-link active">Options</a>
+            </nav>
+            <button class="lang-toggle" onclick="toggleLanguage()">
+                <span id="lang-text">FR</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <h2 id="hero-title" class="hero-title-animated">Master Vanilla and Exotic Options</h2>
+            <p id="hero-description">Compare payoffs, Greeks and replication ideas across vanilla, barrier and path-dependent structures</p>
+            <button class="cta-button" id="hero-cta" onclick="document.getElementById('products-container').scrollIntoView({behavior: 'smooth'})">
+                <span>Explore Products</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number">20+</div>
+                <div class="stat-label">Option Profiles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🛡️</div>
+                <div class="stat-number">5</div>
+                <div class="stat-label">Families</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌍</div>
+                <div class="stat-number">2</div>
+                <div class="stat-label">Languages</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-box">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="product-search" placeholder="Search products..." class="search-input">
+                <button class="clear-search" id="clear-search" style="display: none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">
+                    <span>All Products</span>
+                    <span class="filter-count" id="count-all">0</span>
+                </button>
+                <button class="filter-btn" data-filter="vanilla">
+                    <span>Vanilla</span>
+                    <span class="filter-count" id="count-vanilla">0</span>
+                </button>
+                <button class="filter-btn" data-filter="spreads">
+                    <span>Spreads</span>
+                    <span class="filter-count" id="count-spreads">0</span>
+                </button>
+                <button class="filter-btn" data-filter="barrier">
+                    <span>Barriers</span>
+                    <span class="filter-count" id="count-barrier">0</span>
+                </button>
+                <button class="filter-btn" data-filter="path">
+                    <span>Path</span>
+                    <span class="filter-count" id="count-path">0</span>
+                </button>
+                <button class="filter-btn" data-filter="strategies">
+                    <span>Strategies</span>
+                    <span class="filter-count" id="count-strategies">0</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="section">
+        <h2 class="section-title" id="products-title">Structured Products Library</h2>
+        <p class="section-subtitle" id="products-subtitle">Click on any product to learn more about its characteristics, payoff and replication</p>
+        
+        <div id="products-container"></div>
+    </section>
+
+    <!-- Modal -->
+    <div id="productModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div style="flex: 1;">
+                    <h2 id="modal-product-name"></h2>
+                    <p id="modal-product-category"></p>
+                </div>
+                <div class="modal-nav-buttons">
+                    <button class="modal-nav-button" id="modal-prev" onclick="navigateModal(-1)" aria-label="Previous product">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <button class="modal-nav-button" id="modal-next" onclick="navigateModal(1)" aria-label="Next product">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+                <button class="close-button" onclick="closeModal()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Definition -->
+                <div class="info-box definition-box">
+                    <h3>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <span id="modal-definition-title">Definition</span>
+                    </h3>
+                    <p id="modal-definition"></p>
+                </div>
+
+                <!-- Characteristics -->
+                <div class="info-box characteristics-box">
+                    <h3>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <span id="modal-characteristics-title">Key Characteristics</span>
+                    </h3>
+                    <div class="info-grid" id="modal-characteristics"></div>
+                </div>
+                
+                <!-- Payoff -->
+                <div class="info-box payoff-box">
+                    <h3>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <line x1="12" y1="2" x2="12" y2="22"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <span id="modal-payoff-title">Payoff Structure</span>
+                    </h3>
+                    <div class="formula" id="modal-payoff"></div>
+                </div>
+
+                <!-- Payoff Chart -->
+                <div class="info-box payoff-chart-box">
+                    <h3>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M3 3v18h18"></path>
+                            <path d="M7 15l4-4 4 4 5-7"></path>
+                        </svg>
+                        <span id="modal-payoff-chart-title">Payoff Chart</span>
+                    </h3>
+                    <div class="chart-container" id="payoff-chart-container"></div>
+                </div>
+
+                <!-- Replication -->
+                <div class="info-box replication-box">
+                    <h3>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                        <span id="modal-replication-title">Replication Strategy</span>
+                    </h3>
+                    <div class="formula" id="modal-replication"></div>
+                </div>
+                
+                <!-- Risk/Return Profile -->
+                <div class="info-box profile-box">
+                    <h3>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                        <span id="modal-risk-title">Risk/Return Profile</span>
+                    </h3>
+                    <div>
+                        <h4 class="advantages-header" id="modal-advantages-title">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Advantages
+                        </h4>
+                        <div id="modal-advantages"></div>
+
+                        <h4 class="risks-header" id="modal-risks-title">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            Risks
+                        </h4>
+                        <div id="modal-risks"></div>
+
+                        <div class="investor-box">
+                            <h4 id="modal-investor-title">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                Investor Profile:
+                            </h4>
+                            <p id="modal-investor-type"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example -->
+                <div class="info-box example-box" id="modal-example-container" style="display: none;">
+                    <h3>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <span id="modal-example-title">Example</span>
+                    </h3>
+                    <div id="modal-example-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About</h4>
+                <p>Educational resource for structured products understanding</p>
+            </div>
+            <div class="footer-section">
+                <h4>Disclaimer</h4>
+                <p>Not investment advice • For informational purposes only</p>
+            </div>
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <p>8+ Product Categories • 50+ Products</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Options &amp; Exotics Library. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <script>
+        window.Payoff = function(formula, element, inline = false) {
+            if (!element) return;
+            try {
+                katex.render(formula, element, { displayMode: !inline });
+            } catch (err) {
+                element.textContent = formula;
+            }
+        };
+    </script>
+    <script src="optionsdata.js"></script>
+    <script src="optioncharts.js"></script>
+    <script src="optionproducts.js"></script>
+    <script>
+        // Variables globales
+        let currentLanguage = 'en';
+        let currentProduct = null;
+        let currentCategoryKey = null;
+        let currentCategoryTitle = '';
+        let currentCategoryProducts = [];
+        let currentProductIndex = -1;
+        let currentFilter = 'all';
+        let searchTerm = '';
+
+        const translations = {
+            en: {
+                headerTitle: "Options & Exotics",
+                headerTagline: "Vanilla and exotic payoffs decoded",
+                heroTitle: "Master Vanilla and Exotic Options",
+                heroDescription: "Compare payoff diagrams, Greeks and replication ideas across vanilla, barrier and path-dependent structures.",
+                heroCta: "Browse Options",
+                productsTitle: "Options Library",
+                productsSubtitle: "Select an option to view its characteristics, payoff diagram and replication notes.",
+                learnMore: "Learn more",
+                definition: "Definition",
+                characteristics: "Key Characteristics",
+                payoff: "Payoff Structure",
+                payoffChart: "Payoff Chart",
+                replication: "Replication Strategy",
+                riskReturn: "Risk/Return Profile",
+                advantages: "Advantages",
+                risks: "Risks",
+                investorType: "Investor Profile",
+                underlying: "Underlying",
+                maturity: "Maturity",
+                protection: "Protection",
+                barriers: "Barriers",
+                coupon: "Carry / Income",
+                participation: "Participation",
+                strike: "Strike",
+                cap: "Cap",
+                example: "Example"
+            },
+            fr: {
+                headerTitle: "Options & Exotiques",
+                headerTagline: "Référence pour payoffs vanilles et exotiques",
+                heroTitle: "Comprenez les Options Vanilles et Exotiques",
+                heroDescription: "Visualisez les payoffs, les caractéristiques et les idées de réplication des options vanilles, barrières et dépendantes du chemin.",
+                heroCta: "Explorer les Options",
+                productsTitle: "Bibliothèque d'Options",
+                productsSubtitle: "Sélectionnez une option pour afficher ses caractéristiques, son payoff et les pistes de réplication.",
+                learnMore: "En savoir plus",
+                definition: "Définition",
+                characteristics: "Caractéristiques Clés",
+                payoff: "Structure de Payoff",
+                payoffChart: "Graphique de Payoff",
+                replication: "Stratégie de Réplication",
+                riskReturn: "Profil Risque/Rendement",
+                advantages: "Avantages",
+                risks: "Risques",
+                investorType: "Profil d'Investisseur",
+                underlying: "Sous-jacent",
+                maturity: "Échéance",
+                protection: "Protection",
+                barriers: "Barrières",
+                coupon: "Carry / Coupon",
+                participation: "Participation",
+                strike: "Strike",
+                cap: "Plafond",
+                example: "Exemple"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'fr' : 'en';
+            document.getElementById('lang-text').textContent = currentLanguage === 'en' ? 'FR' : 'EN';
+            updateContent();
+        }
+
+        function updateContent() {
+            const t = translations[currentLanguage];
+            
+            document.getElementById('header-title').textContent = t.headerTitle;
+            document.getElementById('header-tagline').textContent = t.headerTagline;
+            document.getElementById('hero-title').textContent = t.heroTitle;
+            document.getElementById('hero-description').textContent = t.heroDescription;
+            document.getElementById('hero-cta').innerHTML = `<span>${t.heroCta}</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
+            document.getElementById('products-title').textContent = t.productsTitle;
+            document.getElementById('products-subtitle').textContent = t.productsSubtitle;
+            
+            renderProducts();
+            updateFilterCounts();
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            const products = window.PRODUCTS_DATA[currentLanguage];
+            
+            container.innerHTML = '';
+            
+            Object.keys(products).forEach(categoryKey => {
+                const categoryData = products[categoryKey];
+                
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'product-group';
+                
+                const badge = document.createElement('span');
+                badge.className = `category-badge ${categoryKey}`;
+                badge.textContent = categoryData.badge;
+                
+                const title = document.createElement('h3');
+                title.className = 'category-title';
+                title.textContent = categoryData.title;
+                
+                categoryDiv.appendChild(badge);
+                categoryDiv.appendChild(title);
+                
+                const grid = document.createElement('div');
+                grid.className = 'grid';
+                
+                categoryData.products.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = `card product-card ${categoryKey}`;
+                    card.onclick = () => openModal(product, categoryData.title, categoryKey);
+                    
+                    card.innerHTML = `
+                        <svg class="arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                        <h4>${product.name}</h4>
+                        <p>${product.short}</p>
+                        <div class="learn-more">
+                            <span>${translations[currentLanguage].learnMore}</span>
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+                
+                categoryDiv.appendChild(grid);
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        function openModal(product, categoryTitle, categoryKey) {
+            currentProduct = product;
+            currentCategoryKey = categoryKey;
+            const categoryData = window.PRODUCTS_DATA[currentLanguage][categoryKey] || {};
+            currentCategoryTitle = categoryData.title || categoryTitle || '';
+            currentCategoryProducts = Array.isArray(categoryData.products) ? categoryData.products : [];
+            currentProductIndex = currentCategoryProducts.findIndex(p => p.name === product.name);
+
+            const t = translations[currentLanguage];
+            updateModalNavigation();
+            
+            document.getElementById('modal-product-name').textContent = product.name;
+            document.getElementById('modal-product-category').textContent = currentCategoryTitle;
+            document.getElementById('modal-definition-title').textContent = t.definition;
+            document.getElementById('modal-characteristics-title').textContent = t.characteristics;
+            document.getElementById('modal-payoff-title').textContent = t.payoff;
+            document.getElementById('modal-payoff-chart-title').textContent = t.payoffChart || 'Payoff Chart';
+            document.getElementById('modal-replication-title').textContent = t.replication;
+            document.getElementById('modal-risk-title').textContent = t.riskReturn;
+            document.getElementById('modal-advantages-title').innerHTML = `
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                ${t.advantages}
+            `;
+            document.getElementById('modal-risks-title').innerHTML = `
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                ${t.risks}
+            `;
+            document.getElementById('modal-investor-title').innerHTML = `
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                ${t.investorType}
+            `;
+
+            // Example
+            const exampleContainer = document.getElementById('modal-example-container');
+            const exampleContent = document.getElementById('modal-example-content');
+            document.getElementById('modal-example-title').textContent = t.example;
+            if (product.example) {
+                exampleContent.innerHTML = `<h4>${product.example.title}</h4>`;
+                Object.keys(product.example).forEach(key => {
+                    if (key === 'title') return;
+                    const value = product.example[key];
+                    if (key === 'parameters') {
+                        exampleContent.innerHTML += `<div class="info-grid" id="modal-example-parameters"></div>`;
+                    } else if (Array.isArray(value)) {
+                        const title = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        exampleContent.innerHTML += `<h4>${title}</h4><ul id="modal-example-${key}"></ul>`;
+                    }
+                });
+                if (product.example.parameters) {
+                    const paramContainer = document.getElementById('modal-example-parameters');
+                    paramContainer.innerHTML = '';
+                    Object.keys(product.example.parameters).forEach(key => {
+                        const item = document.createElement('div');
+                        item.className = 'info-item';
+                        item.innerHTML = `
+                            <div class="info-label">${t[key] || key}:</div>
+                            <div class="info-value">${product.example.parameters[key]}</div>
+                        `;
+                        paramContainer.appendChild(item);
+                    });
+                }
+                Object.keys(product.example).forEach(key => {
+                    if (key === 'title' || key === 'parameters') return;
+                    const value = product.example[key];
+                    if (Array.isArray(value)) {
+                        const container = document.getElementById(`modal-example-${key}`);
+                        if (container) {
+                            container.innerHTML = value.map(item => `<li>${item}</li>`).join('');
+                        }
+                    }
+                });
+                exampleContainer.style.display = 'block';
+            } else {
+                exampleContainer.style.display = 'none';
+            }
+            
+            document.getElementById('modal-definition').textContent = product.definition;
+            
+            const charContainer = document.getElementById('modal-characteristics');
+            charContainer.innerHTML = '';
+            Object.keys(product.characteristics).forEach(key => {
+                const item = document.createElement('div');
+                item.className = 'info-item';
+                item.innerHTML = `
+                    <div class="info-label">${t[key] || key}:</div>
+                    <div class="info-value">${product.characteristics[key]}</div>
+                `;
+                charContainer.appendChild(item);
+            });
+            
+            const payoffElement = document.getElementById('modal-payoff');
+            payoffElement.innerHTML = '';
+            const payoffBlocks = Array.isArray(product.payoff)
+                ? product.payoff
+                : String(product.payoff || '').split('\\n\\n');
+            payoffBlocks.forEach(block => {
+                if (block && block.trim()) {
+                    const div = document.createElement('div');
+                    window.Payoff(block, div);
+                    payoffElement.appendChild(div);
+                }
+            });
+
+            const replicationElement = document.getElementById('modal-replication');
+            replicationElement.innerHTML = '';
+            const replicationBlocks = Array.isArray(product.replication)
+                ? product.replication
+                : String(product.replication || '').split('\\n\\n');
+            replicationBlocks.forEach(block => {
+                if (block && block.trim()) {
+                    const div = document.createElement('div');
+                    window.Payoff(block, div);
+                    replicationElement.appendChild(div);
+                }
+            });
+
+            // Render payoff chart if available
+            if (window.renderPayoffChart) {
+                let chartKey = product.name;
+                // Prefer exact product-specific config if it exists, otherwise fallback by category
+                if (!window.getPayoffData(chartKey)) {
+                    if (categoryKey === 'capital-protection') {
+                        chartKey = 'Capital Protection Note';
+                    }
+                }
+                window.renderPayoffChart(chartKey, 'payoff-chart-container');
+            }
+            
+            const advContainer = document.getElementById('modal-advantages');
+            advContainer.innerHTML = product.advantages.map(adv => `
+                <div class="list-item">
+                    <span class="check-icon">✓</span>
+                    <span>${adv}</span>
+                </div>
+            `).join('');
+            
+            const risksContainer = document.getElementById('modal-risks');
+            risksContainer.innerHTML = product.risks.map(risk => `
+                <div class="list-item">
+                    <span class="warning-icon">•</span>
+                    <span>${risk}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('modal-investor-type').textContent = product.investorType;
+            
+            document.getElementById('productModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function updateModalNavigation() {
+            const prevBtn = document.getElementById('modal-prev');
+            const nextBtn = document.getElementById('modal-next');
+            const total = currentCategoryProducts.length;
+            const hasValidIndex = currentProductIndex >= 0 && currentProductIndex < total;
+
+            if (prevBtn) {
+                prevBtn.disabled = !(hasValidIndex && currentProductIndex > 0);
+            }
+            if (nextBtn) {
+                nextBtn.disabled = !(hasValidIndex && currentProductIndex < total - 1);
+            }
+        }
+
+        function navigateModal(direction) {
+            if (!currentCategoryProducts.length) return;
+            const newIndex = currentProductIndex + direction;
+            if (newIndex < 0 || newIndex >= currentCategoryProducts.length) return;
+
+            const categoryData = window.PRODUCTS_DATA[currentLanguage][currentCategoryKey] || {};
+            const title = categoryData.title || currentCategoryTitle;
+            const nextProduct = currentCategoryProducts[newIndex];
+            if (nextProduct) {
+                openModal(nextProduct, title, currentCategoryKey);
+            }
+        }
+
+        function closeModal(event) {
+            if (!event || event.target.id === 'productModal') {
+                document.getElementById('productModal').classList.remove('active');
+                document.body.style.overflow = '';
+                if (window.destroyPayoffChart) {
+                    window.destroyPayoffChart();
+                }
+                currentCategoryKey = null;
+                currentCategoryTitle = '';
+                currentCategoryProducts = [];
+                currentProductIndex = -1;
+                updateModalNavigation();
+            }
+        }
+
+        // Initialiser la recherche et les filtres
+        function initializeSearchAndFilters() {
+            const searchInput = document.getElementById('product-search');
+            const clearButton = document.getElementById('clear-search');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchTerm = e.target.value.toLowerCase();
+                    clearButton.style.display = searchTerm ? 'flex' : 'none';
+                    filterProducts();
+                });
+            }
+            
+            if (clearButton) {
+                clearButton.addEventListener('click', () => {
+                    searchInput.value = '';
+                    searchTerm = '';
+                    clearButton.style.display = 'none';
+                    filterProducts();
+                });
+            }
+            
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    filterProducts();
+                });
+            });
+        }
+
+        // Filtrer les produits
+        function filterProducts() {
+            const products = document.querySelectorAll('.product-card');
+            const groups = document.querySelectorAll('.product-group');
+            let visibleCount = 0;
+            
+            groups.forEach(group => {
+                const categoryKey = Array.from(group.querySelectorAll('.product-card'))[0]?.classList[2];
+                let groupHasVisible = false;
+                
+                const groupProducts = group.querySelectorAll('.product-card');
+                groupProducts.forEach(card => {
+                    const name = card.querySelector('h4').textContent.toLowerCase();
+                    const description = card.querySelector('p').textContent.toLowerCase();
+                    const matchesSearch = !searchTerm || name.includes(searchTerm) || description.includes(searchTerm);
+                    const matchesFilter = currentFilter === 'all' || categoryKey === currentFilter;
+                    
+                    if (matchesSearch && matchesFilter) {
+                        card.classList.remove('hidden');
+                        groupHasVisible = true;
+                        visibleCount++;
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+                
+                if (groupHasVisible) {
+                    group.classList.remove('hidden');
+                } else {
+                    group.classList.add('hidden');
+                }
+            });
+            
+            showNoResultsMessage(visibleCount === 0);
+        }
+
+        // Afficher message "aucun résultat"
+        function showNoResultsMessage(show) {
+            let noResultsDiv = document.getElementById('no-results');
+            
+            if (show) {
+                if (!noResultsDiv) {
+                    noResultsDiv = document.createElement('div');
+                    noResultsDiv.id = 'no-results';
+                    noResultsDiv.className = 'no-results';
+                    noResultsDiv.innerHTML = `
+                        <div class="no-results-icon">🔍</div>
+                        <h3>No products found</h3>
+                        <p>Try adjusting your search or filter criteria</p>
+                    `;
+                    document.getElementById('products-container').appendChild(noResultsDiv);
+                }
+            } else {
+                if (noResultsDiv) {
+                    noResultsDiv.remove();
+                }
+            }
+        }
+
+        // Mettre à jour les compteurs de filtres
+        function updateFilterCounts() {
+            const products = window.PRODUCTS_DATA[currentLanguage];
+            let totalCount = 0;
+            let vanillaCount = 0;
+            let spreadCount = 0;
+            let barrierCount = 0;
+            let pathCount = 0;
+            let strategiesCount = 0;
+            
+            Object.keys(products).forEach(categoryKey => {
+                const count = products[categoryKey].products.length;
+                totalCount += count;
+                if (categoryKey === 'vanilla') vanillaCount += count;
+                if (categoryKey === 'spreads') spreadCount += count;
+                if (categoryKey === 'barrier') barrierCount += count;
+                if (categoryKey === 'path') pathCount += count;
+                if (categoryKey === 'strategies') strategiesCount += count;
+            });
+            
+            const countAll = document.getElementById('count-all');
+            const countVanilla = document.getElementById('count-vanilla');
+            const countSpreads = document.getElementById('count-spreads');
+            const countBarrier = document.getElementById('count-barrier');
+            const countPath = document.getElementById('count-path');
+            const countStrategies = document.getElementById('count-strategies');
+            
+            if (countAll) countAll.textContent = totalCount;
+            if (countVanilla) countVanilla.textContent = vanillaCount;
+            if (countSpreads) countSpreads.textContent = spreadCount;
+            if (countBarrier) countBarrier.textContent = barrierCount;
+            if (countPath) countPath.textContent = pathCount;
+            if (countStrategies) countStrategies.textContent = strategiesCount;
+        }
+
+        // Animer les statistiques
+        function animateStatsOnScroll() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                        entry.target.classList.add('animated');
+                        animateNumber(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            statNumbers.forEach(num => observer.observe(num));
+        }
+
+        function animateNumber(element) {
+            const target = parseInt(element.textContent);
+            const duration = 1500;
+            const step = target / (duration / 16);
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    element.textContent = target + (element.textContent.includes('+') ? '+' : '');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current) + (element.textContent.includes('+') ? '+' : '');
+                }
+            }, 16);
+        }
+
+        // Smooth scroll
+        function initializeSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        const offset = 80;
+                        const targetPosition = target.offsetTop - offset;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Raccourcis clavier
+        function initializeKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    document.getElementById('product-search')?.focus();
+                }
+                
+                if (e.key === 'Escape') {
+                    const searchInput = document.getElementById('product-search');
+                    if (document.activeElement === searchInput && searchInput.value) {
+                        searchInput.value = '';
+                        searchTerm = '';
+                        document.getElementById('clear-search').style.display = 'none';
+                        filterProducts();
+                    } else {
+                        closeModal();
+                    }
+                }
+
+                const modalActive = document.getElementById('productModal')?.classList.contains('active');
+                if (modalActive) {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        navigateModal(-1);
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        navigateModal(1);
+                    }
+                }
+            });
+        }
+
+        // Initialisation
+        window.addEventListener('DOMContentLoaded', () => {
+            updateContent();
+            updateModalNavigation();
+            setTimeout(() => {
+                initializeSearchAndFilters();
+                animateStatsOnScroll();
+                initializeKeyboardShortcuts();
+                initializeSmoothScroll();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
