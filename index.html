@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structured Products Library</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="landing-body">
+    <div class="landing-background">
+        <div class="landing-orb orb-1"></div>
+        <div class="landing-orb orb-2"></div>
+        <div class="landing-orb orb-3"></div>
+    </div>
+
+    <header class="landing-header">
+            <nav class="landing-nav">
+                <a href="index.html" class="nav-link active" id="nav-home">Home</a>
+                <a href="structu/structured.html" class="nav-link" id="nav-structured">Structured</a>
+                <a href="options/options.html" class="nav-link" id="nav-options">Options</a>
+                <a href="compare/compare.html" class="nav-link" id="nav-compare">Comparateur</a>
+            </nav>
+        <button class="lang-toggle" onclick="toggleLanguage()">
+            <span id="lang-text">FR</span>
+        </button>
+        <h1 id="landing-title">Structured Products Platform</h1>
+        <p id="landing-description">Explore comprehensive guides, payoffs, and visualisations for structured notes and listed options.</p>
+    </header>
+
+    <main class="landing-content">
+        <div class="landing-card">
+            <h2 id="card-structured-title">Structured Products</h2>
+            <p id="card-structured-desc">Dive into the full library of capital-protected notes, income strategies, hybrids, and more. Each product includes rich descriptions, payoff charts, and replication ideas.</p>
+            <a class="landing-button" href="structu/structured.html" id="card-structured-link">Explore Structured Notes</a>
+        </div>
+        <div class="landing-card">
+            <h2 id="card-options-title">Options &amp; Exotics</h2>
+            <p id="card-options-desc">Access vanilla and exotic option profiles with detailed payoffs and documentation. Perfect for quick references and pricing intuition.</p>
+            <a class="landing-button" href="options/options.html" id="card-options-link">Browse Options Library</a>
+        </div>
+        <div class="landing-card">
+            <h2 id="card-compare-title">Strategy Comparator</h2>
+            <p id="card-compare-desc">Overlay payoffs, benchmark key metrics, and test your knowledge with an interactive quiz tailored to structured products and options.</p>
+            <a class="landing-button" href="compare/compare.html" id="card-compare-link">Launch Comparator</a>
+        </div>
+    </main>
+
+    <footer class="landing-footer">
+        <p id="footer-text">Crafted for structurers, sales, and quants &mdash; stay curious and keep structuring.</p>
+    </footer>
+
+    <script>
+        let currentLanguage = 'en';
+
+        const translations = {
+            en: {
+                navHome: "Home",
+                navStructured: "Structured",
+                navOptions: "Options",
+                navCompare: "Comparator",
+                landingTitle: "Structured Products Platform",
+                landingDescription: "Explore comprehensive guides, payoffs, and visualisations for structured notes and listed options.",
+                cardStructuredTitle: "Structured Products",
+                cardStructuredDesc: "Dive into the full library of capital-protected notes, income strategies, hybrids, and more. Each product includes rich descriptions, payoff charts, and replication ideas.",
+                cardStructuredLink: "Explore Structured Notes",
+                cardOptionsTitle: "Options & Exotics",
+                cardOptionsDesc: "Access vanilla and exotic option profiles with detailed payoffs and documentation. Perfect for quick references and pricing intuition.",
+                cardOptionsLink: "Browse Options Library",
+                cardCompareTitle: "Strategy Comparator",
+                cardCompareDesc: "Overlay payoffs, benchmark metrics, and sharpen your expertise with interactive tools.",
+                cardCompareLink: "Launch Comparator",
+                footerText: "Crafted for structurers, sales, and quants — stay curious and keep structuring."
+            },
+            fr: {
+                navHome: "Accueil",
+                navStructured: "Structurés",
+                navOptions: "Options",
+                navCompare: "Comparateur",
+                landingTitle: "Plateforme des Produits Structurés",
+                landingDescription: "Explorez des guides complets, des payoffs et des visualisations pour les notes structurées et les options cotées.",
+                cardStructuredTitle: "Produits Structurés",
+                cardStructuredDesc: "Plongez dans la bibliothèque complète des notes à protection du capital, stratégies de revenu, hybrides, et plus. Chaque produit comprend des descriptions riches, des graphiques de payoff et des idées de réplication.",
+                cardStructuredLink: "Explorer les Notes Structurées",
+                cardOptionsTitle: "Options & Exotiques",
+                cardOptionsDesc: "Accédez aux profils d'options vanilles et exotiques avec des payoffs détaillés et de la documentation. Parfait pour des références rapides et l'intuition de tarification.",
+                cardOptionsLink: "Parcourir la Bibliothèque d'Options",
+                cardCompareTitle: "Comparateur de Stratégies",
+                cardCompareDesc: "Superposez les payoffs, comparez les métriques clés et entraînez-vous grâce à un quiz interactif.",
+                cardCompareLink: "Ouvrir le Comparateur",
+                footerText: "Conçu pour les structurateurs, les ventes et les quants — restez curieux et continuez à structurer."
+            }
+        };
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'fr' : 'en';
+            document.getElementById('lang-text').textContent = currentLanguage === 'en' ? 'FR' : 'EN';
+            updateContent();
+        }
+
+        function updateContent() {
+            const t = translations[currentLanguage];
+
+            document.getElementById('nav-home').textContent = t.navHome;
+            document.getElementById('nav-structured').textContent = t.navStructured;
+            document.getElementById('nav-options').textContent = t.navOptions;
+            document.getElementById('nav-compare').textContent = t.navCompare;
+            document.getElementById('landing-title').textContent = t.landingTitle;
+            document.getElementById('landing-description').textContent = t.landingDescription;
+            document.getElementById('card-structured-title').textContent = t.cardStructuredTitle;
+            document.getElementById('card-structured-desc').textContent = t.cardStructuredDesc;
+            document.getElementById('card-structured-link').textContent = t.cardStructuredLink;
+            document.getElementById('card-options-title').textContent = t.cardOptionsTitle;
+            document.getElementById('card-options-desc').textContent = t.cardOptionsDesc;
+            document.getElementById('card-options-link').textContent = t.cardOptionsLink;
+            document.getElementById('card-compare-title').textContent = t.cardCompareTitle;
+            document.getElementById('card-compare-desc').textContent = t.cardCompareDesc;
+            document.getElementById('card-compare-link').textContent = t.cardCompareLink;
+            document.getElementById('footer-text').textContent = t.footerText;
+        }
+    </script>
+</body>
+</html>
