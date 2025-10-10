@@ -7,16 +7,9 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 </head>
-<body class="themed-body">
-    <!-- Animated Background -->
-    <div class="animated-background">
-        <div class="gradient-orb orb-1"></div>
-        <div class="gradient-orb orb-2"></div>
-        <div class="gradient-orb orb-3"></div>
-    </div>
-
+<body class="themed-body compare-page">
     <!-- Header -->
-    <header class="header">
+    <header class="header compare-header">
         <div class="header-content">
             <div class="logo">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -31,7 +24,8 @@
                 <a href="../index.html" class="nav-link" id="nav-home">Home</a>
                 <a href="structured.html" class="nav-link active" id="nav-structured">Structured</a>
                 <a href="../options/options.html" class="nav-link" id="nav-options">Options</a>
-                <a href="../compare/compare.html" class="nav-link" id="nav-compare">Comparateur</a>
+                <a href="../compare/compare.html" class="nav-link" id="nav-compare">Comparator</a>
+                <a href="../quiz/quiz.html" class="nav-link" id="nav-quiz">Quiz</a>
             </nav>
             <button class="lang-toggle" onclick="toggleLanguage()">
                 <span id="lang-text">FR</span>
@@ -39,22 +33,18 @@
         </div>
     </header>
 
+    <main>
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-background">
-            <div class="hero-overlay"></div>
-        </div>
-        <div class="hero-content">
-            <h2 id="hero-title" class="hero-title-animated">Unlock the Power of Structured Finance</h2>
-            <p id="hero-description">Discover tailored investment solutions combining capital protection, yield enhancement, and strategic market exposure</p>
-            <button class="cta-button" id="hero-cta" onclick="document.getElementById('products-container').scrollIntoView({behavior: 'smooth'})">
-                <span>Explore Products</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-            </button>
-        </div>
+    <section class="compare-hero structured-hero">
+        <h1 id="hero-title" class="hero-title-animated">Unlock the Power of Structured Finance</h1>
+        <p id="hero-description">Discover tailored investment solutions combining capital protection, yield enhancement, and strategic market exposure</p>
+        <button class="cta-button" id="hero-cta" onclick="document.getElementById('products-container').scrollIntoView({behavior: 'smooth'})">
+            <span>Explore Products</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </button>
     </section>
 
     <!-- Stats Section -->
@@ -247,29 +237,15 @@
                     </h3>
                     <div id="modal-example-content"></div>
                 </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>About</h4>
-                <p>Educational resource for structured products understanding</p>
-            </div>
-            <div class="footer-section">
-                <h4>Disclaimer</h4>
-                <p>Not investment advice • For informational purposes only</p>
-            </div>
-            <div class="footer-section">
-                <h4>Categories</h4>
-                <p>8+ Product Categories • 50+ Products</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2025 REDA SALHI - Tous droits réservés.</p>
-        </div>
+    </main>
+
+    <footer class="compare-footer">
+        <p id="footer-disclaimer">Information provided for educational purposes. Past performance is not indicative of future results.</p>
+        <p class="footer-copyright" id="footer-copyright">© 2025 REDA SALHI - All rights reserved.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
@@ -295,6 +271,7 @@
                 navStructured: "Structured",
                 navOptions: "Options",
                 navCompare: "Comparator",
+                navQuiz: "Quiz",
                 headerTitle: "Structured Products",
                 headerTagline: "Innovative solutions for sophisticated investors",
                 heroTitle: "Unlock the Power of Structured Finance",
@@ -321,13 +298,16 @@
                 participation: "Participation",
                 strike: "Strike",
                 cap: "Cap",
-                example: "Example"
+                example: "Example",
+                footerDisclaimer: "Information provided for educational purposes. Past performance is not indicative of future results.",
+                footerCopyright: "© 2025 REDA SALHI - All rights reserved."
             },
             fr: {
                 navHome: "Accueil",
                 navStructured: "Structurés",
                 navOptions: "Options",
                 navCompare: "Comparateur",
+                navQuiz: "Quiz",
                 headerTitle: "Produits Structurés",
                 headerTagline: "Solutions innovantes pour investisseurs avertis",
                 heroTitle: "Exploitez la Puissance de la Finance Structurée",
@@ -354,7 +334,9 @@
                 participation: "Participation",
                 strike: "Strike",
                 cap: "Plafond",
-                example: "Exemple"
+                example: "Exemple",
+                footerDisclaimer: "Informations fournies à titre pédagogique. Les performances passées ne préjugent pas des performances futures.",
+                footerCopyright: "© 2025 REDA SALHI - Tous droits réservés."
             }
         };
 
@@ -371,6 +353,7 @@
             document.getElementById('nav-structured').textContent = t.navStructured;
             document.getElementById('nav-options').textContent = t.navOptions;
             document.getElementById('nav-compare').textContent = t.navCompare;
+            document.getElementById('nav-quiz').textContent = t.navQuiz;
             document.getElementById('header-title').textContent = t.headerTitle;
             document.getElementById('header-tagline').textContent = t.headerTagline;
             document.getElementById('hero-title').textContent = t.heroTitle;
@@ -378,6 +361,10 @@
             document.getElementById('hero-cta').innerHTML = `<span>${t.heroCta}</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
             document.getElementById('products-title').textContent = t.productsTitle;
             document.getElementById('products-subtitle').textContent = t.productsSubtitle;
+            const footerDisclaimer = document.getElementById('footer-disclaimer');
+            if (footerDisclaimer) footerDisclaimer.textContent = t.footerDisclaimer;
+            const footerCopyright = document.getElementById('footer-copyright');
+            if (footerCopyright) footerCopyright.textContent = t.footerCopyright;
             
             renderFilterButtons();
             renderProducts();

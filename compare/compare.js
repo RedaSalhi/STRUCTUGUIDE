@@ -20,6 +20,7 @@ const UI_TRANSLATIONS = {
     navStructured: 'Structured',
     navOptions: 'Options',
     navCompare: 'Comparator',
+    navQuiz: 'Quiz',
     pageTitle: 'Strategy Comparator - Structured Products & Options',
     heroTitle: 'Structured & Options Strategy Comparator',
     heroDescription: 'Compare two strategies instantly, overlay payoffs, benchmark key metrics, discover tailored recommendations and test yourself with an interactive quiz.',
@@ -67,6 +68,7 @@ const UI_TRANSLATIONS = {
     navStructured: 'Structurés',
     navOptions: 'Options',
     navCompare: 'Comparateur',
+    navQuiz: 'Quiz',
     pageTitle: 'Comparateur Stratégies - Produits Structurés & Options',
     heroTitle: 'Comparateur Stratégies Structurées & Options',
     heroDescription: 'Analysez instantanément deux stratégies, visualisez leurs payoffs, comparez leurs métriques clés, découvrez des recommandations adaptées et testez vos connaissances via un quiz interactif.',
@@ -1949,6 +1951,7 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     dom.navStructured = document.getElementById('nav-structured');
     dom.navOptions = document.getElementById('nav-options');
     dom.navCompare = document.getElementById('nav-compare');
+    dom.navQuiz = document.getElementById('nav-quiz');
     dom.langToggle = document.getElementById('lang-toggle');
     dom.langText = document.getElementById('lang-text');
     dom.heroTitle = document.getElementById('compare-hero-title');
@@ -2041,6 +2044,7 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     if (dom.navStructured) dom.navStructured.textContent = t.navStructured;
     if (dom.navOptions) dom.navOptions.textContent = t.navOptions;
     if (dom.navCompare) dom.navCompare.textContent = t.navCompare;
+    if (dom.navQuiz) dom.navQuiz.textContent = t.navQuiz;
 
     if (t.pageTitle) document.title = t.pageTitle;
     if (dom.heroTitle) dom.heroTitle.textContent = t.heroTitle;

@@ -18,7 +18,8 @@
                 <a href="index.html" class="nav-link active" id="nav-home">Home</a>
                 <a href="structu/structured.html" class="nav-link" id="nav-structured">Structured</a>
                 <a href="options/options.html" class="nav-link" id="nav-options">Options</a>
-                <a href="compare/compare.html" class="nav-link" id="nav-compare">Comparateur</a>
+                <a href="compare/compare.html" class="nav-link" id="nav-compare">Comparator</a>
+                <a href="quiz/quiz.html" class="nav-link" id="nav-quiz">Quiz</a>
             </nav>
         <button class="lang-toggle" onclick="toggleLanguage()">
             <span id="lang-text">FR</span>
@@ -59,6 +60,7 @@
                 navStructured: "Structured",
                 navOptions: "Options",
                 navCompare: "Comparator",
+                navQuiz: "Quiz",
                 landingTitle: "Structured Products Platform",
                 landingDescription: "Explore comprehensive guides, payoffs, and visualisations for structured notes and listed options.",
                 cardStructuredTitle: "Structured Products",
@@ -77,6 +79,7 @@
                 navStructured: "Structurés",
                 navOptions: "Options",
                 navCompare: "Comparateur",
+                navQuiz: "Quiz",
                 landingTitle: "Plateforme des Produits Structurés",
                 landingDescription: "Explorez des guides complets, des payoffs et des visualisations pour les notes structurées et les options cotées.",
                 cardStructuredTitle: "Produits Structurés",
@@ -105,6 +108,7 @@
             document.getElementById('nav-structured').textContent = t.navStructured;
             document.getElementById('nav-options').textContent = t.navOptions;
             document.getElementById('nav-compare').textContent = t.navCompare;
+            document.getElementById('nav-quiz').textContent = t.navQuiz;
             document.getElementById('landing-title').textContent = t.landingTitle;
             document.getElementById('landing-description').textContent = t.landingDescription;
             document.getElementById('card-structured-title').textContent = t.cardStructuredTitle;

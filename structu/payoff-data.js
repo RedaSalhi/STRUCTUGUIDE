@@ -1466,6 +1466,43 @@ window.PAYOFF_DATA = {
         ]
     },
 
+    "Autocallable (Athena Airbag)": {
+        type: "phoenix",
+        xRange: [40, 160],
+        yRange: [20, 180],
+        params: {
+            autocallBarrier: 100,
+            protectionBarrier: 60,
+            coupon: 9,
+            airbagFactor: 0.6
+        },
+        calculate: function(S, S0 = 100, year = 3) {
+            const p = this.params;
+            const perfPct = (S / S0) * 100;
+
+            if (perfPct >= p.autocallBarrier) {
+                return 100 + (year * p.coupon);
+            }
+            if (perfPct >= p.protectionBarrier) {
+                return 100;
+            }
+
+            const factor = p.airbagFactor && p.airbagFactor > 0 ? p.airbagFactor : 1;
+            const cushioned = perfPct / factor;
+            return Math.max(0, Math.min(100, cushioned));
+        },
+        annotations: [
+            { x: 100, label: "Autocall", color: "#10b981" },
+            { x: 60, label: "Airbag Barrier", color: "#ef4444" },
+            { y: 100, label: "Capital @ Barrier", color: "#6366f1", horizontal: true }
+        ],
+        zones: [
+            { from: 0, to: 60, color: "rgba(251, 191, 36, 0.12)", label: "Airbag cushioning" },
+            { from: 60, to: 100, color: "rgba(251, 191, 36, 0.1)", label: "Protected" },
+            { from: 100, to: 140, color: "rgba(16, 185, 129, 0.1)", label: "Autocall" }
+        ]
+    },
+
     // Phoenix (Memory) - generic config
     "Phoenix (Memory)": {
         type: "phoenix",
@@ -1883,8 +1920,10 @@ window.getPayoffData = function(productName) {
     // Phoenix / Autocall family (Athena, Apollon, Express, Premium Express, Crescendo, etc.) including Memory
     const isPhoenix = /phoenix|memoire|memoir|memory/.test(nameNorm);
     const isAutocall = /autocall|auto call|auto-call|athena|apollon|express|crescendo|escalator|bonus plus|premium express|performance auto call/.test(nameNorm);
+    const hasAirbag = /airbag/.test(nameNorm);
     if (isPhoenix || isAutocall) {
         if (isPhoenix) return cloneConfig('Phoenix (Memory)');
+        if (hasAirbag) return cloneConfig('Autocallable (Athena Airbag)');
         return cloneConfig('Autocallable (Athena Classic)');
     }
 
