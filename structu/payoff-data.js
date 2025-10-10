@@ -398,40 +398,6 @@ window.PAYOFF_DATA = {
         ]
     },
 
-    "Orion": {
-        type: "capital-protection",
-        xRange: [60, 150],
-        yRange: [100, 160],
-        params: {
-            trigger: 85,
-            fixedCoupon: 16,
-            equityParticipation: 90,
-            cap: 150
-        },
-        calculate: function(S, S0 = 100) {
-            const p = this.params;
-            const level = (S / S0) * 100;
-            const fixedPayoff = 100 + p.fixedCoupon;
-            const equityPayoff = Math.max(100, 100 + (p.equityParticipation / 100) * Math.max(0, level - 100));
-            let payoff;
-            if (level >= p.trigger) {
-                payoff = Math.max(fixedPayoff, equityPayoff);
-            } else {
-                payoff = equityPayoff;
-            }
-            return Math.min(p.cap, payoff);
-        },
-        annotations: [
-            { x: 85, label: "Trigger", color: "#f97316" },
-            { y: 116, label: "Fixed Coupon Phase", color: "#22c55e", horizontal: true },
-            { y: 150, label: "Equity Cap", color: "#8b5cf6", horizontal: true }
-        ],
-        zones: [
-            { from: 60, to: 85, color: "rgba(251, 191, 36, 0.12)", label: "Equity switch zone" },
-            { from: 85, to: 150, color: "rgba(16, 185, 129, 0.12)", label: "Coupons or equity" }
-        ]
-    },
-
     "Capuccino": {
         type: "capital-protection",
         xRange: [80, 160],
@@ -777,8 +743,8 @@ window.PAYOFF_DATA = {
         calculate: function(S, S0 = 100) {
             const perfPct = (S / S0) * 100;
             if (perfPct <= 100) return 100; // capital protection at maturity
-            // Averaging tends to smooth extremes; keep linear 100% upside for clarity
-            return 100 + (perfPct - 100);
+            // Asian averaging dampens upside: model as 70% participation beyond the strike
+            return 100 + 0.7 * (perfPct - 100);
         },
         annotations: [
             { x: 100, label: "Strike", color: "#6366f1" },
@@ -932,10 +898,9 @@ window.PAYOFF_DATA = {
     "Outperformer": {
         type: "leverage",
         xRange: [40, 160],
-        yRange: [20, 200],
+        yRange: [0, 220],
         params: {
-            participation: 200, // leveraged upside (%)
-            floor: 90,
+            participation: 200, // leveraged upside (% of underlying move)
             cap: 160
         },
         calculate: function(S, S0 = 100) {
@@ -943,17 +908,16 @@ window.PAYOFF_DATA = {
             const level = (S / S0) * 100;
             if (level >= 100) {
                 const leveraged = 100 + (p.participation / 100) * (level - 100);
-                return Math.min(p.cap, leveraged);
+                return p.cap ? Math.min(p.cap, leveraged) : leveraged;
             }
-            return p.floor ? Math.max(p.floor, level) : level;
+            return level; // full downside participation (no capital protection)
         },
         annotations: [
             { x: 100, label: "Strike", color: "#6366f1" },
-            { y: 90, label: "Floor", color: "#f97316", horizontal: true },
             { y: 160, label: "Cap", color: "#10b981", horizontal: true }
         ],
         zones: [
-            { from: 60, to: 100, color: "rgba(239, 68, 68, 0.12)", label: "Floored losses" },
+            { from: 40, to: 100, color: "rgba(239, 68, 68, 0.12)", label: "Full downside" },
             { from: 100, to: 160, color: "rgba(16, 185, 129, 0.12)", label: "Leveraged upside" }
         ],
         extraCurves: [
@@ -965,7 +929,7 @@ window.PAYOFF_DATA = {
                     if (level >= 100) {
                         return 100 + (p.participation / 100) * (level - 100);
                     }
-                    return p.floor ? Math.max(p.floor, level) : level;
+                    return level;
                 }
             }
         ]
@@ -1468,88 +1432,6 @@ window.PAYOFF_DATA = {
         ]
     },
 
-    "One-Sided AXKI Pivot TRF - FX": {
-        type: "fx-structured",
-        xRange: [85, 125],
-        yRange: [60, 130],
-        params: {
-            pivot: 100,
-            knockIn: 112,
-            target: 12,
-            longParticipation: 0.9,
-            shortParticipation: 1.1,
-            postKiParticipation: 2.2,
-            floor: 50
-        },
-        calculate: function(S, S0 = 100) {
-            const p = this.params;
-            const level = (S / S0) * 100;
-            if (level <= p.pivot) {
-                const gain = Math.min(p.target, p.longParticipation * (p.pivot - level));
-                return 100 + gain;
-            }
-            if (level <= p.knockIn) {
-                const loss = p.shortParticipation * (level - p.pivot);
-                return 100 - loss;
-            }
-            const lossToKi = p.shortParticipation * (p.knockIn - p.pivot);
-            const extra = p.postKiParticipation * (level - p.knockIn);
-            return Math.max(p.floor, 100 - lossToKi - extra);
-        },
-        annotations: [
-            { x: 100, label: "Pivot", color: "#6366f1" },
-            { x: 112, label: "AXKI", color: "#ef4444" },
-            { y: 112, label: "Target", color: "#22c55e", horizontal: true },
-            { y: 70, label: "Risk zone", color: "#f97316", horizontal: true }
-        ],
-        zones: [
-            { from: 85, to: 100, color: "rgba(16, 185, 129, 0.12)", label: "Accrual zone" },
-            { from: 100, to: 112, color: "rgba(251, 191, 36, 0.12)", label: "Forward loss" },
-            { from: 112, to: 125, color: "rgba(239, 68, 68, 0.12)", label: "Knock-in loss" }
-        ]
-    },
-
-    "Share Accumulator / Decumulator": {
-        type: "equity-accumulator",
-        xRange: [60, 140],
-        yRange: [40, 135],
-        params: {
-            strike: 100,
-            knockIn: 120,
-            leverage: 1.2,
-            knockInLeverage: 2.4,
-            maxGain: 25,
-            floor: 55
-        },
-        calculate: function(S, S0 = 100) {
-            const p = this.params;
-            const level = (S / S0) * 100;
-            if (level <= p.strike) {
-                const gain = Math.min(p.maxGain, p.leverage * (p.strike - level));
-                return 100 + gain;
-            }
-            if (level <= p.knockIn) {
-                const loss = p.leverage * (level - p.strike);
-                return 100 - loss;
-            }
-            const baseLoss = p.leverage * (p.knockIn - p.strike);
-            const extraLoss = p.knockInLeverage * (level - p.knockIn);
-            return Math.max(p.floor, 100 - baseLoss - extraLoss);
-        },
-        annotations: [
-            { x: 100, label: "Strike", color: "#6366f1" },
-            { x: 120, label: "Knock-In", color: "#ef4444" },
-            { y: 125, label: "Max Gain", color: "#22c55e", horizontal: true },
-            { y: 55, label: "Floor", color: "#f97316", horizontal: true }
-        ],
-        zones: [
-            { from: 60, to: 100, color: "rgba(16, 185, 129, 0.12)", label: "Accumulator gains" },
-            { from: 100, to: 120, color: "rgba(251, 191, 36, 0.12)", label: "Forward losses" },
-            { from: 120, to: 140, color: "rgba(239, 68, 68, 0.12)", label: "AXKI losses" }
-        ],
-        dualLine: true
-    },
-
     "Autocallable (Athena Classic)": {
         type: "phoenix",
         xRange: [40, 160],
@@ -1889,9 +1771,6 @@ window.getPayoffData = function(productName) {
     if (/profiler/.test(nameNorm)) {
         return cloneConfig('Profiler');
     }
-    if (/orion/.test(nameNorm)) {
-        return cloneConfig('Orion');
-    }
     if (/capuccino/.test(nameNorm)) {
         return cloneConfig('Capuccino');
     }
@@ -2032,18 +1911,12 @@ window.getPayoffData = function(productName) {
     // FX Pivot TRF family
     if (/pivot\s*trf/.test(nameNorm)) {
         if (/axki|one\s*sided|one sided/.test(nameNorm)) {
-            return cloneConfig('One-Sided AXKI Pivot TRF - FX');
-        }
+            }
         return cloneConfig('Pivot Target Redemption Forward (Pivot TRF) - FX');
     }
 
     if (/target\s*redemption\s*forward|\\btarf\\b/.test(nameNorm)) {
         return cloneConfig('Target Redemption Forward (TARF) - FX');
-    }
-
-    // Share accumulator / decumulator programs
-    if (/accumulator|decumulator/.test(nameNorm)) {
-        return cloneConfig('Share Accumulator / Decumulator');
     }
 
     // Warrants family

@@ -95,24 +95,7 @@
                 </button>
             </div>
             
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">
-                    <span>All Products</span>
-                    <span class="filter-count" id="count-all">0</span>
-                </button>
-                <button class="filter-btn" data-filter="capital-protection">
-                    <span>Protected</span>
-                    <span class="filter-count" id="count-protected">0</span>
-                </button>
-                <button class="filter-btn" data-filter="income">
-                    <span>Income</span>
-                    <span class="filter-count" id="count-income">0</span>
-                </button>
-                <button class="filter-btn" data-filter="leverage">
-                    <span>Leveraged</span>
-                    <span class="filter-count" id="count-leverage">0</span>
-                </button>
-            </div>
+            <div class="filter-buttons"></div>
         </div>
     </section>
 
@@ -285,7 +268,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© 2025 Structured Products Library. All rights reserved.</p>
+            <p>© 2025 REDA SALHI - Tous droits réservés.</p>
         </div>
     </footer>
 
@@ -319,6 +302,7 @@
                 heroCta: "Explore Products",
                 productsTitle: "Structured Products Library",
                 productsSubtitle: "Click on any product to learn more about its characteristics, payoff and replication",
+                filterAll: "All Products",
                 learnMore: "Learn more",
                 definition: "Definition",
                 characteristics: "Key Characteristics",
@@ -351,6 +335,7 @@
                 heroCta: "Explorer les Produits",
                 productsTitle: "Bibliothèque de Produits Structurés",
                 productsSubtitle: "Cliquez sur un produit pour en savoir plus sur ses caractéristiques, payoff et réplication",
+                filterAll: "Tous les produits",
                 learnMore: "En savoir plus",
                 definition: "Définition",
                 characteristics: "Caractéristiques Clés",
@@ -394,8 +379,9 @@
             document.getElementById('products-title').textContent = t.productsTitle;
             document.getElementById('products-subtitle').textContent = t.productsSubtitle;
             
+            renderFilterButtons();
             renderProducts();
-            updateFilterCounts();
+            filterProducts();
         }
 
         function renderProducts() {
@@ -409,6 +395,7 @@
                 
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'product-group';
+                categoryDiv.dataset.category = categoryKey;
                 
                 const badge = document.createElement('span');
                 badge.className = `category-badge ${categoryKey}`;
@@ -427,6 +414,7 @@
                 categoryData.products.forEach(product => {
                     const card = document.createElement('div');
                     card.className = `card product-card ${categoryKey}`;
+                    card.dataset.category = categoryKey;
                     card.onclick = () => openModal(product, categoryData.title, categoryKey);
                     
                     card.innerHTML = `
@@ -451,6 +439,62 @@
                 categoryDiv.appendChild(grid);
                 container.appendChild(categoryDiv);
             });
+        }
+
+        function renderFilterButtons() {
+            const filterContainer = document.querySelector('.filter-buttons');
+            if (!filterContainer) return;
+
+            const products = window.PRODUCTS_DATA[currentLanguage];
+            const t = translations[currentLanguage];
+            let totalCount = 0;
+
+            const categoryEntries = Object.keys(products).map(key => {
+                const category = products[key];
+                const count = Array.isArray(category.products) ? category.products.length : 0;
+                totalCount += count;
+                return {
+                    key,
+                    label: category.badge || category.title || key,
+                    count
+                };
+            });
+
+            filterContainer.innerHTML = '';
+
+            const createButton = (filterKey, label, count) => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                if (filterKey === currentFilter) {
+                    btn.classList.add('active');
+                }
+                btn.dataset.filter = filterKey;
+
+                const labelSpan = document.createElement('span');
+                labelSpan.textContent = label;
+                btn.appendChild(labelSpan);
+
+                const countSpan = document.createElement('span');
+                countSpan.className = 'filter-count';
+                countSpan.textContent = count;
+                btn.appendChild(countSpan);
+
+                filterContainer.appendChild(btn);
+            };
+
+            createButton('all', t.filterAll || 'All Products', totalCount);
+            categoryEntries.forEach(entry => {
+                createButton(entry.key, entry.label, entry.count);
+            });
+
+            if (!filterContainer.querySelector(`.filter-btn[data-filter="${currentFilter}"]`)) {
+                currentFilter = 'all';
+                const firstButton = filterContainer.querySelector('.filter-btn');
+                if (firstButton) {
+                    filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    firstButton.classList.add('active');
+                }
+            }
         }
 
         function openModal(product, categoryTitle, categoryKey) {
@@ -658,7 +702,7 @@
         function initializeSearchAndFilters() {
             const searchInput = document.getElementById('product-search');
             const clearButton = document.getElementById('clear-search');
-            const filterButtons = document.querySelectorAll('.filter-btn');
+            const filterContainer = document.querySelector('.filter-buttons');
             
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -677,24 +721,29 @@
                 });
             }
             
-            filterButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    filterButtons.forEach(b => b.classList.remove('active'));
+            if (filterContainer) {
+                filterContainer.addEventListener('click', (event) => {
+                    const btn = event.target.closest('.filter-btn');
+                    if (!btn) return;
+                    
+                    const selectedFilter = btn.dataset.filter || 'all';
+                    if (selectedFilter === currentFilter) return;
+
+                    filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    currentFilter = btn.dataset.filter;
+                    currentFilter = selectedFilter;
                     filterProducts();
                 });
-            });
+            }
         }
 
         // Filtrer les produits
         function filterProducts() {
-            const products = document.querySelectorAll('.product-card');
             const groups = document.querySelectorAll('.product-group');
             let visibleCount = 0;
             
             groups.forEach(group => {
-                const categoryKey = Array.from(group.querySelectorAll('.product-card'))[0]?.classList[2];
+                const categoryKey = group.dataset.category;
                 let groupHasVisible = false;
                 
                 const groupProducts = group.querySelectorAll('.product-card');
@@ -702,7 +751,7 @@
                     const name = card.querySelector('h4').textContent.toLowerCase();
                     const description = card.querySelector('p').textContent.toLowerCase();
                     const matchesSearch = !searchTerm || name.includes(searchTerm) || description.includes(searchTerm);
-                    const matchesFilter = currentFilter === 'all' || categoryKey === currentFilter;
+                    const matchesFilter = currentFilter === 'all' || card.dataset.category === currentFilter;
                     
                     if (matchesSearch && matchesFilter) {
                         card.classList.remove('hidden');
@@ -744,34 +793,6 @@
                     noResultsDiv.remove();
                 }
             }
-        }
-
-        // Mettre à jour les compteurs de filtres
-        function updateFilterCounts() {
-            const products = window.PRODUCTS_DATA[currentLanguage];
-            let totalCount = 0;
-            let protectedCount = 0;
-            let incomeCount = 0;
-            let leverageCount = 0;
-            
-            Object.keys(products).forEach(categoryKey => {
-                const count = products[categoryKey].products.length;
-                totalCount += count;
-                
-                if (categoryKey === 'capital-protection') protectedCount += count;
-                if (categoryKey === 'phoenix' || categoryKey === 'income') incomeCount += count;
-                if (categoryKey === 'leverage' || categoryKey === 'warrants') leverageCount += count;
-            });
-            
-            const countAll = document.getElementById('count-all');
-            const countProtected = document.getElementById('count-protected');
-            const countIncome = document.getElementById('count-income');
-            const countLeverage = document.getElementById('count-leverage');
-            
-            if (countAll) countAll.textContent = totalCount;
-            if (countProtected) countProtected.textContent = protectedCount;
-            if (countIncome) countIncome.textContent = incomeCount;
-            if (countLeverage) countLeverage.textContent = leverageCount;
         }
 
         // Animer les statistiques

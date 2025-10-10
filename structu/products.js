@@ -75,7 +75,7 @@ window.PRODUCTS_DATA = {
                         participation: "Linear participation in upside as long as the barrier is not breached"
                     },
                     payoff: "\\text{Payoff} = \\begin{cases} N_0 \\times \\left(1 + \\text{Participation} \\times \\frac{S_T - K}{K}\\right) & \\text{if } S_T > K \\text{ and barrier not breached} \\\\ N_0 \\times \\text{Coupon Rebate} & \\text{if barrier breached (rebate)} \\\\ N_0 & \\text{otherwise} \\end{cases}",
-                    replication: "\\text{Capital Protection Note with Barrier} = \\text{ZCB} + \\text{Call Option} - \\text{CDO Option (Barrier)}",
+                    replication: "\\text{Capital Protection Note with Barrier} = \\text{ZCB} + \\text{CUO Option (Barrier)}",
                     advantages: [
                         "Full capital protection at maturity",
                         "Participation in the underlying’s upside above the strike level",
@@ -209,7 +209,7 @@ window.PRODUCTS_DATA = {
                         asianOption: "Quarterly or semi-annual averaging during the final two years of the product"
                     },
                     payoff: "\\text{Payoff} = 100\\% + \\sum_{i=1}^{n} w_i\\, G_i\\, P_i,\\quad \\text{where }\\; \\begin{aligned} w_i & = \\text{initial weight of asset } i, \\\\ G_i & = \\text{gearing factor (e.g., }180\\%\\text{ if positive, }30\\%\\text{ if negative)}, \\\\ P_i & = \\text{performance (or Asian performance) of asset } i \\end{aligned}",
-                    replication: "\\text{Commola} = \\text{Zero-Coupon Bond} + \\text{Dynamically Weighted Basket Exposure}",
+                    replication: "\\text{Commola} = \\text{Zero-Coupon Bond} + \\text{Dynamically Weighted Basket Call}",
                     advantages: [
                         "Potential to outperform the underlying basket through dynamic weighting",
                         "Overweighting of top-performing assets enhances returns",
@@ -350,7 +350,7 @@ window.PRODUCTS_DATA = {
                         participation: "100% on the average of capped (locked) performances"
                     },
                     payoff: "\\text{Payoff}=N_0\\Bigl(1+\\tfrac{1}{n}\\sum_{i=1}^{n}\\widehat{P}_i\\Bigr),\\quad \\widehat{P}_i=\\min\\!\\bigl(\\operatorname{Perf}_i,\\operatorname{Cap}\\bigr),\\quad \\operatorname{Perf}_i=\\tfrac{S_{i,T}-S_{i,0}}{S_{i,0}}",
-                    replication: "\\text{Captibasket}=\\text{Zero-Coupon Bond}+\\sum_{i=1}^{n}\\,\\text{Option on }\\min(\\text{Perf}_i,\\text{Cap})\\;(\\text{e.g., American Call Spread})",
+                    replication: "\\text{Captibasket}=\\text{ZCB}+\\sum_{i=1}^{n} \\frac{N}{nS_i(0)}\\,\\bigl(C^{(i)}(K_1)-C^{(i)}(K_2)\\bigr)",
                     advantages: [
                         "Full capital protection at maturity",
                         "Automatically locks and secures gains above the cap level",
@@ -490,7 +490,7 @@ window.PRODUCTS_DATA = {
                       participation: "100% to 200% depending on performance; quadratic beyond the high threshold"
                     },
                     payoff: "\\text{Define } \\text{Perf}=\\tfrac{S_T-S_0}{S_0}.\\quad \\text{Payoff}=\\begin{cases} 100\\% & \\text{if } \\text{Perf} \\le 0 \\\\ 100\\% + (\\text{Perf})^2 & \\text{if } \\text{Perf} \\ge \\text{High Threshold} \\\\ 100\\% + \\text{Perf} & \\text{otherwise (linear region)} \\end{cases}",
-                    replication: "\\text{Titan} = \\text{ZCB} + \\text{Linear Participation} + \\text{Convex kicker (e.g., call spread or squared exposure)}",
+                    replication: "\\text{Titan} = \\text{ZCB} + \\text{CUO} + \\text{Convex kicker Up-and-In call (e.g., squared exposure)}",
                     advantages: [
                       "Full capital protection at maturity",
                       "Quadratic upside can strongly outperform in bull markets",
@@ -529,7 +529,7 @@ window.PRODUCTS_DATA = {
                       participation: "Weighted mix of best/middle/worst, e.g., 50% / 30% / 20%, then scaled"
                     },
                     payoff: "\\text{Let } \\text{Perf}_{\\text{Best}},\\,\\text{Perf}_{\\text{Middle}},\\,\\text{Perf}_{\\text{Worst}} \\text{ be final performances.}\\n\\n \\text{Payoff}=100\\%+80\\%\\,\\Bigl[0.5\\,\\text{Perf}_{\\text{Best}}+0.3\\,\\text{Perf}_{\\text{Middle}}+0.2\\,\\text{Perf}_{\\text{Worst}}\\Bigr]",
-                    replication: "\\text{Rainbow} = \\text{ZCB} + \\text{Ranking-based Rainbow Option on the basket}",
+                    replication: "\\text{Rainbow} = \\text{ZCB} + \\text{Basket Call with adjusted weights}",
                     advantages: [
                       "Automatically favors top-performing indices",
                       "Potential to outperform simple average in dispersed markets",
@@ -609,7 +609,7 @@ window.PRODUCTS_DATA = {
                       coupon: "Function of the weighted average of transformed values X_{i,T}",
                       participation: "Driven by components satisfying the condition S_T > CL%"
                     },
-                    payoff: "\\text{Let } X_{i,T} \\text{ be the transformed value for name } i.\\n\\n \\text{Payoff}=\\begin{cases} 100\\% + \\max\\!\\left(0,\\tfrac{1}{n}\\sum_{i=1}^{n} X_{i,T}\\right) & \\text{at maturity (capital protected)} \\\\ 0\\% & \\text{otherwise (no early payoff)} \\end{cases}",
+                    payoff: "\\text{Let } X_{i,T} \\text{ be the transformed value for name } i.\\n\\n \\text{Payoff}=\\begin{cases} 100\\% + \\max\\!\\left(0,\\tfrac{1}{n}\\sum_{i=1}^{n} X_{i,T}\\right) & \\text{at maturity (capital protected)} \\\\ 100\\% & \\text{otherwise (no early payoff)} \\end{cases}",
                     replication: "\\text{Capuccino} = \\text{Zero-Coupon Bond} + \\text{Portfolio of conditional basket options (trigger at CL\\%)}",
                     advantages: [
                       "Full capital protection at maturity",
@@ -640,6 +640,7 @@ window.PRODUCTS_DATA = {
                   {
                     name: "Orion",
                     short: "Hybrid structure combining fixed income and equity exposure with capital protection",
+                    hasPayoff: false,
                     definition: "Orion is a hybrid structure paying a fixed coupon as long as a primary underlying (such as a short-term rate or a commodity) stays above or below a trigger level. If that level is breached, the product switches to an equity exposure, offering variable performance linked to a basket of equities. Capital is fully protected at maturity.",
                     characteristics: {
                       underlying: "Primary: short-term rate or commodity; after switch: equity basket",
@@ -691,7 +692,7 @@ window.PRODUCTS_DATA = {
                       coupons: "None — performance-only payoff",
                       participation: "Full participation in the best-performing portfolio"
                     },
-                    replication: "\\text{Profiler} = \\text{ZCB (capital protection)} + \\max(\\text{Perf}_{\\text{Aggressive}}, \\text{Perf}_{\\text{Balanced}}, \\text{Perf}_{\\text{Defensive}})",
+                    replication: "\\text{Profiler} = \\text{ZCB (capital protection)} + \\max(\\text{Perf}_{\\text{Aggressive}}, \\text{Best-of Call on Portfolios}",
                     payoff: "\\text{Final Payoff} = 100\\% + \\max(P_A, P_B, P_D) \\\\[4pt] \\text{where } P_A, P_B, P_D \\text{ are the performances of the three portfolios.}",
                     advantages: [
                       "Automatic allocation to the best-performing strategy at maturity",
@@ -740,7 +741,7 @@ window.PRODUCTS_DATA = {
                       coupon: "None (yield comes from the initial discount)",
                       earlyRedemption: "None"
                     },
-                    replication: "\\text{Discount Certificate} = \\text{Long Underlying} - \\text{Short Call (strike)}",
+                    replication: "\\text{Discount Certificate} = \\text{Long Underlying} - \\text{Short Call (strike)} = \\text{ZCB} - \\text{Short Put (strike)}",
                     payoff: "\\text{Payoff}(T) = \\begin{cases} \\tfrac{\\text{Strike}}{S_0} \\times 100\\%, & S_T \\geq \\text{Strike} \\\\ \\tfrac{S_T}{S_0} \\times 100\\%, & S_T < \\text{Strike} \\end{cases}",
                     advantages: [
                       "Buy the underlying at a discount to market price",
@@ -781,7 +782,7 @@ window.PRODUCTS_DATA = {
                       coupon: "None",
                       earlyRedemption: "None"
                     },
-                    replication: "\\text{Barrier Discount Certificate} = \\text{Discount Certificate} + \\text{Short Put (barrier)}",
+                    replication: "\\text{Barrier Discount Certificate} = \\text{Discount Certificate} + \\text{Short PDI}",
                     payoff: "\\text{Payoff}(T) = \\begin{cases} 100\\% \\text{ of nominal}, & S_T \\geq \\text{Capital barrier} \\\\ \\tfrac{S_T}{S_0} \\times 100\\% \\text{ of nominal}, & S_T < \\text{Capital barrier} \\end{cases}",
                     advantages: [
                       "Discounted entry price versus the underlying asset",
@@ -1290,17 +1291,11 @@ window.PRODUCTS_DATA = {
                       underlying: "Index (e.g., FTSE 100)",
                       maturity: "6 years",
                       protection: "Conditional via capital barrier (e.g., 50% of initial)",
-                      barriers: {
-                        autocallBarrier: "X% of initial (e.g., 108% trigger)",
-                        capitalBarrier: "Y% of initial (e.g., 50%)"
-                      },
-                      coupon: {
-                        phase1: "Fixed (e.g., 8% p.a. for X year[s])",
-                        phase2: "Conditional (e.g., 8% p.a. if index ≥ 100% of initial on observation)"
-                      },
+                      barriers: "Autocall barrier (e.g., 108% of initial); capital barrier (e.g., 50%)",
+                      coupon: "Phase 1: fixed coupon (e.g., 8% p.a.); Phase 2: conditional coupon (e.g., 8% p.a. if index ≥ 100%)",
                       participation: "Full downside participation if capital barrier breached at maturity"
                     },
-                    replication: "\\text{Neptune} = \\text{Discounted bond (partial capital) } + \\text{conditional coupon options} + \\text{autocall feature}",
+                    replication: "\\text{Neptune} = \\text{ZCB} + \\text{conditional coupon options} + \\text{autocall option (same strike as PDI)} + \\text{Short PDI}",
                     payoff: "\\text{If called on observation: } 100\\% + \\text{due coupon}. \\\\ \\text{If not called (maturity): } \\begin{cases} 100\\% + n\\times C, & S_T \\ge \\text{capital barrier} \\\\ 100\\%\\times \\frac{S_T}{S_0}, & S_T < \\text{capital barrier} \\end{cases}",
                     advantages: [
                       "Guaranteed income in the initial phase",
@@ -1350,7 +1345,7 @@ window.PRODUCTS_DATA = {
                       coupon: "Conditional; paid when autocall condition is met (e.g., 9% p.a.)",
                       observation: "Annual, quarterly, or monthly"
                     },
-                    replication: "\\text{Autocallable} = \\text{Zero-Coupon Bond} + \\text{Digital Call coupons} - \\text{Put Down-and-In (PDI)}",
+                    replication: "\\text{Autocallable} = \\text{ZCB} + \\text{Autocall option (KO)} + \\text{Digital call coupons} - \\text{Short PDI}",
                     payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & S_{t_i} \\ge \\text{Autocall barrier at $i$ (called)} \\\\ 100\\%, & S_T \\ge \\text{Protection barrier (not called)} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & S_T < \\text{Protection barrier} \\end{cases}",
                     advantages: [
                       "Potentially high coupons",
@@ -1560,7 +1555,7 @@ window.PRODUCTS_DATA = {
                       coupon: "Fixed, paid upon early redemption",
                       observation: "Annual/semiannual/quarterly"
                     },
-                    replication: "\\text{Premium Express} = \\text{ZCB} + \\text{Digital Call with reduced barrier}",
+                    replication: "\\text{Premium Express} = \\text{ZCB} + \\text{Autocall option (KO)} + \\text{Digital call with reduced barrier} - \\text{Short PDI}",
                     payoff: "\\text{Payoff}=\\begin{cases} 100\\% + n\\,\\times\\,\\text{Coupon}, & S_{t_n} \\ge B_{\\text{call}}<100\\% \\\\ 100\\%, & \\text{otherwise (no call, capital guaranteed)} \\end{cases}",
                     advantages: [
                       "Very high probability of early redemption",
@@ -1601,7 +1596,7 @@ window.PRODUCTS_DATA = {
                       earlyRedemption: "Yes — autocall",
                       barriers: "Coupon barrier X%, Autocall threshold Z%, Capital barrier Y% (all vs initial)"
                     },
-                    replication: "\\text{Phoenix} = \\text{ZCB} + \\text{Autocall Option} + \\text{Series of Conditional Digital Coupons}",
+                    replication: "\\text{Phoenix} = \\text{ZCB} + \\text{Autocall option (KO)} + \\text{Series of conditional digital coupons} - \\text{Short PDI}",
                     payoff: "\\text{Coupon}(t)=\\begin{cases}\\text{Fixed coupon}, & S_t\\!\\ge\\text{Coupon Barrier}\\\\ 0, & S_t\\!<\\text{Coupon Barrier}\\end{cases}\\\\[4pt]\\text{At observation: }\\text{Payoff}=\\begin{cases}100\\%+\\text{Coupon of period}, & S_t\\!\\ge\\text{Autocall Threshold}\\\\ \\text{continue}, & \\text{otherwise}\\end{cases}\\\\[4pt]\\text{At maturity (if not called): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_T\\!\\ge\\text{Capital Barrier}\\\\ \\tfrac{S_T}{S_0}\\times100\\%, & S_T\\!<\\text{Capital Barrier}\\end{cases}",
                     advantages: [
                       "Attractive conditional coupons in stable or mildly bearish markets",
@@ -1645,7 +1640,7 @@ window.PRODUCTS_DATA = {
                       earlyRedemption: "Yes — autocall",
                       barriers: "Capital barrier Y%, Autocall threshold Z% (vs initial)"
                     },
-                    replication: "\\text{Phoenix Fixed Coupon} = \\text{ZCB} + \\text{Autocall Option} + \\text{Fixed Coupons}",
+                    replication: "\\text{Phoenix Fixed Coupon} = \\text{ZCB} + \\text{Autocall option (KO)} + \\text{Fixed coupons} - \\text{Short PDI}",
                     payoff: "\\text{Coupon}(t)=\\text{Fixed coupon each period}.\\\\[4pt]\\text{At observation: }\\text{Payoff}=\\begin{cases}100\\%+\\text{Coupon of period}, & S_t\\!\\ge\\text{Autocall Threshold}\\\\ \\text{continue}, & \\text{otherwise}\\end{cases}\\\\[4pt]\\text{At maturity (if not called): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_T\\!\\ge\\text{Capital Barrier}\\\\ \\tfrac{S_T}{S_0}\\times100\\%, & S_T\\!<\\text{Capital Barrier}\\end{cases}",
                     advantages: [
                       "Predictable fixed income stream",
@@ -1686,7 +1681,7 @@ window.PRODUCTS_DATA = {
                       coupons: "Conditional; doubled when at/above recall threshold",
                       earlyRedemption: "Yes — autocall"
                     },
-                    replication: "\\text{Phoenix Double} = \\text{CB} + \\text{Autocall Option} + \\text{Tiered Conditional Digital Coupons}",
+                    replication: "\\text{Phoenix Double} = \\text{ZCB} + \\text{Autocall option (KO)} + \\text{Tiered conditional digital coupons} - \\text{Short PDI}",
                     payoff: "\\text{Coupon}(t)=\\begin{cases}2\\times\\text{Coupon}, & S_t\\!\\ge\\text{Recall Threshold}\\\\ \\text{Coupon}, & \\text{Coupon Barrier}\\le S_t<\\text{Recall Threshold}\\\\ 0, & S_t<\\text{Coupon Barrier}\\end{cases}\\\\[4pt]\\text{At observation: }\\text{Payoff}=\\begin{cases}100\\%+2\\times\\text{Coupon}, & S_t\\!\\ge\\text{Recall Threshold}\\\\ \\text{continue}, & \\text{otherwise}\\end{cases}\\\\[4pt]\\text{At maturity (if not called): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_T\\!\\ge\\text{Capital Barrier}\\\\ \\tfrac{S_T}{S_0}\\times100\\%, & S_T\\!<\\text{Capital Barrier}\\end{cases}",
                     advantages: [
                       "Higher income when the underlying trades above the recall threshold",
@@ -1729,7 +1724,7 @@ window.PRODUCTS_DATA = {
                       coupons: "Conditional on worst-of vs coupon barrier",
                       earlyRedemption: "Yes — autocall on worst-of"
                     },
-                    replication: "\\text{Phoenix Combo} = \\text{ZCB} + \\text{Worst-of Autocall Option} + \\text{Worst-of Conditional Digital Coupons}",
+                    replication: "\\text{Phoenix Combo} = \\text{ZCB} + \\text{Worst-of Autocall option (KO)} + \\text{Worst-of conditional digital coupons} - \\text{Short PDI (worst-of)}",
                     payoff: "\\text{Let }S_{\\min}(t)=\\min_i S_i(t).\\\\ \\text{Coupon}(t)=\\begin{cases}\\text{Coupon}, & S_{\\min}(t)\\!\\ge\\text{Coupon Barrier}\\\\ 0, & \\text{otherwise}\\end{cases}\\\\[4pt]\\text{At observation: }\\text{Payoff}=\\begin{cases}100\\%+\\text{Coupon of period}, & S_{\\min}(t)\\!\\ge\\text{Recall Threshold}\\\\ \\text{continue}, & \\text{otherwise}\\end{cases}\\\\[4pt]\\text{At maturity (if not called): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_{\\min}(T)\\!\\ge\\text{Capital Barrier}\\\\ \\tfrac{S_{\\min}(T)}{S_0}\\times100\\%, & S_{\\min}(T)\\!<\\text{Capital Barrier}\\end{cases}",
                     advantages: [
                       "Diversified basket exposure with Phoenix mechanics",
@@ -1859,7 +1854,7 @@ window.PRODUCTS_DATA = {
                       earlyRedemption: "Yes — automatic when recall barrier is met"
                     },
                     replication: "\\text{Athena Oxygen} = \\text{ZCB} + \\text{Autocall with dual thresholds (recall \\& conditional coupon)}",
-                    payoff: "\\text{Payoff}=\\begin{cases}100\\%+C^{\\text{recall}}_i & S_t\\ge B_{\\text{call}}\\text{ on obs }i\\text{ (or at }T\\text{)}\\\\ 100\\%+C_{\\text{cond}} & B_{\\text{coupon}}\\le S_T< B_{\\text{call}}\\\\ 100\\% & B_{\\text{protect}}\\le S_T< B_{\\text{coupon}}\\\\ 100\\%\\times\\tfrac{S_T}{S_0} & S_T< B_{\\text{protect}}\\end{cases}\\\\[4pt]\\text{with }C^{\\text{recall}}_i=i\\,c,\\;C_{\\text{cond}}=\\text{contractual \\%, paid only if }S_T\\ge B_{\\text{coupon}}.",
+                    payoff: "\\text{Payoff}=\\begin{cases}100\\%+C^{\\text{recall}}_i & S_t\\ge B_{\\text{call}}\\text{ on obs }i\\text{ (or at }T\\text{)}\\\\ 100\\%+C_{\\text{cond}} & B_{\\text{coupon}}\\le S_T< B_{\\text{call}}\\\\ 100\\% & B_{\\text{protect}}\\le S_T< B_{\\text{coupon}}\\\\ 100\\%\\times\\frac{S_T}{B_{\\text{protect}}} & S_T< B_{\\text{protect}}\\end{cases}\\\\[4pt]\\text{with }C^{\\text{recall}}_i=i\\,c,\\;C_{\\text{cond}}=\\text{contractual \\%, paid only if }S_T\\ge B_{\\text{coupon}}.",
                     advantages: [
                       "Two coupon pathways (recall or conditional at maturity)",
                       "Higher chance of some income vs classic Athena",
@@ -1903,7 +1898,7 @@ window.PRODUCTS_DATA = {
                       coupons: "Recall coupon accumulates daily until call; conditional coupon at T if S_T ≥ coupon barrier",
                       earlyRedemption: "Yes — daily autocall"
                     },
-                    replication: "\\text{Athena Daily} = \\text{ZCB} + \\text{Daily Autocall with conditional coupons}",
+                    replication: "\\text{Athena Daily} = \\text{ZCB} + \\text{Autocall option (KO, daily)} + \\text{Conditional digital coupons} - \\text{Short PDI}",
                     payoff: "\\text{Payoff}=\\begin{cases}100\\%+C^{\\text{recall}}_i,& S_t\\ge B_{\\text{call}}\\text{ on some day }i\\text{ (or at }T\\text{)}\\\\ 100\\%+C_{\\text{cond}},& B_{\\text{coupon}}\\le S_T< B_{\\text{call}}\\\\ 100\\%,& B_{\\text{capital}}\\le S_T< B_{\\text{coupon}}\\\\ 100\\%\\times\\tfrac{S_T}{S_0},& S_T< B_{\\text{capital}}\\end{cases}\\\\[4pt]\\text{with }C^{\\text{recall}}_i=i\\,c\\;(\\text{daily accrual}),\\;C_{\\text{cond}}=\\text{contractual \\% at }T.",
                     advantages: [
                       "Daily observations increase call probability",
@@ -1951,7 +1946,7 @@ window.PRODUCTS_DATA = {
                       coupon: "Conditional; paid when worst-of ≥ coupon barrier",
                       earlyRedemption: "Yes — autocall if worst-of ≥ recall barrier on observation"
                     },
-                    replication: "\\text{KIKO} = \\text{Zero-coupon bond} + \\text{conditional digital coupons} + \\text{Short put with barrier (KI)}",
+                    replication: "\\text{KIKO} = \\text{ZCB} + \\text{conditional digital coupons} + \\text{Short put with barrier (KI)} + \\text{Autocall option (KO)}",
                     payoff: "\\text{At observation } t: \\begin{cases} 100\\% + \\text{Coupon}, & \\text{if worst-of} \\ge \\text{Recall barrier (autocall)} \\\\ 100\\% + \\text{Coupon}, & \\text{if worst-of} \\ge \\text{Coupon barrier (no autocall)} \\end{cases} \\\\ \\text{At maturity (if not called): } \\begin{cases} 100\\% + \\text{Coupon}, & S_T^{\\ast} \\ge \\text{Coupon barrier} \\\\ 100\\%, & \\text{Capital barrier} \\le S_T^{\\ast} < \\text{Coupon barrier} \\\\ 100\\%\\times \\tfrac{S_T^{\\ast}}{S_0^{\\ast}}, & S_T^{\\ast} < \\text{Capital barrier (KI)} \\end{cases}",
                     advantages: [
                       "Attractive conditional coupons",
@@ -2208,6 +2203,7 @@ window.PRODUCTS_DATA = {
                   {
                     name: "Share Accumulator / Decumulator",
                     short: "OTC program to buy (accumulator) or sell (decumulator) shares progressively at a preset strike with implicit leverage and KO barrier",
+                    hasPayoff: false,
                     definition: "An OTC program that accumulates (buys) or decumulates (sells) shares over time at a predetermined strike. Daily notionals scale with spot relative to strike (implicit leverage). A knock-out barrier terminates the program early.",
                     characteristics: {
                       format: "OTC",
@@ -2219,8 +2215,8 @@ window.PRODUCTS_DATA = {
                       coupons: "None"
                     },
                     replication: [
-                      "Accumulator = Progressive purchase + Implicit leverage + KO barrier",
-                      "Decumulator = Progressive sale + Implicit leverage + KO barrier"
+                      "\\text{Accumulator = Progressive purchase + Implicit leverage + KO barrier}",
+                      "\\text{Decumulator = Progressive sale + Implicit leverage + KO barrier}"
                     ],
                     mechanism: {
                       accumulator: [
@@ -2234,7 +2230,7 @@ window.PRODUCTS_DATA = {
                         "If S_t hits KO barrier: program ends."
                       ]
                     },
-                    payoff: "Path-dependent delivery/receipt of shares and cash at Strike over the schedule; early termination upon KO.",
+                    payoff: "\\text{Path-dependent delivery/receipt of shares and cash at Strike over the schedule; early termination upon KO.}",
                     advantages: [
                       "Phased entry/exit into the market",
                       "Economics can imply discount/premium vs spot over time",
@@ -2536,49 +2532,6 @@ window.PRODUCTS_DATA = {
               ]
             }
           },
-          {
-            name: "One-Sided AXKI Pivot TRF – FX",
-            short: "Asymmetric Pivot TRF with an at-expiry knock-in barrier and forced purchase on breach",
-            definition: "An asymmetric Pivot TRF variant that adds an at-expiry knock-in (AXKI) barrier. If spot breaches the AXKI at expiry, the investor is forced into an adverse position (e.g., forced buy at K1), increasing downside while retaining range accrual benefits.",
-            characteristics: {
-              underlying: "FX pair (e.g., AUD/USD)",
-              maturity: "12 months, monthly settlement",
-              strikes: "K1 (lower buy) and K2 (upper sell) around pivot Kp",
-              barrier: "AXKI (at-expiry knock-in) below K1 for downside protection trade-off",
-              target: "Cumulative gain threshold (e.g., 0.1500)"
-            },
-            replication: "\\text{Pivot TRF} = \\text{TRF} + \\text{Symmetric FX butterfly around } K_p",
-            payoff: "\\text{Intrinsic}_t = \\begin{cases} \\max(X_t - K_1, 0), & X_t < K_p \\\\ \\max(K_2 - X_t, 0), & X_t \\ge K_p \\end{cases} \\\\ \\text{AXKI: if } X_T < \\text{AXKI} \\Rightarrow \\text{forced purchase at } K_1 \\text{ (often with 2× notional)}",
-            advantages: [
-              "Targets accrual within a broad profitable range [K1, K2]",
-              "Target knock-out accelerates exit when gains accumulate",
-              "Premium economics improved versus symmetric range via one-sided risk"
-            ],
-            risks: [
-              "Asymmetric knock-in magnifies losses if barrier is breached",
-              "Directional downside risk if market breaks the range",
-              "Counterparty and FX volatility/gap risks"
-            ],
-            investorType: "Experienced FX investors monetizing a range view while accepting one-sided tail risk.",
-            example: {
-              title: "AXKI Pivot TRF – Numerical Example",
-              parameters: {
-                underlying: "AUD/USD",
-                tenor: "12 months",
-                notionalRules: "1M per month; forced 2M buy if AXKI breached",
-                K1: "0.9900",
-                K2: "1.0700",
-                Kp: "1.0300",
-                AXKI: "0.9100",
-                target: "0.1500 exact"
-              },
-              settlementScenarios: [
-                "K1 ≤ X_t ≤ Kp → buy 1M AUD at K1.",
-                "Kp < X_t ≤ K2 → sell 1M AUD at K2.",
-                "X_T < AXKI at expiry → forced buy 2M AUD at K1 (knock-in)."
-              ]
-            }
-          },                    
 
     ]
 },
@@ -2694,7 +2647,7 @@ window.PRODUCTS_DATA = {
                 equityCondition: "SPX ≥ 50% of initial",
                 rateCondition: "SOFR 3M ≤ 5% (spot ref e.g., 1.34%)"
               },
-              coupon: "3.35% p.a. × (m / M), with m = in-condition days and M = total days in period",
+              coupon: "c% p.a. × (m / M), with m = in-condition days and M = total days in period",
               issuerCall: "Quarterly after year 1 (non-call 1 year), redeemable at par"
             },
             replication: "\\text{Callable Range Accrual} = \\text{Zero-coupon bond} + \\text{Digital range accrual} - \\text{Issuer call option}",
@@ -2723,8 +2676,8 @@ window.PRODUCTS_DATA = {
                 issuerCall: "Quarterly from year 2 at par"
               },
               scenarios: [
-                "Stable market: both conditions true 85% of days → coupon ≈ 3.35% × 0.85 = 2.85% p.a.",
-                "Rising rates: SOFR > 5% half the time → coupon ≈ 3.35% × 0.50 = 1.68% p.a.",
+                "Stable market: both conditions true 85% of days → coupon ≈ c% × 0.85 p.a.",
+                "Rising rates: SOFR > 5% half the time → coupon ≈ c% × 0.50 p.a.",
                 "Adverse equity: SPX < 50% of initial → zero coupon accrual; principal repaid at par at maturity if not called."
               ]
             }
@@ -2885,7 +2838,7 @@ window.PRODUCTS_DATA = {
               protectionStrike: "Typically 60–80% of initial",
               earlyRedemption: "Automatic if worst-of ≥ KO barrier on an observation date"
             },
-            replication: "\\text{FCN} = \\text{Fixed-coupon note} + \\text{Short worst-of PDI}",
+            replication: "\\text{FCN} = \\text{Fixed-coupon note} + \\text{Short worst-of PDI + Long worst of CUO (AUCTOCALL)}",
             payoff: [
               "\\text{Observation: } S_t^{\\text{worst}} \\geq \\text{barrière KO} \\Rightarrow \\text{remboursement anticipé à } 100\\% + \\text{coupon courant}",
               "\\text{Maturité (si non rappelée): } \\begin{cases} 100\\%, & S_T^{\\text{worst}} > K \\\\ \\dfrac{N}{K \\cdot S_0^{\\text{worst}}} \\times S_T^{\\text{worst}}, & S_T^{\\text{worst}} \\le K \\end{cases}"
@@ -3069,7 +3022,7 @@ window.PRODUCTS_DATA = {
                         participation: "Participation linéaire à la hausse tant que la barrière n'est pas franchie"
                     },
                     payoff: "\\text{Payoff} = \\begin{cases} N_0 \\times \\left(1 + \\text{Participation} \\times \\frac{S_T - K}{K}\\right) & \\text{si } S_T > K \\text{ et barrière non franchie} \\\\ N_0 \\times \\text{Prime de compensation} & \\text{si barrière franchie (compensation)} \\\\ N_0 & \\text{sinon} \\end{cases}",
-                    replication: "\\text{Capital Protection Note avec Barrière} = \\text{OZC} + \\text{Option Call} - \\text{Option CDO (Barrière)}",
+                    replication: "\\text{Capital Protection Note avec Barrière} = \\text{ZCB} + \\text{Option CUO (Barrière)}",
                     advantages: [
                         "Protection intégrale du capital à maturité",
                         "Participation à la hausse du sous-jacent au-dessus du strike",
@@ -3113,7 +3066,7 @@ window.PRODUCTS_DATA = {
                         participation: "Levier positif/négatif ou absolu selon version (Haussier, Baissier, Twin Win)"
                     },
                     payoff: "\\text{Payoff}(T)=\\begin{cases} \\text{Plancher garanti} + \\text{Prime KO} & \\text{si événement KO} \\\\ \\text{Capital garanti} + \\text{Levier}\\times f(S_T) & \\text{si pas de KO} \\end{cases} \\\\ \\text{où } f(S_T)=\\begin{cases} \\max\\!\\left(0,\\tfrac{S_T}{S_0}-\\text{Strike}\\right), & \\text{Shark Fin Haussier} \\\\ \\max\\!\\left(0,\\text{Strike}-\\tfrac{S_T}{S_0}\\right), & \\text{Shark Fin Baissier} \\\\ \\left|\\tfrac{S_T}{S_0}-\\text{Strike}\\right|, & \\text{Shark Fin Twin Win} \\end{cases}",
-                    replication: "\\text{Shark Fin} = \\text{OZC (plancher)} + \\text{Options à barrière (KO)} + \\text{Jambe de payoff avec levier}\\\\ \\text{Exemples: Haussier } (\\text{OZC} + \\text{CUO})\\,,\\; \\text{Baissier } (\\text{OZC} + \\text{PDO})\\,,\\; \\text{Prime KO via digital}",
+                    replication: "\\text{Shark Fin} = \\text{ZCB (plancher)} + \\text{Options à barrière (KO)} + \\text{Jambe de payoff avec levier}\\\\ \\text{Exemples: Haussier } (\\text{ZCB} + \\text{CUO})\\,,\\; \\text{Baissier } (\\text{ZCB} + \\text{PDO})\\,,\\; \\text{Prime KO via digital}",
                     advantages: [
                         "Plancher de capital à maturité",
                         "Exposition asymétrique adaptée aux vues haussières, baissières ou de fourchette",
@@ -3158,7 +3111,7 @@ window.PRODUCTS_DATA = {
                         participation: "Aucune (structure de coupon fixe)"
                     },
                     payoff: "\\text{Payoff} = \\begin{cases} 100\\% + C_{\\text{élevé}} & \\text{si sous-jacent reste dans } [B_1^{-}, B_1^{+}] \\\\ 100\\% + C_{\\text{moyen}} & \\text{si dans } [B_2^{-}, B_2^{+}] \\setminus [B_1^{-}, B_1^{+}] \\\\ 100\\% & \\text{sinon} \\end{cases}",
-                    replication: "\\text{Wedding Cake} = \\text{OZC} + \\text{Options Digitales à Double Barrière}",
+                    replication: "\\text{Wedding Cake} = \\text{ZCB} + \\text{Options Digitales à Double Barrière}",
                     advantages: [
                         "Neutre au marché: performe bien même sans direction de marché forte",
                         "Paie un coupon fixe élevé dans des environnements stables",
@@ -3203,7 +3156,7 @@ window.PRODUCTS_DATA = {
                         asianOption: "Moyenne trimestrielle ou semestrielle pendant les deux dernières années du produit"
                     },
                     payoff: "\\text{Payoff} = 100\\% + \\sum_{i=1}^{n} w_i\\, G_i\\, P_i,\\quad \\text{où }\\; \\begin{aligned} w_i & = \\text{poids initial de l'actif } i, \\\\ G_i & = \\text{facteur de levier (ex: }180\\%\\text{ si positif, }30\\%\\text{ si négatif)}, \\\\ P_i & = \\text{performance (ou performance asiatique) de l'actif } i \\end{aligned}",
-                    replication: "\\text{Commola} = \\text{Obligation Zéro-Coupon} + \\text{Exposition au Panier Pondérée Dynamiquement}",
+                    replication: "\\text{Commola} = \\text{Obligation Zéro-Coupon} + \\text{Call sur Panier Pondéré Dynamiquement}",
                     advantages: [
                         "Potentiel de surperformance du panier sous-jacent via pondération dynamique",
                         "Surpondération des actifs les plus performants améliore les rendements",
@@ -3255,7 +3208,7 @@ window.PRODUCTS_DATA = {
                         participation: "Moyenne des performances observées, avec plancher appliqué aux rendements individuels positifs"
                     },
                     payoff: "\\text{Payoff} = 100\\%\\,\\Bigl[1 + \\frac{1}{N} \\sum_{i=1}^{N} P_i \\Bigr],\\n\\n \\text{où } P_i = \\begin{cases} \\max(\\text{Perf}_i,\\,\\text{Plancher}) & \\text{si } \\text{Perf}_i > 0 \\\\ \\text{Perf}_i & \\text{sinon} \\end{cases},\\quad \\text{et } \\text{Perf}_i = \\dfrac{S_{T_i} - S_0}{S_0}.",
-                    replication: "\\text{Magic Asian} = \\text{OZC} + \\text{Portefeuille d'Options Call Asiatiques sur un Panier}",
+                    replication: "\\text{Magic Asian} = \\text{ZCB} + \\text{Portefeuille d'Options Call Asiatiques sur un Panier}",
                     advantages: [
                         "Protection intégrale du capital à maturité",
                         "Mécanisme de moyenne réduit la volatilité et le risque de timing",
@@ -3344,7 +3297,7 @@ window.PRODUCTS_DATA = {
                         participation: "100% sur la moyenne des performances plafonnées (verrouillées)"
                     },
                     payoff: "\\text{Payoff}=N_0\\Bigl(1+\\tfrac{1}{n}\\sum_{i=1}^{n}\\widehat{P}_i\\Bigr),\\quad \\widehat{P}_i=\\min\\!\\bigl(\\operatorname{Perf}_i,\\operatorname{Cap}\\bigr),\\quad \\operatorname{Perf}_i=\\tfrac{S_{i,T}-S_{i,0}}{S_{i,0}}",
-                    replication: "\\text{Captibasket}=\\text{Obligation Zéro-Coupon}+\\sum_{i=1}^{n}\\,\\text{Option sur }\\min(\\text{Perf}_i,\\text{Cap})\\;(\\text{ex: Call Spread Américain})",
+                    replication: "\\text{Captibasket}=\\text{ZCB}+\\sum_{i=1}^{n} \\frac{N}{nS_i(0)}\\,\\bigl(C^{(i)}(K_1)-C^{(i)}(K_2)\\bigr)",
                     advantages: [
                         "Protection intégrale du capital à maturité",
                         "Verrouille et sécurise automatiquement les gains au-dessus du niveau plafond",
@@ -3441,7 +3394,7 @@ window.PRODUCTS_DATA = {
                         participation: "Participation 100% à la hausse jusqu'à la barrière si pas d'autocall"
                     },
                     payoff: "\\text{Payoff}(T)=\\begin{cases} 100 + C_i & \\text{si } \\exists i: S_{t_i} \\ge B_i \\; (\\text{autocall à } t_i) \\\\ 100 + \\text{Moy}^+\\!\\left(\\tfrac{S_T-S_0}{S_0}\\right) & \\text{si pas d'autocall et } \\tfrac{S_T}{S_0}>1 \\\\ 100 & \\text{sinon} \\end{cases},\\n\\n \\text{avec } B_i \\text{ et } C_i \\text{ la barrière et le coupon à } t_i",
-                    replication: "\\text{Starlight} = \\text{OZC (protection capital)} + \\text{Call avec fonction Autocall (calendrier barrières)}",
+                    replication: "\\text{Starlight} = \\text{ZCB (protection capital)} + \\text{Call avec fonction Autocall (calendrier barrières)}",
                     advantages: [
                         "Coupons conditionnels attractifs via remboursement anticipé",
                         "Protection intégrale du capital à maturité",
@@ -3484,7 +3437,7 @@ window.PRODUCTS_DATA = {
                         participation: "100% à 200% selon performance; quadratique au-delà du seuil haut"
                     },
                     payoff: "\\text{Définir } \\text{Perf}=\\tfrac{S_T-S_0}{S_0}.\\quad \\text{Payoff}=\\begin{cases} 100\\% & \\text{si } \\text{Perf} \\le 0 \\\\ 100\\% + (\\text{Perf})^2 & \\text{si } \\text{Perf} \\ge \\text{Seuil Haut} \\\\ 100\\% + \\text{Perf} & \\text{sinon (région linéaire)} \\end{cases}",
-                    replication: "\\text{Titan} = \\text{OZC} + \\text{Participation Linéaire} + \\text{Kicker convexe (ex: call spread ou exposition au carré)}",
+                    replication: "\\text{Titan} = \\text{ZCB} + \\text{CUO} + \\text{Kicker convexe (call up-and-in, ex : exposition au carré)}",
                     advantages: [
                         "Protection intégrale du capital à maturité",
                         "La hausse quadratique peut fortement surperformer dans les marchés haussiers",
@@ -3523,7 +3476,7 @@ window.PRODUCTS_DATA = {
                         participation: "Mix pondéré meilleur/milieu/pire, ex: 50% / 30% / 20%, puis mis à l'échelle"
                     },
                     payoff: "\\text{Soit } \\text{Perf}_{\\text{Meilleur}},\\,\\text{Perf}_{\\text{Milieu}},\\,\\text{Perf}_{\\text{Pire}} \\text{ les performances finales.}\\n\\n \\text{Payoff}=100\\%+80\\%\\,\\Bigl[0,5\\,\\text{Perf}_{\\text{Meilleur}}+0,3\\,\\text{Perf}_{\\text{Milieu}}+0,2\\,\\text{Perf}_{\\text{Pire}}\\Bigr]",
-                    replication: "\\text{Rainbow} = \\text{OZC} + \\text{Option Rainbow basée sur classement du panier}",
+                    replication: "\\text{Rainbow} = \\text{ZCB} + \\text{Call panier aux pondérations ajustées}",
                     advantages: [
                         "Favorise automatiquement les indices les plus performants",
                         "Potentiel de surperformance de la moyenne simple dans marchés dispersés",
@@ -3603,7 +3556,7 @@ window.PRODUCTS_DATA = {
                         coupon: "Fonction de la moyenne pondérée des valeurs transformées X_{i,T}",
                         participation: "Conduite par les composants satisfaisant la condition S_T > CL%"
                     },
-                    payoff: "\\text{Soit } X_{i,T} \\text{ la valeur transformée pour le nom } i.\\n\\n \\text{Payoff}=\\begin{cases} 100\\% + \\max\\!\\left(0,\\tfrac{1}{n}\\sum_{i=1}^{n} X_{i,T}\\right) & \\text{à maturité (capital protégé)} \\\\ 0\\% & \\text{sinon (pas de payoff anticipé)} \\end{cases}",
+                    payoff: "\\text{Soit } X_{i,T} \\text{ la valeur transformée pour le nom } i.\\n\\n \\text{Payoff}=\\begin{cases} 100\\% + \\max\\!\\left(0,\\tfrac{1}{n}\\sum_{i=1}^{n} X_{i,T}\\right) & \\text{à maturité (capital protégé)} \\\\ 100\\% & \\text{sinon (pas de payoff anticipé)} \\end{cases}",
                     replication: "\\text{Capuccino} = \\text{Obligation Zéro-Coupon} + \\text{Portefeuille d'options conditionnelles sur panier (déclenchement à CL\\%)}",
                     advantages: [
                         "Protection intégrale du capital à maturité",
@@ -3634,6 +3587,7 @@ window.PRODUCTS_DATA = {
                 {
                     name: "Orion",
                     short: "Structure hybride combinant revenu fixe et exposition actions avec protection du capital",
+                    hasPayoff: false,
                     definition: "Orion est une structure hybride payant un coupon fixe tant qu'un sous-jacent primaire (tel qu'un taux court terme ou une matière première) reste au-dessus ou en dessous d'un niveau déclencheur. Si ce niveau est franchi, le produit bascule vers une exposition actions, offrant une performance variable liée à un panier d'actions. Le capital est entièrement protégé à maturité.",
                     characteristics: {
                         underlying: "Primaire: taux court terme ou matière première; après basculement: panier d'actions",
@@ -3643,7 +3597,7 @@ window.PRODUCTS_DATA = {
                         coupons: "Fixe jusqu'au franchissement barrière; variable ensuite",
                         participation: "Participation pleine à la performance du panier d'actions après basculement"
                     },
-                    replication: "\\text{Orion} = \\text{OZC} + \\text{Option conditionnelle avec deux régimes (RFI + ACT)}",
+                    replication: "\\text{Orion} = \\text{ZCB} + \\text{Option conditionnelle avec deux régimes (RFI + ACT)}",
                     payoff: "\\text{Coupon}_t = \\begin{cases} C_{\\text{fixe}} & \\text{tant que sous-jacent primaire reste dans fourchette} \\\\ f(\\text{Perf Actions}) & \\text{après basculement vers phase actions} \\end{cases} \\\\[4pt] \\text{Payoff Final} = 100\\% + \\sum_{t=1}^{T} C_t",
                     advantages: [
                         "Rendement fixe amélioré au-dessus des taux du marché monétaire pendant phase stable",
@@ -3685,7 +3639,7 @@ window.PRODUCTS_DATA = {
                         coupons: "Aucun — payoff uniquement sur performance",
                         participation: "Participation pleine au portefeuille le plus performant"
                     },
-                    replication: "\\text{Profiler} = \\text{OZC (protection capital)} + \\max(\\text{Perf}_{\\text{Agressif}}, \\text{Perf}_{\\text{Équilibré}}, \\text{Perf}_{\\text{Défensif}})",
+                    replication: "\\text{Profiler} = \\text{ZCB (protection capital)} + \\text{Best-of call sur Portefeuilles}",
                     payoff: "\\text{Payoff Final} = 100\\% + \\max(P_A, P_B, P_D) \\\\[4pt] \\text{où } P_A, P_B, P_D \\text{ sont les performances des trois portefeuilles.}",
                     advantages: [
                         "Allocation automatique à la stratégie la plus performante à maturité",
@@ -3734,7 +3688,7 @@ window.PRODUCTS_DATA = {
                         coupon: "Aucun (rendement provient de la décote initiale)",
                         earlyRedemption: "Aucun"
                     },
-                    replication: "\\text{Certificat Discount} = \\text{Long Sous-jacent} - \\text{Call Court (strike)}",
+                    replication: "\\text{Certificat Discount} = \\text{Sous-jacent long} - \\text{Call courte (strike)} = \\text{OZC} - \\text{Put courte (strike)}",
                     payoff: "\\text{Payoff}(T) = \\begin{cases} \\tfrac{\\text{Strike}}{S_0} \\times 100\\%, & S_T \\geq \\text{Strike} \\\\ \\tfrac{S_T}{S_0} \\times 100\\%, & S_T < \\text{Strike} \\end{cases}",
                     advantages: [
                         "Achat du sous-jacent à prix décoté par rapport au marché",
@@ -3775,7 +3729,7 @@ window.PRODUCTS_DATA = {
                         coupon: "Aucun",
                         earlyRedemption: "Aucun"
                     },
-                    replication: "\\text{Certificat Discount à Barrière} = \\text{Certificat Discount} + \\text{Put Court (barrière)}",
+                    replication: "\\text{Certificat Discount à Barrière} = \\text{Certificat Discount} + \\text{Short PDI}",
                     payoff: "\\text{Payoff}(T) = \\begin{cases} 100\\% \\text{ du nominal}, & S_T \\geq \\text{Barrière capital} \\\\ \\tfrac{S_T}{S_0} \\times 100\\% \\text{ du nominal}, & S_T < \\text{Barrière capital} \\end{cases}",
                     advantages: [
                         "Prix d'entrée décoté versus l'actif sous-jacent",
@@ -3867,7 +3821,7 @@ window.PRODUCTS_DATA = {
                         coupon: "Fixe, payé périodiquement (indépendant de la performance du sous-jacent)",
                         earlyRedemption: "Non (pas d'autocall)"
                     },
-                    replication: "\\text{Barrier Reverse Convertible} = \\text{OZC} + \\text{Coupons Fixes} - \\text{PDI}",
+                    replication: "\\text{Barrier Reverse Convertible} = \\text{ZCB} + \\text{Coupons Fixes} - \\text{PDI}",
                     payoff: "\\text{Payoff}(T)=\\begin{cases} 100\\%\\text{ du nominal }+\\text{ coupons fixes}, & S_T \\ge \\text{Barrière} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%\\text{ du nominal }+\\text{ coupons fixes}, & S_T < \\text{Barrière} \\end{cases}",
                     advantages: [
                         "Coupons fixes réguliers",
@@ -3908,7 +3862,7 @@ window.PRODUCTS_DATA = {
                         coupon: "Coupons périodiques fixes inconditionnels",
                         earlyRedemption: "Non"
                     },
-                    replication: "\\text{Standard Reverse Convertible} = \\text{OZC} + \\text{Coupons Fixes} - \\text{Put au strike}",
+                    replication: "\\text{Standard Reverse Convertible} = \\text{ZCB} + \\text{Coupons Fixes} - \\text{Put au strike}",
                     payoff: "\\text{Payoff}(T)=\\begin{cases} 100\\%\\text{ du nominal }+\\text{ coupons fixes}, & S_T \\ge \\text{Strike} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%\\text{ du nominal }+\\text{ coupons fixes}, & S_T < \\text{Strike} \\end{cases}",
                     advantages: [
                         "Coupons fixes réguliers",
@@ -3950,7 +3904,7 @@ window.PRODUCTS_DATA = {
                         coupon: "Coupons périodiques fixes",
                         earlyRedemption: "Oui — callable à discrétion de l'émetteur"
                     },
-                    replication: "\\text{BRC Callable} = \\text{OZC} + \\text{Coupons Fixes} - \\text{PDI} + \\text{Option Call Émetteur}",
+                    replication: "\\text{BRC Callable} = \\text{ZCB} + \\text{Coupons Fixes} - \\text{PDI} + \\text{Option Call Émetteur}",
                     payoff: "\\text{Payoff}(t)=\\begin{cases} 100\\%+\\text{coupons}, & \\text{si appelé par émetteur à une observation} \\\\ 100\\%+\\text{coupons}, & S_T \\ge \\text{Barrière capital} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%+\\text{coupons}, & S_T < \\text{Barrière capital} \\end{cases}",
                     advantages: [
                         "Coupons fixes réguliers",
@@ -3993,7 +3947,7 @@ window.PRODUCTS_DATA = {
                         coupon: "Coupons périodiques fixes",
                         earlyRedemption: "Oui — autocall si S_t ≥ niveau déclencheur"
                     },
-                    replication: "\\text{Trigger BRC} = \\text{OZC} + \\text{Coupons Fixes} - \\text{PDI} + \\text{Option Autocall}",
+                    replication: "\\text{Trigger BRC} = \\text{ZCB} + \\text{Coupons Fixes} - \\text{PDI} + \\text{Option Autocall}",
                     payoff: "\\text{Payoff}(t)=\\begin{cases} 100\\%+\\text{coupon}, & S_t \\ge \\text{Déclencheur (autocall)} \\\\ 100\\%+\\text{coupons}, & S_T \\ge \\text{Barrière capital} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%+\\text{coupons}, & S_T < \\text{Barrière capital} \\end{cases}",
                     advantages: [
                         "Coupons fixes et remboursement anticipé potentiel",
@@ -4082,7 +4036,7 @@ window.PRODUCTS_DATA = {
                         coupon: "Supérieur au taux marché monétaire (ex: 4,00% vs 0,70%)",
                         participation: "100% nominal en devise investissement jusqu'à conversion potentielle"
                     },
-                    replication: "\\text{DCD} = \\text{OZC devise de base} + \\text{Put FX Court (sur Dev1/Dev2)}",
+                    replication: "\\text{DCD} = \\text{ZCB devise de base} + \\text{Put FX Court (sur Dev1/Dev2)}",
                     payoff: "\\text{Soit } S_T=\\text{FX à maturité et } K=\\text{strike}.\\n\\n\\text{Payoff}=\\begin{cases} 100\\%\\,\\bigl(1+r_{\\text{DCD}}\\bigr)\\;\\text{en Dev2}, & S_T > K \\\\ 100\\%\\,\\dfrac{1+r_{\\text{DCD}}}{K}\\;\\text{en Dev1}, & S_T \\le K \\end{cases}",
                     advantages: [
                         "Rendement au-dessus dépôts simples",
@@ -4285,17 +4239,11 @@ window.PRODUCTS_DATA = {
                     underlying: "Indice (ex: FTSE 100)",
                     maturity: "6 ans",
                     protection: "Conditionnelle via barrière capital (ex: 50% de l'initial)",
-                    barriers: {
-                        autocallBarrier: "X% de l'initial (ex: déclencheur 108%)",
-                        capitalBarrier: "Y% de l'initial (ex: 50%)"
-                    },
-                    coupon: {
-                        phase1: "Fixe (ex: 8% p.a. pour X année[s])",
-                        phase2: "Conditionnel (ex: 8% p.a. si indice ≥ 100% de l'initial à l'observation)"
-                    },
+                    barriers: "Barrière autocall (ex: 108% de l'initial) ; barrière capital (ex: 50%)",
+                    coupon: "Phase 1 : coupon fixe (ex: 8% p.a.) ; Phase 2 : coupon conditionnel (ex: 8% p.a. si indice ≥ 100%)",
                     participation: "Participation baissière pleine si barrière capital franchie à maturité"
                 },
-                replication: "\\text{Neptune} = \\text{Obligation actualisée (capital partiel) } + \\text{options coupon conditionnelles} + \\text{fonction autocall}",
+                replication: "\\text{Neptune} = \\text{ZCB} + \\text{options coupon conditionnelles} + \\text{option autocall (même strike que PDI)} + \\text{PDI court}",
                 payoff: "\\text{Si appelé à observation: } 100\\% + \\text{coupon dû}. \\\\ \\text{Si non appelé (maturité): } \\begin{cases} 100\\% + n\\times C, & S_T \\ge \\text{barrière capital} \\\\ 100\\%\\times \\frac{S_T}{S_0}, & S_T < \\text{barrière capital} \\end{cases}",
                 advantages: [
                     "Revenus garantis phase initiale",
@@ -4345,7 +4293,7 @@ window.PRODUCTS_DATA = {
                     coupon: "Conditionnel; payé quand condition autocall remplie (ex: 9% p.a.)",
                     observation: "Annuelle, trimestrielle ou mensuelle"
                 },
-                replication: "\\text{Autocallable} = \\text{Obligation Zéro-Coupon} + \\text{Coupons Call digitaux} - \\text{Put Down-and-In (PDI)}",
+                replication: "\\text{Autocallable} = \\text{OZC} + \\text{Option autocall (KO)} + \\text{Coupons call digitaux} - \\text{PDI court}",
                 payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & S_{t_i} \\ge \\text{Barrière autocall à $i$ (appelé)} \\\\ 100\\%, & S_T \\ge \\text{Barrière protection (non appelé)} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & S_T < \\text{Barrière protection} \\end{cases}",
                 advantages: [
                     "Coupons potentiellement élevés",
@@ -4555,7 +4503,7 @@ window.PRODUCTS_DATA = {
                     coupon: "Fixe, payé sur remboursement anticipé",
                     observation: "Annuelle/semestrielle/trimestrielle"
                 },
-                replication: "\\text{Premium Express} = \\text{OZC} + \\text{Call Digital avec barrière réduite}",
+                replication: "\\text{Premium Express} = \\text{OZC} + \\text{Option autocall (KO)} + \\text{Call digital barrière réduite} - \\text{PDI court}",
                 payoff: "\\text{Payoff}=\\begin{cases} 100\\% + n\\,\\times\\,\\text{Coupon}, & S_{t_n} \\ge B_{\\text{call}}<100\\% \\\\ 100\\%, & \\text{sinon (pas de call, capital garanti)} \\end{cases}",
                 advantages: [
                     "Probabilité très élevée remboursement anticipé",
@@ -4596,7 +4544,7 @@ window.PRODUCTS_DATA = {
                     earlyRedemption: "Oui — autocall",
                     barriers: "Barrière coupon X%, Seuil autocall Z%, Barrière capital Y% (tous vs initial)"
                 },
-                replication: "\\text{Phoenix} = \\text{OZC} + \\text{Option Autocall} + \\text{Série Coupons Digitaux Conditionnels}",
+                replication: "\\text{Phoenix} = \\text{OZC} + \\text{Option autocall (KO)} + \\text{Série de coupons digitaux conditionnels} - \\text{PDI court}",
                 payoff: "\\text{Coupon}(t)=\\begin{cases}\\text{Coupon fixe}, & S_t\\!\\ge\\text{Barrière Coupon}\\\\ 0, & S_t\\!<\\text{Barrière Coupon}\\end{cases}\\\\[4pt]\\text{À observation: }\\text{Payoff}=\\begin{cases}100\\%+\\text{Coupon période}, & S_t\\!\\ge\\text{Seuil Autocall}\\\\ \\text{continuer}, & \\text{sinon}\\end{cases}\\\\[4pt]\\text{À maturité (si non appelé): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_T\\!\\ge\\text{Barrière Capital}\\\\ \\tfrac{S_T}{S_0}\\times100\\%, & S_T\\!<\\text{Barrière Capital}\\end{cases}",
                 advantages: [
                     "Coupons conditionnels attractifs dans marchés stables ou légèrement baissiers",
@@ -4640,7 +4588,7 @@ window.PRODUCTS_DATA = {
                     earlyRedemption: "Oui — autocall",
                     barriers: "Barrière capital Y%, Seuil autocall Z% (vs initial)"
                 },
-                replication: "\\text{Phoenix Coupon Fixe} = \\text{OZC} + \\text{Option Autocall} + \\text{Coupons Fixes}",
+                replication: "\\text{Phoenix Coupon Fixe} = \\text{OZC} + \\text{Option autocall (KO)} + \\text{Coupons fixes} - \\text{PDI court}",
                 payoff: "\\text{Coupon}(t)=\\text{Coupon fixe chaque période}.\\\\[4pt]\\text{À observation: }\\text{Payoff}=\\begin{cases}100\\%+\\text{Coupon période}, & S_t\\!\\ge\\text{Seuil Autocall}\\\\ \\text{continuer}, & \\text{sinon}\\end{cases}\\\\[4pt]\\text{À maturité (si non appelé): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_T\\!\\ge\\text{Barrière Capital}\\\\ \\tfrac{S_T}{S_0}\\times100\\%, & S_T\\!<\\text{Barrière Capital}\\end{cases}",
                 advantages: [
                     "Flux revenu fixe prévisible",
@@ -4681,7 +4629,7 @@ window.PRODUCTS_DATA = {
                     coupons: "Conditionnel; doublé quand au/au-dessus seuil rappel",
                     earlyRedemption: "Oui — autocall"
                 },
-                replication: "\\text{Phoenix Double} = \\text{CB} + \\text{Option Autocall} + \\text{Coupons Digitaux Conditionnels À Paliers}",
+                replication: "\\text{Phoenix Double} = \\text{OZC} + \\text{Option autocall (KO)} + \\text{Coupons digitaux conditionnels à paliers} - \\text{PDI court}",
                 payoff: "\\text{Coupon}(t)=\\begin{cases}2\\times\\text{Coupon}, & S_t\\!\\ge\\text{Seuil Rappel}\\\\ \\text{Coupon}, & \\text{Barrière Coupon}\\le S_t<\\text{Seuil Rappel}\\\\ 0, & S_t<\\text{Barrière Coupon}\\end{cases}\\\\[4pt]\\text{À observation: }\\text{Payoff}=\\begin{cases}100\\%+2\\times\\text{Coupon}, & S_t\\!\\ge\\text{Seuil Rappel}\\\\ \\text{continuer}, & \\text{sinon}\\end{cases}\\\\[4pt]\\text{À maturité (si non appelé): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_T\\!\\ge\\text{Barrière Capital}\\\\ \\tfrac{S_T}{S_0}\\times100\\%, & S_T\\!<\\text{Barrière Capital}\\end{cases}",
                 advantages: [
                     "Revenus supérieurs quand sous-jacent traite au-dessus seuil rappel",
@@ -4724,7 +4672,7 @@ window.PRODUCTS_DATA = {
                     coupons: "Conditionnel sur worst-of vs barrière coupon",
                     earlyRedemption: "Oui — autocall sur worst-of"
                 },
-                replication: "\\text{Phoenix Combo} = \\text{OZC} + \\text{Option Autocall Worst-of} + \\text{Coupons Digitaux Conditionnels Worst-of}",
+                replication: "\\text{Phoenix Combo} = \\text{OZC} + \\text{Option autocall Worst-of (KO)} + \\text{Coupons digitaux conditionnels Worst-of} - \\text{PDI court (Worst-of)}",
                 payoff: "\\text{Soit }S_{\\min}(t)=\\min_i S_i(t).\\\\ \\text{Coupon}(t)=\\begin{cases}\\text{Coupon}, & S_{\\min}(t)\\!\\ge\\text{Barrière Coupon}\\\\ 0, & \\text{sinon}\\end{cases}\\\\[4pt]\\text{À observation: }\\text{Payoff}=\\begin{cases}100\\%+\\text{Coupon période}, & S_{\\min}(t)\\!\\ge\\text{Seuil Rappel}\\\\ \\text{continuer}, & \\text{sinon}\\end{cases}\\\\[4pt]\\text{À maturité (si non appelé): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_{\\min}(T)\\!\\ge\\text{Barrière Capital}\\\\ \\tfrac{S_{\\min}(T)}{S_0}\\times100\\%, & S_{\\min}(T)\\!<\\text{Barrière Capital}\\end{cases}",
                 advantages: [
                     "Exposition panier diversifié avec mécanismes Phoenix",
@@ -4809,7 +4757,7 @@ window.PRODUCTS_DATA = {
                     coupon: "Conditionnel — payé si sous-jacent ≥ barrière rappel à observation",
                     earlyRedemption: "Oui — automatique quand barrière rappel atteinte"
                 },
-                replication: "\\text{Athena / Apollon} = \\text{OZC} + \\text{Option autocall avec coupon conditionnel}",
+                replication: "\\text{Athena / Apollon} = \\text{ZCB} + \\text{Option autocall avec coupon conditionnel}",
                 payoff: "\\text{Payoff} = \\begin{cases} 100\\% + C_i & \\text{si } S_t \\ge B_{\\text{call}} \\text{ à observation } i \\\\ 100\\% + C_N & \\text{si } S_T \\ge B_{\\text{call}} \\text{ à maturité} \\\\ 100\\% & \\text{si } B_{\\text{protect}} \\le S_T < B_{\\text{call}} \\\\ 100\\% \\times \\frac{S_T}{S_0} & \\text{si } S_T < B_{\\text{protect}} \\end{cases} \\\\[4pt] \\text{avec } C_i = i\\,c \\text{ (coupon par observation } c\\text{), } N=\\text{nombre observations}.",
                 advantages: [
                     "Remboursement anticipé potentiel avec coupon",
@@ -4853,8 +4801,8 @@ window.PRODUCTS_DATA = {
                     coupons: "Coupon rappel au call; coupon conditionnel à maturité si S_T ≥ barrière coupon",
                     earlyRedemption: "Oui — automatique quand barrière rappel atteinte"
                 },
-                replication: "\\text{Athena Oxygen} = \\text{OZC} + \\text{Autocall avec doubles seuils (rappel \\& coupon conditionnel)}",
-                payoff: "\\text{Payoff}=\\begin{cases}100\\%+C^{\\text{rappel}}_i & S_t\\ge B_{\\text{call}}\\text{ à obs }i\\text{ (ou à }T\\text{)}\\\\ 100\\%+C_{\\text{cond}} & B_{\\text{coupon}}\\le S_T< B_{\\text{call}}\\\\ 100\\% & B_{\\text{protect}}\\le S_T< B_{\\text{coupon}}\\\\ 100\\%\\times\\tfrac{S_T}{S_0} & S_T< B_{\\text{protect}}\\end{cases}\\\\[4pt]\\text{avec }C^{\\text{rappel}}_i=i\\,c,\\;C_{\\text{cond}}=\\text{% contractuel, payé uniquement si }S_T\\ge B_{\\text{coupon}}.",
+                replication: "\\text{Athena Oxygen} = \\text{ZCB} + \\text{Autocall avec doubles seuils (rappel \\& coupon conditionnel)}",
+                payoff: "\\text{Payoff}=\\begin{cases}100\\%+C^{\\text{rappel}}_i & S_t\\ge B_{\\text{call}}\\text{ à obs }i\\text{ (ou à }T\\text{)}\\\\ 100\\%+C_{\\text{cond}} & B_{\\text{coupon}}\\le S_T< B_{\\text{call}}\\\\ 100\\% & B_{\\text{protect}}\\le S_T< B_{\\text{coupon}}\\\\ 100\\%\\times\\frac{S_T}{B_{\\text{protect}}} & S_T< B_{\\text{protect}}\\end{cases}\\\\[4pt]\\text{avec }C^{\\text{rappel}}_i=i\\,c,\\;C_{\\text{cond}}=\\text{% contractuel, payé uniquement si }S_T\\ge B_{\\text{coupon}}.",
                 advantages: [
                     "Deux chemins coupon (rappel ou conditionnel à maturité)",
                     "Chance supérieure certains revenus vs Athena classique",
@@ -4898,7 +4846,7 @@ window.PRODUCTS_DATA = {
                     coupons: "Coupon rappel s'accumule quotidiennement jusqu'à call; coupon conditionnel à T si S_T ≥ barrière coupon",
                     earlyRedemption: "Oui — autocall quotidien"
                 },
-                replication: "\\text{Athena Daily} = \\text{OZC} + \\text{Autocall Quotidien avec coupons conditionnels}",
+                replication: "\\text{Athena Daily} = \\text{OZC} + \\text{Option autocall (KO, quotidienne)} + \\text{Coupons digitaux conditionnels} - \\text{PDI court}",
                 payoff: "\\text{Payoff}=\\begin{cases}100\\%+C^{\\text{rappel}}_i,& S_t\\ge B_{\\text{call}}\\text{ un jour }i\\text{ (ou à }T\\text{)}\\\\ 100\\%+C_{\\text{cond}},& B_{\\text{coupon}}\\le S_T< B_{\\text{call}}\\\\ 100\\%,& B_{\\text{capital}}\\le S_T< B_{\\text{coupon}}\\\\ 100\\%\\times\\tfrac{S_T}{S_0},& S_T< B_{\\text{capital}}\\end{cases}\\\\[4pt]\\text{avec }C^{\\text{rappel}}_i=i\\,c\\;(\\text{accumulation quotidienne}),\\;C_{\\text{cond}}=\\text{% contractuel à }T.",
                 advantages: [
                     "Observations quotidiennes augmentent probabilité call",
@@ -4946,7 +4894,7 @@ window.PRODUCTS_DATA = {
                     coupon: "Conditionnel; payé quand worst-of ≥ barrière coupon",
                     earlyRedemption: "Oui — autocall si worst-of ≥ barrière rappel à observation"
                 },
-                replication: "\\text{KIKO} = \\text{Obligation zéro-coupon} + \\text{coupons digitaux conditionnels} + \\text{Put court avec barrière (KI)}",
+                replication: "\\text{KIKO} = \\text{OZC} + \\text{coupons digitaux conditionnels} + \\text{Put court avec barrière (KI)} + \\text{Option autocall (KO)}",
                 payoff: "\\text{À observation } t: \\begin{cases} 100\\% + \\text{Coupon}, & \\text{si worst-of} \\ge \\text{Barrière rappel (autocall)} \\\\ 100\\% + \\text{Coupon}, & \\text{si worst-of} \\ge \\text{Barrière coupon (pas d'autocall)} \\end{cases} \\\\ \\text{À maturité (si non appelé): } \\begin{cases} 100\\% + \\text{Coupon}, & S_T^{\\ast} \\ge \\text{Barrière coupon} \\\\ 100\\%, & \\text{Barrière capital} \\le S_T^{\\ast} < \\text{Barrière coupon} \\\\ 100\\%\\times \\tfrac{S_T^{\\ast}}{S_0^{\\ast}}, & S_T^{\\ast} < \\text{Barrière capital (KI)} \\end{cases}",
                 advantages: [
                     "Coupons conditionnels attractifs",
@@ -5169,7 +5117,7 @@ window.PRODUCTS_DATA = {
                     participation: "Positive avec gearing potentiel",
                     earlyRedemption: "Aucun"
                 },
-                replication: "\\text{Certificat Bonus Airbag} = \\text{OZC} + \\text{Call (ou Call Spread pour Plafonné)} + \\text{PDI Airbag Court}",
+                replication: "\\text{Certificat Bonus Airbag} = \\text{ZCB} + \\text{Call (ou Call Spread pour Plafonné)} + \\text{PDI Airbag Court}",
                 payoff: "\\text{Payoff}(T) = \\begin{cases} \\text{Niveau Bonus Airbag}, & S_T < \\text{Niveau Bonus},\\, \\text{barrière put non touchée} \\\\ S_T, & S_T \\ge \\text{Niveau Bonus},\\, \\text{pas de plafond} \\\\ \\min(\\text{Niveau Plafond}, S_T), & \\text{version plafonnée} \\\\ S_T \\times \\text{Facteur Airbag}, & \\text{si barrière touchée (exposition partielle)} \\end{cases}",
                 advantages: [
                     "Protection baissière partielle via mécanisme airbag",
@@ -5203,6 +5151,7 @@ window.PRODUCTS_DATA = {
             {
                 name: "Share Accumulator / Decumulator",
                 short: "Programme OTC pour acheter (accumulator) ou vendre (decumulator) actions progressivement au strike prédéfini avec levier implicite et barrière KO",
+                hasPayoff: false,
                 definition: "Programme OTC qui accumule (achète) ou décumule (vend) actions dans temps au strike prédéterminé. Notionnels quotidiens évoluent avec spot relatif au strike (levier implicite). Barrière knock-out termine programme anticipativement.",
                 characteristics: {
                     format: "OTC",
@@ -5214,8 +5163,8 @@ window.PRODUCTS_DATA = {
                     coupons: "Aucun"
                 },
                 replication: [
-                    "Accumulator = Achat progressif + Levier implicite + Barrière KO",
-                    "Decumulator = Vente progressive + Levier implicite + Barrière KO"
+                    "\\text{Accumulator = Achat progressif + Levier implicite + Barrière KO}",
+                    "\\text{Decumulator = Vente progressive + Levier implicite + Barrière KO}"
                 ],
                 mechanism: {
                     accumulator: [
@@ -5229,7 +5178,7 @@ window.PRODUCTS_DATA = {
                         "Si S_t touche barrière KO: programme termine."
                     ]
                 },
-                payoff: "Livraison/réception actions et cash au Strike dépendant chemin sur calendrier; terminaison anticipée sur KO.",
+                payoff: "\\text{Livraison/réception actions et cash au Strike dépendant chemin sur calendrier; terminaison anticipée sur KO.}",
                 advantages: [
                     "Entrée/sortie marché échelonnée",
                     "Économie peut impliquer décote/prime vs spot dans temps",
@@ -5530,48 +5479,6 @@ window.PRODUCTS_DATA = {
                   ]
                 }
               },
-              {
-                name: "One-Sided AXKI Pivot TRF – FX",
-                short: "Pivot TRF asymétrique avec barrière knock-in à l’échéance et achat forcé en cas de franchissement",
-                definition: "Variante asymétrique du Pivot TRF intégrant une barrière de knock-in à l’échéance (AXKI). Si le spot franchit l’AXKI à l’échéance, l’investisseur est contraint d’entrer dans une position défavorable (p. ex. achat forcé à K1), augmentant le downside tout en conservant les bénéfices d’accumulation en range.",
-                characteristics: {
-                  underlying: "Paire de devises (ex. : AUD/USD)",
-                  maturity: "12 mois, règlement mensuel",
-                  strikes: "K1 (achat bas) et K2 (vente haute) autour du pivot Kp",
-                  barrier: "AXKI (knock-in à l’échéance) sous K1 en échange d’une amélioration de prix",
-                  target: "Seuil de gain cumulé (ex. : 0,1500)"
-                },
-                payoff: "\\text{Valeur intrinsèque}_t = \\begin{cases} \\max(X_t - K_1, 0), & X_t < K_p \\\\ \\max(K_2 - X_t, 0), & X_t \\ge K_p \\end{cases} \\\\ \\text{AXKI : si } X_T < \\text{AXKI} \\Rightarrow \\text{achat forcé à } K_1 \\text{ (souvent avec notionnel 2×)}",
-                advantages: [
-                  "Cible l’accumulation dans une large zone profitable [K1, K2]",
-                  "Le KO sur cible accélère la sortie lorsque les gains s’accumulent",
-                  "Économie de prix améliorée vs range symétrique via prise d’un risque unilatéral"
-                ],
-                risks: [
-                  "Le knock-in asymétrique accroît les pertes si la barrière est franchie",
-                  "Risque directionnel à la baisse si le marché sort du range",
-                  "Risque de contrepartie et de volatilité/gaps FX"
-                ],
-                investorType: "Investisseurs FX expérimentés monétisant une vue de range tout en acceptant un risque de queue unilatéral.",
-                example: {
-                  title: "AXKI Pivot TRF – Exemple numérique",
-                  parameters: {
-                    underlying: "AUD/USD",
-                    tenor: "12 mois",
-                    notionalRules: "1 M par mois ; achat forcé 2 M si AXKI franchie",
-                    K1: "0,9900",
-                    K2: "1,0700",
-                    Kp: "1,0300",
-                    AXKI: "0,9100",
-                    target: "0,1500 exact"
-                  },
-                  settlementScenarios: [
-                    "K1 ≤ X_t ≤ Kp → achat 1 M AUD à K1.",
-                    "Kp < X_t ≤ K2 → vente 1 M AUD à K2.",
-                    "X_T < AXKI à l’échéance → achat forcé 2 M AUD à K1 (knock-in)."
-                  ]
-                }
-              }
         ]
     },
     "accruals":{
@@ -5685,7 +5592,7 @@ window.PRODUCTS_DATA = {
                     equityCondition: "SPX ≥ 50% du niveau initial",
                     rateCondition: "SOFR 3M ≤ 5% (réf. spot p. ex. 1,34%)"
                   },
-                  coupon: "3,35% p.a. × (m / M), avec m = jours en condition et M = jours totaux de la période",
+                  coupon: "c% p.a. × (m / M), avec m = jours en condition et M = jours totaux de la période",
                   issuerCall: "Trimestriel après la 1re année (non-call 1 an), remboursable au pair"
                 },
                 replication: "\\text{Callable Range Accrual} = \\text{Obligation zéro-coupon} + \\text{Range accrual digital} - \\text{Option de call émetteur}",
@@ -5714,8 +5621,8 @@ window.PRODUCTS_DATA = {
                     issuerCall: "Trimestriel à partir de l’année 2 au pair"
                   },
                   scenarios: [
-                    "Marché stable : deux conditions vraies 85% du temps → coupon ≈ 3,35% × 0,85 = 2,85% p.a.",
-                    "Hausse des taux : SOFR > 5% la moitié du temps → coupon ≈ 3,35% × 0,50 = 1,68% p.a.",
+                    "Marché stable : deux conditions vraies 85% du temps → coupon ≈ c% × 0,85 p.a.",
+                    "Hausse des taux : SOFR > 5% la moitié du temps → coupon ≈ c% × 0,50 p.a.",
                     "Actions défavorables : SPX < 50% du niveau initial → aucun accrual de coupon ; principal remboursé au pair à l’échéance si non rappelé."
                   ]
                 }
@@ -5875,7 +5782,7 @@ window.PRODUCTS_DATA = {
                   protectionStrike: "Typiquement 60–80 % du niveau initial",
                   earlyRedemption: "Automatique si le worst-of ≥ barrière KO à une date d’observation"
                 },
-                replication: "\\text{FCN} = \\text{Note à coupon fixe} + \\text{Short PDI worst-of}",
+                replication: "\\text{FCN} = \\text{Note à coupon fixe} + \\text{Short PDI worst-of + Long CUO worst of (pour autocall)}",
                 payoff: {
                   early: "Si S_t^{worst} \\geq \\text{barrière KO} \\Rightarrow \\text{remboursement à 100 % + coupon courant}",
                   maturity: "\\text{Si non rappelée : } \\begin{cases} 100\\%, & S_T^{worst} > K \\\\ \\dfrac{N}{K\\cdot S_0^{worst}}\\, S_T^{worst}, & S_T^{worst} \\le K \\end{cases}"

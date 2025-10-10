@@ -44,7 +44,7 @@ const UI_TRANSLATIONS = {
     userAnswerLabel: 'Your answer:',
     correctAnswerLabel: 'Correct answer:',
     footerDisclaimer: 'Information provided for educational purposes. Past performance is not indicative of future results.',
-    footerCopyright: '&copy; <span id="current-year"></span> REDA SALHI - All rights reserved.',
+    footerCopyright: '© 2025 REDA SALHI - Tous droits réservés.',
     modalTitle: 'Strategy details',
     toggleLabel: 'Change language',
     scoreLabel: 'Score',
@@ -91,7 +91,7 @@ const UI_TRANSLATIONS = {
     userAnswerLabel: 'Votre réponse :',
     correctAnswerLabel: 'Bonne réponse :',
     footerDisclaimer: 'Informations fournies à titre pédagogique. Les performances passées ne préjugent pas des performances futures.',
-    footerCopyright: '&copy; <span id="current-year"></span> REDA SALHI - Tous droits réservés.',
+    footerCopyright: '© 2025 REDA SALHI - Tous droits réservés.',
     modalTitle: 'Détails de la stratégie',
     toggleLabel: 'Changer de langue',
     scoreLabel: 'Score',
@@ -127,6 +127,17 @@ const BADGE_LABELS = {
 };
 
 let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
+
+  function resolveLocalized(value, languageOverride) {
+    if (typeof value === 'string') {
+      return value;
+    }
+    if (value && typeof value === 'object') {
+      const language = languageOverride || (UI_TRANSLATIONS[currentLanguage] ? currentLanguage : 'en');
+      return value[language] ?? value.en ?? value.fr ?? Object.values(value)[0] ?? '';
+    }
+    return '';
+  }
 
   const strategyUniverse = {
     structured: [
@@ -282,6 +293,225 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
           if (spot <= 90) return clamp(spot - 100);
           return clamp((spot - 100) * 2);
         }
+      },
+      {
+        id: 'discount-certificate',
+        name: 'Discount Certificate',
+        typeLabel: 'Structuré',
+        category: 'Discount',
+        meta: ['Décote 8%', 'Cap 120%', 'Sans coupons'],
+        complexity: 2,
+        risk: 'Medium',
+        metrics: {
+          'Profil de rendement': 'Décote initiale contre cap sur la hausse',
+          'Protection': 'Amortit une baisse modérée via la décote',
+          'Rendement potentiel': 'Plafonné au cap 120%',
+          'Sensibilité volatilité': 'Négative (short call implicite)',
+          'Horizon': '6 à 18 mois'
+        },
+        annotations: [
+          { type: 'cap', value: 120, label: 'Cap 120' }
+        ],
+        description: 'Certificat de rendement permettant d’acheter le sous-jacent avec décote en échange d’un plafond sur la hausse.',
+        bullets: [
+          'Décote de 8 % qui amortit les baisses modérées.',
+          'Participation linéaire jusqu’au cap fixé à 120 %.',
+          'Pas de coupon, payoff dépend uniquement du niveau final.'
+        ],
+        payoff: (spot) => {
+          const cap = 120;
+          const discount = 8;
+          const effective = Math.min(spot, cap);
+          return clamp(effective - 100 + discount);
+        }
+      },
+      {
+        id: 'autocall-stepdown',
+        name: 'Autocall Step-Down',
+        typeLabel: 'Structuré',
+        category: 'Autocalls',
+        meta: ['Coupons 9%', 'Trigger décroissant', 'Barrière 60%'],
+        complexity: 4,
+        risk: 'Medium',
+        metrics: {
+          'Profil de rendement': 'Coupons conditionnels avec niveau de rappel décroissant',
+          'Protection': 'Barrière de capital à 60 % en finale',
+          'Rendement potentiel': 'Jusqu’à 9 % annuel si autocall',
+          'Sensibilité volatilité': 'Élevée (barrières continues)',
+          'Horizon': '1 à 3 ans'
+        },
+        annotations: [
+          { type: 'call', value: 100, label: 'Autocall initial 100' },
+          { type: 'call', value: 95, label: 'Step-down 95' },
+          { type: 'barrier', value: 60, label: 'Barrière 60%' }
+        ],
+        description: 'Autocall avec niveau de rappel qui diminue dans le temps, offrant des coupons réguliers tant que le sous-jacent reste au-dessus de la barrière.',
+        bullets: [
+          'Niveau de rappel qui baisse de 5 % à chaque constatation.',
+          'Coupons de 9 % versés si le sous-jacent dépasse le niveau step-down.',
+          'Protection conditionnelle du capital avec barrière 60 % observée en finale.'
+        ],
+        payoff: (spot) => {
+          if (spot >= 100) return clamp(18);
+          if (spot >= 95) return clamp(12);
+          if (spot >= 80) return clamp(6);
+          if (spot >= 60) return 0;
+          return clamp((spot - 60) * 0.5 - 12);
+        }
+      },
+      {
+        id: 'capital-protection-barrier',
+        name: 'Capital Protection + Barrier',
+        typeLabel: 'Structuré',
+        category: 'Capital Protection',
+        meta: ['Participation 90%', 'Barrière 140%', 'Rebate 5%'],
+        complexity: 3,
+        risk: 'Low',
+        metrics: {
+          'Profil de rendement': 'Participation à 90 % tant que la barrière reste intacte',
+          'Protection': 'Capital garanti + coupon minimum si barrière franchie',
+          'Rendement potentiel': 'Upside modéré plafonné par la barrière',
+          'Sensibilité volatilité': 'Faible à modérée',
+          'Horizon': '3 à 5 ans'
+        },
+        annotations: [
+          { type: 'strike', value: 100, label: 'Strike 100' },
+          { type: 'barrier', value: 140, label: 'Barrière 140%' }
+        ],
+        description: 'Note à capital garanti qui capte 90 % de la hausse tant que la barrière 140 % n’est pas touchée. En cas de franchissement, un coupon forfaitaire de 5 % est servi.',
+        bullets: [
+          'Participation linéaire de 90 % à la hausse jusqu’à la barrière.',
+          'Capital garanti à maturité même si le marché recule.',
+          'En cas de barrière franchie, versement d’un coupon fixe de 5 %.'
+        ],
+        payoff: (spot) => {
+          const barrier = 140;
+          if (spot <= 100) return 0;
+          if (spot >= barrier) return clamp(5);
+          return clamp((spot - 100) * 0.9);
+        }
+      },
+      {
+        id: 'wedding-cake',
+        name: 'Wedding Cake',
+        typeLabel: 'Structuré',
+        category: 'Range',
+        meta: ['Coupon 12%', 'Range 90-110', 'Capital garanti'],
+        complexity: 3,
+        risk: 'Low',
+        metrics: {
+          'Profil de rendement': 'Coupons fixes si le sous-jacent reste dans un couloir',
+          'Protection': 'Capital garanti à maturité',
+          'Rendement potentiel': '12 % dans le couloir principal',
+          'Sensibilité volatilité': 'Négative (structure range)',
+          'Horizon': '2 ans'
+        },
+        annotations: [
+          { type: 'range', value: 90, label: 'Borne 1 90%' },
+          { type: 'range', value: 110, label: 'Borne 2 110%' }
+        ],
+        description: 'Structure de rendement défensive qui verse un coupon élevé si le sous-jacent reste dans un tunnel serré, avec coupon réduit si le marché sort légèrement de la zone.',
+        bullets: [
+          'Coupon de 12 % si le spot termine entre 90 % et 110 %.',
+          'Coupon réduit de 5 % si le spot reste entre 80 % et 120 %.',
+          'Capital protégé à 100 % hors du couloir élargi.'
+        ],
+        payoff: (spot) => {
+          if (spot >= 90 && spot <= 110) return clamp(12);
+          if (spot >= 80 && spot <= 120) return clamp(5);
+          return 0;
+        }
+      },
+      {
+        id: 'range-accrual',
+        name: 'Range Accrual Note',
+        typeLabel: 'Structuré',
+        category: 'Income',
+        meta: ['Coupons 8%', 'Observation mensuelle', 'Corridor 85-115'],
+        complexity: 3,
+        risk: 'Medium',
+        metrics: {
+          'Profil de rendement': 'Coupon proportionnel au temps passé dans la zone cible',
+          'Protection': 'Pas de garantie en capital, amortit via prime',
+          'Rendement potentiel': 'Jusqu’à 8 % si range respectée',
+          'Sensibilité volatilité': 'Forte à la sortie du corridor',
+          'Horizon': '1 à 2 ans'
+        },
+        annotations: [
+          { type: 'range', value: 85, label: 'Borne basse 85%' },
+          { type: 'range', value: 115, label: 'Borne haute 115%' }
+        ],
+        description: 'Note de revenu ciblée qui accumule des coupons tant que le sous-jacent reste dans un corridor prédéfini, offrant un rendement attractif sur marché stable.',
+        bullets: [
+          'Observation mensuelle du spot pour calculer le coupon final.',
+          'Jusqu’à 8 % de coupon si le corridor est respecté toute la période.',
+          'En dehors du corridor, coupon réduit et perte potentielle de performance.'
+        ],
+        payoff: (spot) => {
+          if (spot >= 90 && spot <= 110) return clamp(8);
+          if (spot >= 85 && spot <= 115) return clamp(3);
+          return clamp(-5);
+        }
+      },
+      {
+        id: 'turbo-long',
+        name: 'Turbo Long 4x',
+        typeLabel: 'Structuré',
+        category: 'Leverage',
+        meta: ['Levier 4x', 'KO 85%', 'Financement 75%'],
+        complexity: 3,
+        risk: 'High',
+        metrics: {
+          'Profil de rendement': 'Levier linéaire sur la hausse avec KO',
+          'Protection': 'Aucune, perte totale après knock-out',
+          'Rendement potentiel': 'Amplifie la performance haussière',
+          'Sensibilité volatilité': 'Faible (produit delta one)',
+          'Horizon': 'Très court terme'
+        },
+        annotations: [
+          { type: 'barrier', value: 85, label: 'KO 85%' }
+        ],
+        description: 'Certificat à effet de levier qui réplique 4 fois la performance du sous-jacent jusqu’à un niveau de knock-out fixé à 85 %.',
+        bullets: [
+          'Effet levier 4x tant que le niveau de KO n’est pas touché.',
+          'Perte totale en cas de passage sous 85 % (knock-out).',
+          'Idéal pour trader un rebond tactique à court terme.'
+        ],
+        payoff: (spot) => {
+          const ko = 85;
+          if (spot <= ko) return clamp(-30);
+          return clamp((spot - 100) * 4);
+        }
+      },
+      {
+        id: 'turbo-short',
+        name: 'Turbo Short 3x',
+        typeLabel: 'Structuré',
+        category: 'Leverage',
+        meta: ['Levier -3x', 'KO 115%', 'Vue baissière'],
+        complexity: 3,
+        risk: 'High',
+        metrics: {
+          'Profil de rendement': 'Levier sur la baisse avec barrière désactivante',
+          'Protection': 'Aucune, perte totale au-dessus de la barrière',
+          'Rendement potentiel': 'Amplifie une correction du marché',
+          'Sensibilité volatilité': 'Faible (delta proche de -1)',
+          'Horizon': 'Trading court terme'
+        },
+        annotations: [
+          { type: 'barrier', value: 115, label: 'KO 115%' }
+        ],
+        description: 'Turbo baissier offrant une exposition -3x sur le sous-jacent avec un knock-out positionné à 115 % du niveau initial.',
+        bullets: [
+          'Profite d’une baisse rapide avec effet levier.',
+          'Barrière KO à 115 % : perte totale si franchie.',
+          'Convient à des stratégies de couverture ou de trading court terme.'
+        ],
+        payoff: (spot) => {
+          const ko = 115;
+          if (spot >= ko) return clamp(-30);
+          return clamp((100 - spot) * 3);
+        }
       }
     ],
     options: [
@@ -372,6 +602,34 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
         payoff: (spot) => clamp(Math.abs(spot - 100) - 12)
       },
       {
+        id: 'vega-swap',
+        name: 'Vega Swap',
+        typeLabel: 'Options',
+        category: 'Volatilité',
+        meta: ['Pure vega', 'OTC', 'Variance strike'],
+        complexity: 4,
+        risk: 'High',
+        metrics: {
+          'Profil de rendement': 'Parie sur l’écart entre volatilité implicite et réalisée',
+          'Protection': 'Aucune, exposition directionnelle à la variance',
+          'Rendement potentiel': 'Proportionnel à la variance réalisée au-delà du strike',
+          'Sensibilité volatilité': 'Extrêmement élevée (sigma/variance)',
+          'Horizon': '1 à 12 mois'
+        },
+        annotations: [],
+        description: 'Swap de volatilité permettant de recevoir la variance réalisée et de payer un strike fixé, idéal pour jouer une détente ou une poussée de volatilité.',
+        bullets: [
+          'Position pure sur la volatilité sans exposition delta.',
+          'Pertes si la volatilité réalisée reste sous le strike.',
+          'Outil privilégié des desks pour couvrir ou exposer un book d’options.'
+        ],
+        payoff: (spot) => {
+          const realizedVariance = Math.min(40, Math.abs(spot - 100) / 2 + 10);
+          const strikeVariance = 20;
+          return clamp(realizedVariance - strikeVariance);
+        }
+      },
+      {
         id: 'iron-condor',
         name: 'Iron Condor',
         typeLabel: 'Options',
@@ -459,6 +717,68 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
           if (spot >= 110) return clamp(16);
           return clamp(spot - 100 + 6);
         }
+      },
+      {
+        id: 'risk-reversal',
+        name: 'Risk Reversal',
+        typeLabel: 'Options',
+        category: 'Skew',
+        meta: ['Zéro coût', 'Put 90%', 'Call 110%'],
+        complexity: 3,
+        risk: 'High',
+        metrics: {
+          'Profil de rendement': 'Position haussière financée par la vente d’une put.',
+          'Protection': 'Perte potentiellement forte sous 90 %.',
+          'Rendement potentiel': 'Illimité à la hausse.',
+          'Sensibilité volatilité': 'Long vega sur la call, short vega sur la put.',
+          'Horizon': '1 à 6 mois'
+        },
+        annotations: [
+          { type: 'strike', value: 90, label: 'Put vendue 90' },
+          { type: 'strike', value: 110, label: 'Call achetée 110' }
+        ],
+        description: 'Montage directionnel consistant à vendre une put hors de la monnaie pour financer l’achat d’une call OTM et capter une reprise tout en acceptant l’exposition à la baisse.',
+        bullets: [
+          'Delta positif financé par la vente d’une put 90 %.',
+          'Pas de débours initial si les strikes sont symétriques.',
+          'Pertes importantes si le sous-jacent chute sous la put vendue.'
+        ],
+        payoff: (spot) => {
+          const call = Math.max(0, spot - 110);
+          const put = Math.max(0, 90 - spot);
+          return clamp(call - put);
+        }
+      },
+      {
+        id: 'collar',
+        name: 'Collar',
+        typeLabel: 'Options',
+        category: 'Protection',
+        meta: ['Floor 95%', 'Cap 110%', 'Coût réduit'],
+        complexity: 2,
+        risk: 'Low',
+        metrics: {
+          'Profil de rendement': 'Encadre la performance entre un floor et un cap.',
+          'Protection': 'Floor 95 % grâce à la put achetée.',
+          'Rendement potentiel': 'Limité au cap 110 % + prime nette.',
+          'Sensibilité volatilité': 'Mix long put / short call.',
+          'Horizon': '6 à 12 mois'
+        },
+        annotations: [
+          { type: 'floor', value: 95, label: 'Floor 95%' },
+          { type: 'cap', value: 110, label: 'Cap 110%' }
+        ],
+        description: 'Stratégie de couverture combinant achat de put et vente de call pour encadrer la performance d’un portefeuille tout en réduisant le coût de la protection.',
+        bullets: [
+          'Protège le capital sous 95 % tout en laissant participer à la hausse.',
+          'La vente de call finance la put mais plafonne la performance au-dessus de 110 %.',
+          'Coût net faible voire nul selon les strikes retenus.'
+        ],
+        payoff: (spot) => {
+          if (spot <= 95) return clamp(-5);
+          if (spot >= 110) return clamp(10);
+          return clamp(spot - 100);
+        }
       }
     ]
   };
@@ -488,14 +808,14 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
           }
         },
         {
-          name: 'Autocall Phoenix',
+          name: { en: 'Phoenix Memory Autocall', fr: 'Phoenix Autocall Mémoire' },
           reason: {
             en: 'Conditional coupons with early redemption when the market rebounds.',
             fr: 'Coupons conditionnels avec remboursement anticipé si le marché rebondit.'
           }
         },
         {
-          name: 'Turbo Long',
+          name: { en: 'Turbo Long 4x', fr: 'Turbo Long 4x' },
           reason: {
             en: 'Direct leverage with a predefined stop.',
             fr: 'Effet levier direct avec stop pré-déterminé.'
@@ -525,7 +845,7 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
           }
         },
         {
-          name: 'Turbo Short',
+          name: { en: 'Turbo Short 3x', fr: 'Turbo Short 3x' },
           reason: {
             en: 'Play a rapid market drop with leverage.',
             fr: 'Jouer une baisse rapide avec levier.'
@@ -555,7 +875,7 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
           }
         },
         {
-          name: 'Range Accrual',
+          name: { en: 'Range Accrual Note', fr: 'Range Accrual Note' },
           reason: {
             en: 'Generate coupons while the underlying remains in the target range.',
             fr: 'Générer du coupon tant que le sous-jacent reste dans la zone cible.'
@@ -658,531 +978,951 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
   const quizCategories = [
     {
       id: 'capital-protection',
-      name: 'Capital Protection',
+      name: {
+        en: 'Capital Protection',
+        fr: 'Protection du capital'
+      },
       color: 'rgba(37,99,235,0.4)',
       questions: [
         {
-          question: 'Quel est l’avantage principal d’une Capital Protection Note ?',
+          question: {
+            en: 'What is the main advantage of a Capital Protection Note?',
+            fr: 'Quel est l’avantage principal d’une Capital Protection Note ?'
+          },
           options: [
-            'Rendement élevé garanti',
-            'Protection du capital à 100%',
-            'Pas de frais',
-            'Liquidité totale'
+            { en: 'Guaranteed high return', fr: 'Rendement élevé garanti' },
+            { en: '100% capital protection', fr: 'Protection du capital à 100%' },
+            { en: 'No fees', fr: 'Pas de frais' },
+            { en: 'Full liquidity', fr: 'Liquidité totale' }
           ],
           correct: 1,
-          explanation: 'La Capital Protection Note garantit le remboursement du capital initial à maturité.'
+          explanation: {
+            en: 'The Capital Protection Note guarantees repayment of the initial capital at maturity.',
+            fr: 'La Capital Protection Note garantit le remboursement du capital initial à maturité.'
+          }
         },
         {
-          question: 'Dans un CPPI, que se passe-t-il si le coussin devient négatif ?',
+          question: {
+            en: 'In a CPPI, what happens if the cushion becomes negative?',
+            fr: 'Dans un CPPI, que se passe-t-il si le coussin devient négatif ?'
+          },
           options: [
-            'Le produit devient short',
-            'La stratégie se cash-out',
-            'On augmente le levier',
-            'Rien ne change'
+            { en: 'The product turns short', fr: 'Le produit devient short' },
+            { en: 'The strategy shifts into risk-free assets', fr: 'La stratégie passe en désallocation vers sans-risque' },
+            { en: 'Leverage is increased', fr: 'On augmente le levier' },
+            { en: 'Nothing changes', fr: 'Rien ne change' }
           ],
           correct: 1,
-          explanation: 'Si le coussin devient négatif, la stratégie se désalloue des actifs risqués (cash-lock).'
+          explanation: {
+            en: 'If the cushion turns negative, the strategy deallocates from risky assets (cash lock).',
+            fr: 'Si le coussin devient négatif, la stratégie se désalloue des actifs risqués (cash-lock).'
+          }
         },
         {
-          question: 'Quel instrument est combiné avec un zéro coupon pour structurer un produit garanti ?',
-          options: ['Option call', 'Option put', 'Swap de taux', 'Futures'],
+          question: {
+            en: 'Which instrument is combined with a zero-coupon bond to structure a guaranteed product?',
+            fr: 'Quel instrument est combiné avec un zéro coupon pour structurer un produit garanti ?'
+          },
+          options: [
+            { en: 'Call option', fr: 'Option call' },
+            { en: 'Put option', fr: 'Option put' },
+            { en: 'Interest rate swap', fr: 'Swap de taux' },
+            { en: 'Futures', fr: 'Futures' }
+          ],
           correct: 0,
-          explanation: 'On achète un call pour capter l’upside tout en garantissant le nominal.'
+          explanation: {
+            en: 'A call is purchased to capture upside while securing the principal.',
+            fr: 'On achète un call pour capter l’upside tout en garantissant le nominal.'
+          }
         },
         {
-          question: 'Quel est le principal risque résiduel d’un produit à capital garanti ?',
+          question: {
+            en: 'What is the main residual risk of a capital-guaranteed product?',
+            fr: 'Quel est le principal risque résiduel d’un produit à capital garanti ?'
+          },
           options: [
-            'Volatilité',
-            'Risque de crédit de l’émetteur',
-            'Risque de change',
-            'Fiscalité'
+            { en: 'Volatility', fr: 'Volatilité' },
+            { en: 'Issuer credit risk', fr: 'Risque de crédit de l’émetteur' },
+            { en: 'Currency risk', fr: 'Risque de change' },
+            { en: 'Taxation', fr: 'Fiscalité' }
           ],
           correct: 1,
-          explanation: 'La garantie dépend de la solvabilité de l’émetteur (risque de crédit).'
+          explanation: {
+            en: 'The guarantee depends on the issuer’s solvency, hence credit risk.',
+            fr: 'La garantie dépend de la solvabilité de l’émetteur (risque de crédit).'
+          }
         },
         {
-          question: 'Quel paramètre de marché rend la protection moins chère ?',
-          options: ['Taux élevés', 'Volatilité élevée', 'Taux bas', 'Dividendes élevés'],
+          question: {
+            en: 'Which market parameter makes protection cheaper?',
+            fr: 'Quel paramètre de marché rend la protection moins chère ?'
+          },
+          options: [
+            { en: 'High interest rates', fr: 'Taux élevés' },
+            { en: 'High volatility', fr: 'Volatilité élevée' },
+            { en: 'Low rates', fr: 'Taux bas' },
+            { en: 'High dividends', fr: 'Dividendes élevés' }
+          ],
           correct: 0,
-          explanation: 'Des taux élevés permettent d’acheter le zéro coupon moins cher, libérant du budget.'
+          explanation: {
+            en: 'Higher rates reduce the cost of the zero-coupon bond, freeing budget for options.',
+            fr: 'Des taux élevés permettent d’acheter le zéro coupon moins cher, libérant du budget.'
+          }
         }
       ]
     },
     {
       id: 'autocalls',
-      name: 'Autocalls',
+      name: {
+        en: 'Autocalls',
+        fr: 'Autocalls'
+      },
       color: 'rgba(124,58,237,0.4)',
       questions: [
         {
-          question: 'Qu’est-ce qu’un autocall ?',
+          question: {
+            en: 'What is an autocall?',
+            fr: 'Qu’est-ce qu’un autocall ?'
+          },
           options: [
-            'Un call automatique',
-            'Un produit à remboursement anticipé conditionnel',
-            'Une option barrière',
-            'Un warrant listé'
+            { en: 'An automatic call', fr: 'Un call automatique' },
+            { en: 'A conditional early-redemption product', fr: 'Un produit à remboursement anticipé conditionnel' },
+            { en: 'A barrier option', fr: 'Une option barrière' },
+            { en: 'A listed warrant', fr: 'Un warrant listé' }
           ],
           correct: 1,
-          explanation: 'L’autocall peut se rembourser avant maturité si le sous-jacent dépasse un niveau.'
+          explanation: {
+            en: 'An autocall can redeem before maturity if the underlying meets the trigger level.',
+            fr: 'L’autocall peut se rembourser avant maturité si le sous-jacent dépasse un niveau.'
+          }
         },
         {
-          question: 'Quelle est la différence principale entre un Autocall et un Phoenix ?',
+          question: {
+            en: 'What is the impact of a lower protection barrier on an autocall’s potential return?',
+            fr: 'Quel impact a une barrière de protection plus basse sur le rendement potentiel d’un Autocall ?'
+          },
           options: [
-            'Pas de différence',
-            'Phoenix a une barrière KO',
-            'Phoenix a un effet mémoire sur coupons',
-            'Phoenix est plus cher'
-          ],
-          correct: 2,
-          explanation: 'Le Phoenix mémorise les coupons manqués et les verse si le sous-jacent remonte.'
-        },
-        {
-          question: 'Quelle observation déclenche un autocall classique ?',
-          options: [
-            'Sous-jacent < barrière',
-            'Sous-jacent ≥ niveau de rappel',
-            'Volatilité augmente',
-            'Temps restant < 3 mois'
+            { en: 'It increases the offered return', fr: 'Elle augmente le rendement offert' },
+            { en: 'It reduces the offered return', fr: 'Elle réduit le rendement offert' },
+            { en: 'No impact', fr: 'Elle n’a aucun impact' },
+            { en: 'It removes any capital loss risk', fr: 'Elle supprime le risque de perte en capital' }
           ],
           correct: 1,
-          explanation: 'Le remboursement est déclenché si le sous-jacent atteint le niveau de rappel fixé.'
+          explanation: {
+            en: 'Lower barriers mean more protection for investors, so issuers offer lower coupons.',
+            fr: 'Plus la barrière de protection est basse, plus la protection du capital est élevée — l’émetteur prend moins de risque, donc le rendement offert (coupon potentiel) est plus faible.'
+          }
         },
         {
-          question: 'Quel est le principal risque d’un Autocall en marché baissier ?',
+          question: {
+            en: 'Which observation triggers a classic autocall?',
+            fr: 'Quelle observation déclenche un autocall classique ?'
+          },
           options: [
-            'Perte du capital intégral',
-            'Non paiement des coupons',
-            'Hausse de volatilité',
-            'Risque de liquidité'
+            { en: 'Underlying below the protection barrier', fr: 'Sous-jacent < barrière' },
+            { en: 'Underlying at or above the call level', fr: 'Sous-jacent ≥ niveau de rappel' },
+            { en: 'Volatility spikes higher', fr: 'Volatilité augmente' },
+            { en: 'Time to maturity below three months', fr: 'Temps restant < 3 mois' }
           ],
           correct: 1,
-          explanation: 'Si le sous-jacent reste sous la barrière, les coupons ne sont pas versés.'
+          explanation: {
+            en: 'Redemption is triggered if the underlying reaches the predetermined call level.',
+            fr: 'Le remboursement est déclenché si le sous-jacent atteint le niveau de rappel fixé.'
+          }
         },
         {
-          question: 'Quel paramètre rend les coupons autocall plus attractifs ?',
+          question: {
+            en: 'What is the main risk for an autocall in a bearish market?',
+            fr: 'Quel est le principal risque d’un Autocall en marché baissier ?'
+          },
           options: [
-            'Volatilité implicite élevée',
-            'Taux d’intérêt bas',
-            'Dividendes faibles',
-            'Sous-jacent très stable'
+            { en: 'Capital loss', fr: 'Perte en capital' },
+            { en: 'Non-payment of coupons', fr: 'Non paiement des coupons' },
+            { en: 'Higher volatility', fr: 'Hausse de volatilité' },
+            { en: 'Liquidity risk', fr: 'Risque de liquidité' }
           ],
           correct: 0,
-          explanation: 'La vente d’options dans la structure bénéficie d’une volatilité implicite élevée.'
+          explanation: {
+            en: 'If the protection barrier is breached and the underlying finishes low, capital losses occur.',
+            fr: 'Si la barrière de protection est touchée et que le sous-jacent reste bas à maturité, il peut y avoir perte en capital.'
+          }
+        },
+        {
+          question: {
+            en: 'Which parameter makes autocall coupons more attractive?',
+            fr: 'Quel paramètre rend les coupons autocall plus attractifs ?'
+          },
+          options: [
+            { en: 'High implied volatility', fr: 'Volatilité implicite élevée' },
+            { en: 'Low interest rates', fr: 'Taux d’intérêt bas' },
+            { en: 'Low dividends', fr: 'Dividendes faibles' },
+            { en: 'A very stable underlying', fr: 'Sous-jacent très stable' }
+          ],
+          correct: 0,
+          explanation: {
+            en: 'Higher implied volatility increases the coupon offered to compensate for stronger barrier risk.',
+            fr: 'une volatilité plus forte augmente la probabilité que le sous-jacent ne franchisse pas les barrières d’autocall, ce qui retarde l’autocall. Pour compenser ce risque, le coupon offert à l’investisseur est plus élevé.'
+          }
         }
       ]
     },
     {
       id: 'income',
-      name: 'Stratégies de revenu',
+      name: {
+        en: 'Income Strategies',
+        fr: 'Stratégies de revenu'
+      },
       color: 'rgba(16,185,129,0.4)',
       questions: [
         {
-          question: 'Quel produit offre un coupon fixe élevé en échange d’un risque de baisse ?',
-          options: ['Bonus', 'Reverse Convertible', 'Autocall', 'Discount'],
-          correct: 1,
-          explanation: 'Le Reverse Convertible encaisse un coupon fixe contre un short put implicite.'
-        },
-        {
-          question: 'Quel est l’objectif d’un Covered Call ?',
+          question: {
+            en: 'Which product offers a high fixed coupon in exchange for downside risk?',
+            fr: 'Quel produit offre un coupon fixe élevé en échange d’un risque de baisse ?'
+          },
           options: [
-            'Protéger le portefeuille',
-            'Générer un revenu régulier',
-            'Amplifier la hausse',
-            'Réduire la volatilité'
+            { en: 'Bonus Certificate', fr: 'Bonus' },
+            { en: 'Reverse Convertible', fr: 'Reverse Convertible' },
+            { en: 'Autocall', fr: 'Autocall' },
+            { en: 'Discount Certificate', fr: 'Discount' }
           ],
           correct: 1,
-          explanation: 'La vente de call permet d’encaisser une prime et de générer du revenu.'
+          explanation: {
+            en: 'The reverse convertible collects a fixed coupon while taking on short put exposure.',
+            fr: 'Le Reverse Convertible encaisse un coupon fixe contre un short put implicite.'
+          }
         },
         {
-          question: 'Lequel de ces produits est le plus sensible aux dividendes ?',
-          options: ['Reverse Convertible', 'Autocall', 'Bonus Certificate', 'Discount'],
+          question: {
+            en: 'What is the objective of a covered call?',
+            fr: 'Quel est l’objectif d’un Covered Call ?'
+          },
+          options: [
+            { en: 'Protect the portfolio', fr: 'Protéger le portefeuille' },
+            { en: 'Generate income (a premium)', fr: 'Générer un revenu (une prime)' },
+            { en: 'Amplify upside', fr: 'Amplifier la hausse' },
+            { en: 'Reduce volatility', fr: 'Réduire la volatilité' }
+          ],
+          correct: 1,
+          explanation: {
+            en: 'Selling the call brings in a premium and creates additional income.',
+            fr: 'La vente de call permet d’encaisser une prime et de générer du revenu.'
+          }
+        },
+        {
+          question: {
+            en: 'Which product is the most sensitive to dividend expectations?',
+            fr: 'Lequel de ces produits est le plus sensible aux dividendes ?'
+          },
+          options: [
+            { en: 'Reverse Convertible', fr: 'Reverse Convertible' },
+            { en: 'Autocall', fr: 'Autocall' },
+            { en: 'Bonus Certificate', fr: 'Bonus Certificate' },
+            { en: 'Discount Certificate', fr: 'Discount' }
+          ],
           correct: 3,
-          explanation: 'Les Discount Certificates sont très sensibles aux dividendes anticipés.'
+          explanation: {
+            en: 'Discount certificates are highly sensitive to expected dividends (reverse convertibles also at pricing).',
+            fr: 'Les Discount Certificates sont très sensibles aux dividendes anticipés (RC également qu’au pricing).'
+          }
         },
         {
-          question: 'Quel risque additionnel prend-on sur un produit de revenu structuré ?',
+          question: {
+            en: 'Which additional risk do you take with a structured income product?',
+            fr: 'Quel risque additionnel prend-on sur un produit de revenu structuré ?'
+          },
           options: [
-            'Risque de crédit émetteur',
-            'Risque de change systématique',
-            'Risque de taux exclusivement',
-            'Risque de corrélation'
+            { en: 'Issuer credit risk', fr: 'Risque de crédit émetteur' },
+            { en: 'Systematic currency risk', fr: 'Risque de change systématique' },
+            { en: 'Interest-rate risk only', fr: 'Risque de taux exclusivement' },
+            { en: 'Correlation risk', fr: 'Risque de corrélation' }
           ],
           correct: 0,
-          explanation: 'Les produits structurés sont des titres de créance soumis au risque de crédit.'
+          explanation: {
+            en: 'Structured notes are debt instruments subject to the issuer’s credit risk.',
+            fr: 'Les produits structurés sont des titres de créance soumis au risque de crédit.'
+          }
         },
         {
-          question: 'Quel environnement de marché favorise les stratégies de revenu ?',
+          question: {
+            en: 'Which market environment favours income strategies?',
+            fr: 'Quel environnement de marché favorise les stratégies de revenu ?'
+          },
           options: [
-            'Volatilité élevée et range',
-            'Trend haussier fort',
-            'Trend baissier fort',
-            'Marché totalement plat'
+            { en: 'High volatility within a range', fr: 'Volatilité élevée et range' },
+            { en: 'Strong bull trend', fr: 'Trend haussier fort' },
+            { en: 'Strong bear trend', fr: 'Trend baissier fort' },
+            { en: 'Completely flat market', fr: 'Marché totalement plat' }
           ],
           correct: 0,
-          explanation: 'Les primes optionnelles élevées augmentent les coupons offerts.'
+          explanation: {
+            en: 'Elevated option premiums increase the coupons offered.',
+            fr: 'Les primes optionnelles élevées augmentent les coupons offerts.'
+          }
         }
       ]
     },
     {
       id: 'barriers',
-      name: 'Structures à barrière',
+      name: {
+        en: 'Barrier Structures',
+        fr: 'Structures à barrière'
+      },
       color: 'rgba(234,179,8,0.4)',
       questions: [
         {
-          question: 'Qu’est-ce qu’une barrière knock-in ?',
+          question: {
+            en: 'What is a knock-in barrier?',
+            fr: 'Qu’est-ce qu’une barrière knock-in ?'
+          },
           options: [
-            'Un niveau qui déclenche le payoff',
-            'Un niveau qui active une option',
-            'Une barrière de désactivation',
-            'Un niveau de cap'
+            { en: 'A level that deactivates an option', fr: 'Un niveau qui désactive une option' },
+            { en: 'A level that activates an option', fr: 'Un niveau qui active une option' },
+            { en: 'A deactivation barrier', fr: 'Une barrière de désactivation' },
+            { en: 'A cap level', fr: 'Un niveau de cap' }
           ],
           correct: 1,
-          explanation: 'La knock-in active une option seulement si la barrière est touchée.'
+          explanation: {
+            en: 'A knock-in only activates the option if the barrier is touched.',
+            fr: 'La knock-in active une option seulement si la barrière est touchée.'
+          }
         },
         {
-          question: 'Quelle structure dépend de l’absence de franchissement de barrière ?',
-          options: ['Bonus', 'Straddle', 'Bull Spread', 'Put couvert'],
-          correct: 0,
-          explanation: 'Le Bonus requiert que la barrière de désactivation ne soit jamais touchée.'
-        },
-        {
-          question: 'Quelles sont les implications d’une barrière continue ?',
+          question: {
+            en: 'Which structure depends on the barrier never being breached?',
+            fr: 'Quelle structure dépend de l’absence de franchissement de barrière ?'
+          },
           options: [
-            'Observation uniquement finale',
-            'Observation à tout instant',
-            'Barrière plus basse',
-            'Moins de risque'
-          ],
-          correct: 1,
-          explanation: 'La barrière continue est surveillée en tout temps, augmentant le risque de déclenchement.'
-        },
-        {
-          question: 'Quel produit typique comporte une barrière de knock-out ?',
-          options: [
-            'Turbo',
-            'Straddle',
-            'Put spread',
-            'Zero coupon'
+            { en: 'Bonus certificate', fr: 'Bonus' },
+            { en: 'Straddle', fr: 'Straddle' },
+            { en: 'Bull spread', fr: 'Bull Spread' },
+            { en: 'Covered put', fr: 'Put couvert' }
           ],
           correct: 0,
-          explanation: 'Les turbos possèdent une barrière de knock-out qui clôt la position.'
+          explanation: {
+            en: 'The bonus certificate requires the deactivation barrier never to be hit.',
+            fr: 'Le Bonus requiert que la barrière de désactivation ne soit jamais touchée.'
+          }
         },
         {
-          question: 'Que devient la valeur temps après knock-out ?',
+          question: {
+            en: 'What are the implications of a continuously monitored barrier?',
+            fr: 'Quelles sont les implications d’une barrière continue ?'
+          },
           options: [
-            'Elle augmente',
-            'Elle disparaît',
-            'Elle est neutre',
-            'Elle devient négative'
+            { en: 'Observation only at maturity', fr: 'Observation uniquement finale' },
+            { en: 'Observation at any time', fr: 'Observation à tout instant' },
+            { en: 'Lower barrier level', fr: 'Barrière plus basse' },
+            { en: 'Less risk', fr: 'Moins de risque' }
           ],
           correct: 1,
-          explanation: 'Après KO, la position est close, la valeur temps résiduelle s annule.'
+          explanation: {
+            en: 'A continuous barrier is monitored at all times, increasing the chance of activation.',
+            fr: 'La barrière continue est surveillée en tout temps, augmentant le risque de déclenchement.'
+          }
+        },
+        {
+          question: {
+            en: 'Which product typically has a knock-out barrier?',
+            fr: 'Quel produit typique comporte une barrière de knock-out ?'
+          },
+          options: [
+            { en: 'Turbo certificate', fr: 'Tracker (Turbo)' },
+            { en: 'Straddle', fr: 'Straddle' },
+            { en: 'Put spread', fr: 'Put spread' },
+            { en: 'Zero-coupon bond', fr: 'Zero coupon' }
+          ],
+          correct: 0,
+          explanation: {
+            en: 'Turbos include a knock-out barrier that closes the position.',
+            fr: 'Les turbos possèdent une barrière de knock-out qui clôt la position.'
+          }
+        },
+        {
+          question: {
+            en: 'What happens to time value after a knock-out event?',
+            fr: 'Que devient la valeur temps après knock-out ?'
+          },
+          options: [
+            { en: 'It increases', fr: 'Elle augmente' },
+            { en: 'It disappears', fr: 'Elle disparaît' },
+            { en: 'It stays neutral', fr: 'Elle est neutre' },
+            { en: 'It turns negative', fr: 'Elle devient négative' }
+          ],
+          correct: 1,
+          explanation: {
+            en: 'Once knocked out, the position is closed and the remaining time value drops to zero.',
+            fr: 'Après KO, la position est close, la valeur temps résiduelle s annule.'
+          }
         }
       ]
     },
     {
       id: 'leverage',
-      name: 'Effet de levier',
+      name: {
+        en: 'Leverage',
+        fr: 'Effet de levier'
+      },
       color: 'rgba(59,130,246,0.4)',
       questions: [
         {
-          question: 'Quel instrument offre un levier dynamique via delta ?',
-          options: ['Option call', 'Zero coupon', 'Deposit', 'Swap de change'],
-          correct: 0,
-          explanation: 'L’option call voit son delta évoluer avec le sous-jacent, offrant un levier dynamique.'
-        },
-        {
-          question: 'Quel est le principal risque d’un Turbo Long ?',
+          question: {
+            en: 'Which structured product replicates a fixed daily leverage on an index performance?',
+            fr: 'Quel type de produit structuré permet de répliquer un levier quotidien fixe sur la performance d’un indice ?'
+          },
           options: [
-            'Hausse du sous-jacent',
-            'Déclenchement de la barrière KO',
-            'Baisse des taux',
-            'Volatilité basse'
-          ],
-          correct: 1,
-          explanation: 'Si la barrière KO est touchée, la position est soldée avec perte majeure.'
-        },
-        {
-          question: 'Quel paramètre amplifiera le levier d’un call très in-the-money ?',
-          options: ['Delta proche de 1', 'Theta positif', 'Vega négatif', 'Rho élevé'],
-          correct: 0,
-          explanation: 'Un delta proche de 1 rend le call équivalent à l’actif sous-jacent.'
-        },
-        {
-          question: 'Quel montage structurel procure un levier asymétrique ?',
-          options: ['Shark Fin', 'Covered Call', 'Straddle', 'Strangle short'],
-          correct: 0,
-          explanation: 'La Shark Fin combine levier à la hausse et floor KO.'
-        },
-        {
-          question: 'Comment réduire le coût d’une stratégie levier ?',
-          options: [
-            'Vendre une option plus éloignée',
-            'Acheter plus d’options',
-            'Allonger la maturité',
-            'Ignorer le risque'
+            { en: 'Outperformance certificate', fr: 'Outperformance Certificate' },
+            { en: 'Autocall', fr: 'Autocall' },
+            { en: 'Reverse convertible', fr: 'Reverse Convertible' },
+            { en: 'Capped bonus', fr: 'Bonus Cappé' }
           ],
           correct: 0,
-          explanation: 'La vente d’une option plus éloignée (spread) finance partiellement la prime.'
+          explanation: {
+            en: 'Outperformance certificates deliver a fixed daily leverage, such as +3x.',
+            fr: 'Les Outperformance Certificates appliquent un levier fixe quotidien sur la performance du sous-jacent, par exemple +3x ou +2x.'
+          }
+        },
+        {
+          question: {
+            en: 'What is the main risk for an investor holding a call warrant?',
+            fr: 'Quel est le principal risque pour un investisseur sur un Call Warrant ?'
+          },
+          options: [
+            { en: 'Underlying decline', fr: 'Baisse du sous-jacent' },
+            { en: 'Rise in implied volatility', fr: 'Hausse de la volatilité implicite' },
+            { en: 'Higher interest rates', fr: 'Hausse des taux d’intérêt' },
+            { en: 'Lower dividends', fr: 'Baisse du dividende' }
+          ],
+          correct: 0,
+          explanation: {
+            en: 'If the underlying falls, the warrant quickly loses value as delta drops and time value erodes.',
+            fr: 'Le Call Warrant donne le droit d’acheter un sous-jacent à un prix fixé. Si le sous-jacent baisse, le warrant perd rapidement de la valeur car son delta diminue et sa valeur temps s’érode, pouvant devenir nulle à l’échéance.'
+          }
+        },
+        {
+          question: {
+            en: 'Which parameter reduces the leverage of a deep in-the-money call?',
+            fr: 'Quel paramètre réduit le levier d’un call très in-the-money ?'
+          },
+          options: [
+            { en: 'Delta close to 1', fr: 'Delta proche de 1' },
+            { en: 'Positive theta', fr: 'Theta positif' },
+            { en: 'Negative vega', fr: 'Vega négatif' },
+            { en: 'High rho', fr: 'Rho élevé' }
+          ],
+          correct: 0,
+          explanation: {
+            en: 'A call that is very ITM behaves like the underlying and therefore loses its leverage effect.',
+            fr: 'Un call très ITM a un delta proche de 1 et se comporte comme le sous-jacent, ce qui réduit l’effet de levier.'
+          }
+        },
+        {
+          question: {
+            en: 'Which structure provides asymmetric leverage?',
+            fr: 'Quel montage structurel procure un levier asymétrique ?'
+          },
+          options: [
+            { en: 'Shark fin', fr: 'Shark Fin' },
+            { en: 'Covered call', fr: 'Covered Call' },
+            { en: 'Straddle', fr: 'Straddle' },
+            { en: 'Short strangle', fr: 'Strangle short' }
+          ],
+          correct: 0,
+          explanation: {
+            en: 'The bullish or bearish shark fin mixes leverage with a knock-out feature.',
+            fr: 'La Bullish/Bearish Shark Fin combine levier à la hausse/baisse et KO. (Sauf Sharkfin Twin Win)'
+          }
+        },
+        {
+          question: {
+            en: 'How can you reduce the cost of a leverage strategy?',
+            fr: 'Comment réduire le coût d’une stratégie levier ?'
+          },
+          options: [
+            { en: 'Sell a further-out option', fr: 'Vendre une option plus éloignée' },
+            { en: 'Buy more options', fr: 'Acheter plus d’options' },
+            { en: 'Extend the maturity', fr: 'Allonger la maturité' },
+            { en: 'Ignore the risk', fr: 'Ignorer le risque' }
+          ],
+          correct: 0,
+          explanation: {
+            en: 'Selling a further strike (forming a spread) helps finance part of the premium.',
+            fr: 'La vente d’une option plus éloignée (spread) finance partiellement la prime.'
+          }
         }
       ]
     },
     {
       id: 'vanilla',
-      name: 'Options vanilles',
+      name: {
+        en: 'Vanilla Options',
+        fr: 'Options vanilles'
+      },
       color: 'rgba(148,163,184,0.4)',
       questions: [
         {
-          question: 'Quelle lettre grecque mesure la sensibilité au temps ?',
-          options: ['Delta', 'Gamma', 'Theta', 'Vega'],
-          correct: 2,
-          explanation: 'Theta mesure l érosion de la valeur temps.'
-        },
-        {
-          question: 'Un call est dans la monnaie si :',
+          question: {
+            en: 'Which Greek letter measures sensitivity to time decay?',
+            fr: 'Quelle lettre grecque mesure la sensibilité au temps ?'
+          },
           options: [
-            'Strike > spot',
-            'Strike = spot',
-            'Strike < spot',
-            'Strike = 0'
+            { en: 'Delta', fr: 'Delta' },
+            { en: 'Gamma', fr: 'Gamma' },
+            { en: 'Theta', fr: 'Theta' },
+            { en: 'Vega', fr: 'Vega' }
           ],
           correct: 2,
-          explanation: 'Pour un call, être ITM signifie que le spot est supérieur au strike.'
+          explanation: {
+            en: 'Theta captures the erosion of time value.',
+            fr: 'Theta mesure l érosion de la valeur temps.'
+          }
         },
         {
-          question: 'Que fait Gamma ?',
+          question: {
+            en: 'A call is in the money when:',
+            fr: 'Un call est dans la monnaie si :'
+          },
           options: [
-            'Sensibilité au spot',
-            'Sensibilité du delta',
-            'Sensibilité à la volatilité',
-            'Sensibilité aux taux'
+            { en: 'Strike > spot', fr: 'Strike > spot' },
+            { en: 'Strike = spot', fr: 'Strike = spot' },
+            { en: 'Strike < spot', fr: 'Strike < spot' },
+            { en: 'Strike = 0', fr: 'Strike = 0' }
+          ],
+          correct: 2,
+          explanation: {
+            en: 'A call is ITM when the spot exceeds the strike.',
+            fr: 'Pour un call, être ITM signifie que le spot est supérieur au strike.'
+          }
+        },
+        {
+          question: {
+            en: 'What does Gamma measure?',
+            fr: 'Que fait Gamma ?'
+          },
+          options: [
+            { en: 'Sensitivity to spot', fr: 'Sensibilité au spot' },
+            { en: 'Sensitivity of delta', fr: 'Sensibilité du delta' },
+            { en: 'Sensitivity to volatility', fr: 'Sensibilité à la volatilité' },
+            { en: 'Sensitivity to rates', fr: 'Sensibilité aux taux' }
           ],
           correct: 1,
-          explanation: 'Gamma mesure la variation du delta pour un mouvement de spot.'
+          explanation: {
+            en: 'Gamma measures how much delta changes for a move in the underlying.',
+            fr: 'Gamma mesure la variation du delta pour un mouvement de spot.'
+          }
         },
         {
-          question: 'Quelle position profite d’une hausse de volatilité ?',
+          question: {
+            en: 'Which position benefits from a rise in volatility?',
+            fr: 'Quelle position profite d’une hausse de volatilité ?'
+          },
           options: [
-            'Long straddle',
-            'Short straddle',
-            'Covered call',
-            'Put couvert'
+            { en: 'Long straddle', fr: 'Long straddle' },
+            { en: 'Short straddle', fr: 'Short straddle' },
+            { en: 'Covered call', fr: 'Covered call' },
+            { en: 'Covered put', fr: 'Put couvert' }
           ],
           correct: 0,
-          explanation: 'Être long sur options (straddle) est positif vega.'
+          explanation: {
+            en: 'Being long options (for example a straddle) means being long vega.',
+            fr: 'Être long sur options (straddle) est long vega.'
+          }
         },
         {
-          question: 'Quel paramètre influence Vega ?',
+          question: {
+            en: 'Which parameter affects Vega?',
+            fr: 'Quel paramètre influence Vega ?'
+          },
           options: [
-            'Taux',
-            'Temps avant échéance',
-            'Dividendes',
-            'Rho'
+            { en: 'Interest rates', fr: 'Taux' },
+            { en: 'Time to maturity', fr: 'Temps avant échéance' },
+            { en: 'Dividends', fr: 'Dividendes' },
+            { en: 'Rho', fr: 'Rho' }
           ],
           correct: 1,
-          explanation: 'Plus la maturité est longue, plus Vega est élevé.'
+          explanation: {
+            en: 'Longer maturities increase Vega.',
+            fr: 'Plus la maturité est longue, plus Vega est élevé.'
+          }
         }
       ]
     },
     {
       id: 'volatility',
-      name: 'Gestion de volatilité',
+      name: {
+        en: 'Volatility Management',
+        fr: 'Gestion de volatilité'
+      },
       color: 'rgba(249,115,22,0.4)',
       questions: [
         {
-          question: 'Quel produit capture une normalisation de volatilité ?',
+          question: {
+            en: 'Which product captures a normalisation of volatility?',
+            fr: 'Quel produit capture une normalisation de volatilité ?'
+          },
           options: [
-            'Calendar spread short',
-            'Straddle long',
-            'Risk reversal long',
-            'Butterfly long'
+            { en: 'Long calendar spread', fr: 'Calendar spread long' },
+            { en: 'Long straddle', fr: 'Straddle long' },
+            { en: 'Long risk reversal', fr: 'Risk reversal long' },
+            { en: 'Long butterfly', fr: 'Butterfly long' }
           ],
           correct: 0,
-          explanation: 'Vendre la vol à court terme et acheter la longue permet de jouer l’aplatissement.'
+          explanation: {
+            en: 'A long calendar (short near-term vol / long longer-term vol) plays the flattening of the vol curve.',
+            fr: 'Être long calendrier (short vol court terme / long vol long terme) joue l’aplatissement de la courbe de volatilité.'
+          }
         },
         {
-          question: 'Quel risque porte un short straddle ?',
+          question: {
+            en: 'What is the key risk of a short straddle?',
+            fr: 'Quel risque porte un short straddle ?'
+          },
           options: [
-            'Risque limité',
-            'Risque illimité',
-            'Pas de risque',
-            'Risque de taux uniquement'
+            { en: 'Limited risk', fr: 'Risque limité' },
+            { en: 'Unlimited risk', fr: 'Risque illimité' },
+            { en: 'No risk', fr: 'Pas de risque' },
+            { en: 'Interest-rate risk only', fr: 'Risque de taux uniquement' }
           ],
           correct: 1,
-          explanation: 'La vente d’un straddle expose à des pertes illimitées.'
+          explanation: {
+            en: 'Selling a straddle exposes you to theoretically unlimited losses.',
+            fr: 'La vente d’un straddle expose à des pertes illimitées.'
+          }
         },
         {
-          question: 'Quel instrument suit la variance réalisée ?',
-          options: ['Variance swap', 'Forward', 'Future', 'Swap de taux'],
-          correct: 0,
-          explanation: 'Un variance swap verse la différence entre variance réalisée et strike.'
-        },
-        {
-          question: 'Comment couvrir Vega d un straddle long ?',
+          question: {
+            en: 'Which instrument tracks realised volatility?',
+            fr: 'Quel instrument suit la volatilité réalisée ?'
+          },
           options: [
-            'Short vega via vente d options',
-            'Acheter plus d options',
-            'Rallonger la maturité',
-            'Shorter le sous-jacent'
+            { en: 'Variance swap', fr: 'Variance swap' },
+            { en: 'Forward', fr: 'Forward' },
+            { en: 'Future', fr: 'Future' },
+            { en: 'Interest rate swap', fr: 'Swap de taux' }
           ],
           correct: 0,
-          explanation: 'La couverture de Vega nécessite souvent des options vendues.'
+          explanation: {
+            en: 'A variance swap pays the difference between realised variance and the strike.',
+            fr: 'Un variance swap verse la différence entre variance réalisée et strike.'
+          }
         },
         {
-          question: 'Quel environnement nuit à un long straddle ?',
+          question: {
+            en: 'How do you hedge the vega of a long straddle?',
+            fr: 'Comment couvrir Vega d’un straddle long ?'
+          },
           options: [
-            'Volatilité chute après achat',
-            'Volatilité monte',
-            'Gros mouvement sur le spot',
-            'Hausse des taux'
+            { en: 'Buy more options', fr: 'Acheter plus d’options' },
+            { en: 'Extend the maturity', fr: 'Rallonger la maturité' },
+            { en: 'Short the underlying', fr: 'Shorter le sous-jacent' },
+            { en: 'Short vega by selling options', fr: 'Short vega via vente d’options' }
           ],
-          correct: 0,
-          explanation: 'Une baisse de volatilité ou un spot immobile érode la prime payée.'
+          correct: 3,
+          explanation: {
+            en: 'Vega hedging typically requires selling options (short vega).',
+            fr: 'La couverture de Vega nécessite souvent des options vendues.'
+          }
+        },
+        {
+          question: {
+            en: 'Which environment hurts a long straddle?',
+            fr: 'Quel environnement nuit à un long straddle ?'
+          },
+          options: [
+            { en: 'Volatility increases', fr: 'Volatilité monte' },
+            { en: 'Large move in the spot', fr: 'Gros mouvement sur le spot' },
+            { en: 'Volatility drops after purchase', fr: 'Volatilité chute après achat' },
+            { en: 'Higher rates', fr: 'Hausse des taux' }
+          ],
+          correct: 2,
+          explanation: {
+            en: 'A drop in volatility or a static spot erodes the premium paid.',
+            fr: 'Une baisse de volatilité ou un spot immobile érode la prime payée.'
+          }
         }
       ]
     },
     {
       id: 'protection',
-      name: 'Couverture & hedging',
+      name: {
+        en: 'Hedging & Protection',
+        fr: 'Couverture & hedging'
+      },
       color: 'rgba(168,85,247,0.4)',
       questions: [
         {
-          question: 'Quel montage protège un portefeuille tout en vendant la hausse ?',
-          options: ['Collar', 'Straddle', 'Strangle', 'Spread'],
-          correct: 0,
-          explanation: 'Un collar combine achat de put et vente de call.'
-        },
-        {
-          question: 'Pourquoi rouler une couverture ?',
+          question: {
+            en: 'Which setup protects a portfolio while capping upside?',
+            fr: 'Quel montage protège un portefeuille tout en vendant la hausse ?'
+          },
           options: [
-            'Pour réduire le coût',
-            'Pour augmenter le risque',
-            'Pour spéculer',
-            'Pour éliminer le delta'
+            { en: 'Collar', fr: 'Collar' },
+            { en: 'Straddle', fr: 'Straddle' },
+            { en: 'Strangle', fr: 'Strangle' },
+            { en: 'Spread', fr: 'Spread' }
           ],
           correct: 0,
-          explanation: 'On peut vendre la put existante et en racheter une plus longue pour gérer le coût.'
+          explanation: {
+            en: 'A collar combines a protective put with a covered call.',
+            fr: 'Un collar combine achat de protected put et de covered call.'
+          }
         },
         {
-          question: 'Quel instrument couvre le risque de change ?',
-          options: ['Forward FX', 'Swap de taux', 'Option equity', 'Futures commodities'],
-          correct: 0,
-          explanation: 'Le forward de change neutralise le FX futur.'
-        },
-        {
-          question: 'Comment réduire la prime d’une put protectrice ?',
+          question: {
+            en: 'A client holds European equities and fears a drop in the euro. What could you propose?',
+            fr: 'Un client détient un portefeuille d’actions européennes et craint une baisse de l’euro. Que proposer ?'
+          },
           options: [
-            'Vendre un call',
-            'Acheter plus cher',
-            'Raccourcir la maturité',
-            'Ignorer le risque'
+            { en: 'Buy EUR/USD calls', fr: 'Achat de call EUR/USD' },
+            { en: 'Sell EUR/USD futures', fr: 'Vente de futures EUR/USD' },
+            { en: 'Buy EUR/USD puts', fr: 'Achat de put EUR/USD' },
+            { en: 'Buy a USD/EUR forward', fr: 'Achat de forward USD/EUR' }
+          ],
+          correct: 3,
+          explanation: {
+            en: 'Buying a USD/EUR forward locks the future conversion rate and hedges the FX risk.',
+            fr: 'Pour couvrir le risque de change, il peut acheter un forward USD/EUR afin de verrouiller son taux de conversion futur.'
+          }
+        },
+        {
+          question: {
+            en: 'Which instrument hedges currency risk?',
+            fr: 'Quel instrument couvre le risque de change ?'
+          },
+          options: [
+            { en: 'FX forward', fr: 'Forward FX' },
+            { en: 'Interest rate swap', fr: 'Swap de taux' },
+            { en: 'Equity option', fr: 'Option equity' },
+            { en: 'Commodity futures', fr: 'Futures commodities' }
           ],
           correct: 0,
-          explanation: 'La vente d’un call convertit la stratégie en collar, réduisant la prime nette.'
+          explanation: {
+            en: 'An FX forward neutralises future foreign exchange exposure.',
+            fr: 'Le forward de change neutralise le FX futur.'
+          }
         },
         {
-          question: 'Quel indicateur suit l’efficience d’une couverture ?',
-          options: ['Ratio de couverture', 'Gamma', 'Theta', 'Vega'],
+          question: {
+            en: 'How can you reduce the premium of a protective put?',
+            fr: 'Comment réduire la prime d’une put protectrice ?'
+          },
+          options: [
+            { en: 'Sell a call', fr: 'Vendre un call' },
+            { en: 'Buy a higher-priced option', fr: 'Acheter plus cher' },
+            { en: 'Shorten the maturity', fr: 'Raccourcir la maturité' },
+            { en: 'Ignore the risk', fr: 'Ignorer le risque' }
+          ],
           correct: 0,
-          explanation: 'Le hedge ratio (beta/delta) mesure la qualité de la couverture.'
+          explanation: {
+            en: 'Selling a call creates a collar and lowers the net premium.',
+            fr: 'La vente d’un call convertit la stratégie en collar, réduisant la prime nette.'
+          }
+        },
+        {
+          question: {
+            en: 'If a delta-neutral portfolio still loses money, what could be the cause?',
+            fr: 'Lorsqu’un portefeuille est couvert delta-neutre mais perd quand même de l’argent, que peut-on suspecter ?'
+          },
+          options: [
+            { en: 'Incorrect risk-free rate', fr: 'Un mauvais calcul du taux sans risque' },
+            { en: 'Unhedged gamma or vega exposure', fr: 'Un effet de Gamma ou de Vega non couvert' },
+            { en: 'Error in the risk premium', fr: 'Une erreur dans la prime de risque' },
+            { en: 'Currency mismatch', fr: 'Un problème de taux de change' }
+          ],
+          correct: 1,
+          explanation: {
+            en: 'Delta hedging does not protect against gamma (convexity) or vega (volatility) risks.',
+            fr: 'Une couverture delta-neutre ne protège pas des variations de Gamma (convexité) ni de Vega (volatilité). Ces risques peuvent expliquer une perte résiduelle.'
+          }
         }
       ]
     },
     {
       id: 'income-options',
-      name: 'Yield enhancement',
+      name: {
+        en: 'Yield Enhancement',
+        fr: 'Optimisation de rendement'
+      },
       color: 'rgba(5,150,105,0.4)',
       questions: [
         {
-          question: 'Quel montage optionnel encaisse une prime en échange d’un cap ?',
-          options: ['Covered Call', 'Protective Put', 'Long Straddle', 'Calendar long'],
+          question: {
+            en: 'Which option structure collects a premium in exchange for a cap?',
+            fr: 'Quel montage optionnel encaisse une prime en échange d’un cap ?'
+          },
+          options: [
+            { en: 'Covered call', fr: 'Covered Call' },
+            { en: 'Protective put', fr: 'Protective Put' },
+            { en: 'Long straddle', fr: 'Long Straddle' },
+            { en: 'Long calendar', fr: 'Calendar long' }
+          ],
           correct: 0,
-          explanation: 'La vente de call couvre génère un revenu mais plafonne la hausse.'
+          explanation: {
+            en: 'Selling a covered call generates income but caps the upside.',
+            fr: 'La vente de call couvre génère un revenu mais plafonne la hausse.'
+          }
         },
         {
-          question: 'Quel est le payoff d’un Reverse Convertible si la barrière est respectée ?',
+          question: {
+            en: 'What is the payoff of a reverse convertible if the barrier holds?',
+            fr: 'Quel est le payoff d’un Reverse Convertible si la barrière est respectée ?'
+          },
           options: [
-            'Perte totale',
-            'Coupon + nominal',
-            'Livraison du sous-jacent',
-            'Zéro'
+            { en: 'Total loss', fr: 'Perte totale' },
+            { en: 'Coupon plus nominal', fr: 'Coupon + nominal' },
+            { en: 'Delivery of the underlying', fr: 'Livraison du sous-jacent' },
+            { en: 'Zero', fr: 'Zéro' }
           ],
           correct: 1,
-          explanation: 'Le coupon est garanti et le nominal est remboursé si la barrière tient.'
+          explanation: {
+            en: 'The coupon is guaranteed and the nominal is repaid if the barrier remains untouched.',
+            fr: 'Le coupon est garanti et le nominal est remboursé si la barrière tient.'
+          }
         },
         {
-          question: 'Quel produit listé reproduit un Discount Certificate ?',
+          question: {
+            en: 'Which listed position replicates a discount certificate?',
+            fr: 'Quel produit listé reproduit un Discount Certificate ?'
+          },
           options: [
-            'Short call + long action',
-            'Long call + short put',
-            'Long put seule',
-            'Futures'
+            { en: 'Long call + short put', fr: 'Long call + short put' },
+            { en: 'Long put only', fr: 'Long put seule' },
+            { en: 'Short call + long stock', fr: 'Short call + long action' },
+            { en: 'Futures', fr: 'Futures' }
           ],
           correct: 0,
-          explanation: 'Un discount équivaut à un covered call.'
+          explanation: {
+            en: 'A discount certificate equals a covered call; likewise a zero-coupon plus short put.',
+            fr: 'Un discount équivaut à un covered call, de même un ZCB + short put'
+          }
         },
         {
-          question: 'Quel risque est clé pour une stratégie de revenu ?',
-          options: ['Risque de gap', 'Risque de taux', 'Risque de change', 'Risque réglementaire'],
-          correct: 0,
-          explanation: 'Un gap peut déclencher la barrière et annuler le coupon attendu.'
+          question: {
+            en: 'Why do reverse convertible coupons increase with implied volatility?',
+            fr: 'Pourquoi les coupons offerts par un Reverse Convertible augmentent-ils avec la volatilité implicite ?'
+          },
+          options: [
+            { en: 'Because the issuer sells more puts', fr: 'Parce que l’émetteur vend plus d’options put' },
+            { en: 'Because the sold option premium is higher when volatility rises', fr: 'Parce que la prime d’option vendue vaut plus cher quand la volatilité augmente' },
+            { en: 'Because correlation drops', fr: 'Parce que la corrélation diminue' },
+            { en: 'Because rates rise', fr: 'Parce que les taux montent' }
+          ],
+          correct: 1,
+          explanation: {
+            en: 'Higher implied volatility increases the value of the short puts in the structure, boosting coupons.',
+            fr: 'Une volatilité implicite plus élevée augmente la valeur des puts vendues dans la structure, donc le coupon potentiel. (même raisonnement pourautres paramétres)'
+          }
         },
         {
-          question: 'Quelle variable rend une vente d’option plus attractive ?',
-          options: ['Volatilité implicite élevée', 'Temps court', 'Taux bas', 'Dividendes élevés'],
+          question: {
+            en: 'Which variable makes selling options more attractive?',
+            fr: 'Quelle variable rend une vente d’option plus attractive ?'
+          },
+          options: [
+            { en: 'High implied volatility', fr: 'Volatilité implicite élevée' },
+            { en: 'Short time to expiry', fr: 'Temps court' },
+            { en: 'Low rates', fr: 'Taux bas' },
+            { en: 'High dividends', fr: 'Dividendes élevés' }
+          ],
           correct: 0,
-          explanation: 'Une volatilité implicite élevée augmente le prix de l’option vendue.'
+          explanation: {
+            en: 'Higher implied volatility increases the premium received when selling options.',
+            fr: 'Une volatilité implicite élevée augmente le prix de l’option vendue.'
+          }
         }
       ]
     },
     {
       id: 'hybrids',
-      name: 'Exotiques & hybrides',
+      name: {
+        en: 'Exotic & Hybrid',
+        fr: 'Exotiques & hybrides'
+      },
       color: 'rgba(99,102,241,0.4)',
       questions: [
         {
-          question: 'Quel produit combine plusieurs sous-jacents via corrélation ?',
-          options: ['Basket autocall', 'Vanilla call', 'Put spread', 'Forward'],
-          correct: 0,
-          explanation: 'Les autocalls baskets reposent sur la corrélation entre sous-jacents.'
-        },
-        {
-          question: 'Quel payoff dépend d’un chemin spécifique ?',
-          options: ['Asian option', 'Vanilla', 'Forward', 'Swap'],
-          correct: 0,
-          explanation: 'Les options asiatiques sont path-dependent.'
-        },
-        {
-          question: 'Quelle caractéristique distingue les cliquets ?',
+          question: {
+            en: 'Which product combines several underlyings through correlation?',
+            fr: 'Quel produit combine plusieurs sous-jacents via corrélation ?'
+          },
           options: [
-            'Fixation de coupons par paliers',
-            'Strike unique',
-            'Pas de barrière',
-            'Linearité'
+            { en: 'Basket autocall', fr: 'Basket autocall' },
+            { en: 'Vanilla call', fr: 'Vanilla call' },
+            { en: 'Put spread', fr: 'Put spread' },
+            { en: 'Forward', fr: 'Forward' }
           ],
           correct: 0,
-          explanation: 'Les cliquets enregistrent des coupons/performances successives.'
+          explanation: {
+            en: 'Basket autocalls rely on the correlation between underlyings.',
+            fr: 'Les autocalls baskets reposent sur la corrélation entre sous-jacents.'
+          }
         },
         {
-          question: 'Quel est le principal risque d’un produit hybride commodity/action ?',
+          question: {
+            en: 'Which payoff depends on a specific path?',
+            fr: 'Quel payoff dépend d’un chemin spécifique ?'
+          },
           options: [
-            'Corrélation incertaine',
-            'Absence de volatilité',
-            'Taux négatifs',
-            'Dividendes'
+            { en: 'Vanilla option', fr: 'Vanilla' },
+            { en: 'Forward', fr: 'Forward' },
+            { en: 'Asian option', fr: 'Asian option' },
+            { en: 'Swap', fr: 'Swap' }
           ],
-          correct: 0,
-          explanation: 'La corrélation entre actifs peut se dégrader et impacter le payoff.'
+          correct: 2,
+          explanation: {
+            en: 'Asian options are path-dependent because they average the underlying.',
+            fr: 'Les options asiatiques sont path-dependent. (Moyenne)'
+          }
         },
         {
-          question: 'Quel produit utilise la variance réalisée comme sous-jacent ?',
+          question: {
+            en: 'Which feature distinguishes cliquet notes?',
+            fr: 'Quelle caractéristique distingue les cliquets ?'
+          },
           options: [
-            'Variance swap',
-            'Autocall',
-            'Zero coupon',
-            'Forward FX'
+            { en: 'Single strike', fr: 'Strike unique' },
+            { en: 'Coupons fixed step by step', fr: 'Fixation de coupons par paliers' },
+            { en: 'No barrier', fr: 'Pas de barrière' },
+            { en: 'Linearity', fr: 'Linearité' }
+          ],
+          correct: 1,
+          explanation: {
+            en: 'Cliquet structures record successive performances or coupons.',
+            fr: 'Les cliquets enregistrent des coupons/performances successives.'
+          }
+        },
+        {
+          question: {
+            en: 'What is the main risk of a commodity/equity hybrid product?',
+            fr: 'Quel est le principal risque d’un produit hybride commodity/action ?'
+          },
+          options: [
+            { en: 'Uncertain correlation', fr: 'Corrélation incertaine' },
+            { en: 'Lack of volatility', fr: 'Absence de volatilité' },
+            { en: 'Negative rates', fr: 'Taux négatifs' },
+            { en: 'Dividends', fr: 'Dividendes' }
           ],
           correct: 0,
-          explanation: 'La variance réalisée est l’actif sous-jacent d’un variance swap.'
+          explanation: {
+            en: 'The correlation between assets can deteriorate and hurt the payoff.',
+            fr: 'La corrélation entre actifs peut se dégrader et impacter le payoff.'
+          }
+        },
+        {
+          question: {
+            en: 'Which product uses realised variance as the underlying?',
+            fr: 'Quel produit utilise la variance réalisée comme sous-jacent ?'
+          },
+          options: [
+            { en: 'Variance swap', fr: 'Variance swap' },
+            { en: 'Autocall', fr: 'Autocall' },
+            { en: 'Zero-coupon bond', fr: 'Zero coupon' },
+            { en: 'FX forward', fr: 'Forward FX' }
+          ],
+          correct: 0,
+          explanation: {
+            en: 'A variance swap has realised variance as its underlying.',
+            fr: 'La variance réalisée est l’actif sous-jacent d’un variance swap.'
+          }
         }
       ]
     }
@@ -1689,19 +2429,11 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
   function buildRecommendations() {
     if (!dom.recommendationsGrid) return;
     const t = UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.en;
-    const language = UI_TRANSLATIONS[currentLanguage] ? currentLanguage : 'en';
-    const localize = (value) => {
-      if (typeof value === 'string') return value;
-      if (value && typeof value === 'object') {
-        return value[language] ?? value.en ?? value.fr ?? Object.values(value)[0];
-      }
-      return '';
-    };
 
     dom.recommendationsGrid.innerHTML = recommendationsData
       .map((card) => {
-        const title = localize(card.title);
-        const riskText = localize(card.risk);
+        const title = resolveLocalized(card.title);
+        const riskText = resolveLocalized(card.risk);
         const riskColorMap = {
           high: 'rgba(239, 68, 68, 0.2)',
           'medium-high': 'rgba(249, 115, 22, 0.2)',
@@ -1716,8 +2448,9 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
             <ul>
               ${card.strategies
                 .map((item) => {
-                  const reason = localize(item.reason);
-                  return `<li><strong>${item.name}</strong><span>${reason}</span></li>`;
+                  const reason = resolveLocalized(item.reason);
+                  const strategyName = resolveLocalized(item.name);
+                  return `<li><strong>${strategyName}</strong><span>${reason}</span></li>`;
                 })
                 .join('')}
             </ul>
@@ -1810,21 +2543,24 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     const { category, question } = getCurrentQuestion();
     const t = UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.en;
 
-    dom.quizCategoryTitle.textContent = category.name;
-    dom.quizCategoryBadge.textContent = category.name;
+    const localizedCategoryName = resolveLocalized(category.name);
+    dom.quizCategoryTitle.textContent = localizedCategoryName;
+    dom.quizCategoryBadge.textContent = localizedCategoryName;
     dom.quizCategoryBadge.style.backgroundColor = category.color;
     dom.quizProgressCount.textContent = `Question ${quizState.questionIndex + 1} / ${category.questions.length}`;
-    dom.quizQuestion.textContent = question.question;
+    dom.quizQuestion.textContent = resolveLocalized(question.question);
 
     dom.quizOptions.innerHTML = question.options
-      .map(
-        (option, index) => `
+      .map((option, index) => {
+        const optionText = resolveLocalized(option);
+        const ariaLabel = optionText.replace(/"/g, '&quot;');
+        return `
           <label class="quiz-option">
-            <input type="radio" name="quiz-option" value="${index}" aria-label="${option}">
-            <span>${option}</span>
+            <input type="radio" name="quiz-option" value="${index}" aria-label="${ariaLabel}">
+            <span>${optionText}</span>
           </label>
-        `
-      )
+        `;
+      })
       .join('');
 
     dom.quizFeedback.classList.add('hidden');
@@ -1863,13 +2599,18 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
       quizState.totalCorrect += 1;
     }
 
+    const selectedOption = question.options[selectedIndex];
+    const correctOption = question.options[question.correct];
     quizState.history.push({
-      category: category.name,
+      categoryName: category.name,
       question: question.question,
-      selected: question.options[selectedIndex],
-      correctAnswer: question.options[question.correct],
+      selectedOption,
+      selectedIndex,
+      correctOption,
+      correctIndex: question.correct,
       explanation: question.explanation,
-      isCorrect
+      isCorrect,
+      skipped: false
     });
 
     dom.quizFeedback.classList.remove('hidden');
@@ -1877,12 +2618,14 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
       input.disabled = true;
     });
 
+    const explanationText = resolveLocalized(question.explanation);
     if (isCorrect) {
       dom.quizFeedback.classList.add('success');
-      dom.quizFeedback.textContent = `${t.feedbackCorrectPrefix}${question.explanation}`;
+      dom.quizFeedback.textContent = `${t.feedbackCorrectPrefix}${explanationText}`;
     } else {
       dom.quizFeedback.classList.add('error');
-      dom.quizFeedback.textContent = `${t.feedbackIncorrectPrefix}${t.feedbackIncorrectAnswer}${question.options[question.correct]}. ${question.explanation}`;
+      const correctAnswerText = resolveLocalized(correctOption);
+      dom.quizFeedback.textContent = `${t.feedbackIncorrectPrefix}${t.feedbackIncorrectAnswer}${correctAnswerText}. ${explanationText}`;
     }
 
     quizState.validated = true;
@@ -1893,17 +2636,18 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
   }
 
   function handleQuizSkip() {
-    const t = UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.en;
     if (!quizState.validated) {
+      const { category, question } = getCurrentQuestion();
       quizState.history.push({
-        category: quizCategories[quizState.categoryIndex].name,
-        question: getCurrentQuestion().question.question,
-        selected: t.quizSkippedLabel,
-        correctAnswer: quizCategories[quizState.categoryIndex].questions[quizState.questionIndex].options[
-          quizCategories[quizState.categoryIndex].questions[quizState.questionIndex].correct
-        ],
-        explanation: quizCategories[quizState.categoryIndex].questions[quizState.questionIndex].explanation,
-        isCorrect: false
+        categoryName: category.name,
+        question: question.question,
+        selectedOption: null,
+        selectedIndex: null,
+        correctOption: question.options[question.correct],
+        correctIndex: question.correct,
+        explanation: question.explanation,
+        isCorrect: false,
+        skipped: true
       });
     }
     goToNextQuizStep();
@@ -1953,17 +2697,19 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     });
 
     dom.resultsBreakdown.innerHTML = perCategory
-      .map(
-        ({ category, correctAnswers, percent }) => `
+      .map(({ category, correctAnswers, percent }) => {
+        const localizedName = resolveLocalized(category.name);
+        return `
           <div class="breakdown-card">
-            <strong>${category.name}</strong>
+            <strong>${localizedName}</strong>
             <p>${correctAnswers} / ${category.questions.length}</p>
             <div class="progress-bar">
               <div class="progress-fill" style="width:${percent}%; background:${category.color};"></div>
             </div>
           </div>
         `
-      )
+        ;
+      })
       .join('');
   }
 
@@ -2000,17 +2746,24 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
 
     dom.quizErrorsSection.classList.add('active');
     dom.quizErrorsContainer.innerHTML = mistakes
-      .map(
-        (item) => `
+      .map((item) => {
+        const categoryName = resolveLocalized(item.categoryName);
+        const questionText = resolveLocalized(item.question);
+        const userAnswer = item.skipped ? t.quizSkippedLabel : resolveLocalized(item.selectedOption);
+        const correctAnswer = resolveLocalized(item.correctOption);
+        const explanationText = resolveLocalized(item.explanation);
+        const displayedAnswer = userAnswer || '—';
+        return `
           <div class="error-item">
-            <strong>${item.category}</strong>
-            <p>${item.question}</p>
-            <p><em>${t.userAnswerLabel}</em> ${item.selected || '—'}</p>
-            <p><em>${t.correctAnswerLabel}</em> ${item.correctAnswer}</p>
-            <p>${item.explanation}</p>
+            <strong>${categoryName}</strong>
+            <p>${questionText}</p>
+            <p><em>${t.userAnswerLabel}</em> ${displayedAnswer}</p>
+            <p><em>${t.correctAnswerLabel}</em> ${correctAnswer}</p>
+            <p>${explanationText}</p>
           </div>
         `
-      )
+        ;
+      })
       .join('');
   }
 })();
