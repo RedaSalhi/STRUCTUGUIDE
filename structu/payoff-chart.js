@@ -151,7 +151,7 @@ window.renderPayoffChart = function(productName, containerId = 'payoff-chart-con
     datasets.push({
         label: 'Direct Investment',
         data: diagonalData,
-        borderColor: 'rgba(156, 163, 175, 0.5)',
+        borderColor: 'rgba(226, 232, 240, 0.6)',
         borderWidth: 2,
         borderDash: [5, 5],
         fill: false,
@@ -176,7 +176,7 @@ window.renderPayoffChart = function(productName, containerId = 'payoff-chart-con
                     display: true,
                     position: 'top',
                     labels: {
-                        color: '#1f2937',
+                        color: '#f8fafc',
                         font: {
                             size: 12,
                             weight: '600'
@@ -217,7 +217,7 @@ window.renderPayoffChart = function(productName, containerId = 'payoff-chart-con
                     title: {
                         display: true,
                         text: 'Underlying at Maturity (%)',
-                        color: '#6b7280',
+                        color: '#e5e7eb',
                         font: {
                             size: 13,
                             weight: '600'
@@ -226,7 +226,7 @@ window.renderPayoffChart = function(productName, containerId = 'payoff-chart-con
                     min: config.xRange[0],
                     max: config.xRange[1],
                     ticks: {
-                        color: '#9ca3af',
+                        color: '#cbd5f5',
                         font: {
                             size: 11
                         },
@@ -235,7 +235,7 @@ window.renderPayoffChart = function(productName, containerId = 'payoff-chart-con
                         }
                     },
                     grid: {
-                        color: 'rgba(156, 163, 175, 0.1)',
+                        color: 'rgba(226, 232, 240, 0.15)',
                         drawBorder: false
                     }
                 },
@@ -244,7 +244,7 @@ window.renderPayoffChart = function(productName, containerId = 'payoff-chart-con
                     title: {
                         display: true,
                         text: 'Product Value (%)',
-                        color: '#6b7280',
+                        color: '#e5e7eb',
                         font: {
                             size: 13,
                             weight: '600'
@@ -253,7 +253,7 @@ window.renderPayoffChart = function(productName, containerId = 'payoff-chart-con
                     min: config.yRange ? config.yRange[0] : undefined,
                     max: config.yRange ? config.yRange[1] : undefined,
                     ticks: {
-                        color: '#9ca3af',
+                        color: '#cbd5f5',
                         font: {
                             size: 11
                         },
@@ -262,7 +262,7 @@ window.renderPayoffChart = function(productName, containerId = 'payoff-chart-con
                         }
                     },
                     grid: {
-                        color: 'rgba(156, 163, 175, 0.1)',
+                        color: 'rgba(226, 232, 240, 0.15)',
                         drawBorder: false
                     }
                 }

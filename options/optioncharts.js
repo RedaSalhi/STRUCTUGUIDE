@@ -80,7 +80,7 @@
                         display: true,
                         position: 'top',
                         labels: {
-                            color: '#1f2937',
+                            color: '#f8fafc',
                             font: { size: 12, weight: '600' },
                             usePointStyle: true,
                             padding: 14
@@ -110,17 +110,17 @@
                         title: {
                             display: true,
                             text: 'Underlying price at expiry',
-                            color: '#475569',
+                            color: '#e5e7eb',
                             font: { size: 13, weight: '600' }
                         },
                         min: config.xRange[0],
                         max: config.xRange[1],
                         ticks: {
-                            color: '#6b7280',
+                            color: '#cbd5f5',
                             font: { size: 11 }
                         },
                         grid: {
-                            color: 'rgba(148, 163, 184, 0.12)',
+                            color: 'rgba(226, 232, 240, 0.15)',
                             drawBorder: false
                         }
                     },
@@ -129,17 +129,17 @@
                         title: {
                             display: true,
                             text: 'Option payoff',
-                            color: '#475569',
+                            color: '#e5e7eb',
                             font: { size: 13, weight: '600' }
                         },
                         min: config.yRange ? config.yRange[0] : undefined,
                         max: config.yRange ? config.yRange[1] : undefined,
                         ticks: {
-                            color: '#6b7280',
+                            color: '#cbd5f5',
                             font: { size: 11 }
                         },
                         grid: {
-                            color: 'rgba(148, 163, 184, 0.12)',
+                            color: 'rgba(226, 232, 240, 0.15)',
                             drawBorder: false
                         }
                     }

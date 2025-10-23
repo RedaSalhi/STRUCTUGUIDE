@@ -21,7 +21,6 @@
                             payoffNature: "Convex, long gamma"
                         },
                         payoff: "\\text{Payoff} = \\max(S_T - K, 0) - \\text{Premium}",
-                        replication: "\\text{Long Call} = \\text{Long Forward} + \\text{Long Put}",
                         advantages: [
                             "Gains rise with no cap",
                             "Loss limited to premium",
@@ -63,7 +62,6 @@
                             payoffNature: "Concave, long gamma"
                         },
                         payoff: "\\text{Payoff} = \\max(K - S_T, 0) - \\text{Premium}",
-                        replication: "\\text{Protective Put} = \\text{Spot} + \\text{Long Put}",
                         advantages: [
                             "Defines worst-case loss",
                             "Convex protection during drawdowns",
@@ -111,7 +109,7 @@
                             useCase: "Targeted upside scenarios"
                         },
                         payoff: "\\text{Payoff} = \\min\\{\\max(S_T - K_1, 0), K_2 - K_1\\} - \\text{Net Premium}",
-                        replication: "\\text{Bull Spread} = \\text{Call}(K_1) - \\text{Call}(K_2)",
+                        replication: "\\text{Bull Call Spread} = \\text{Call}(K_1) - \\text{Call}(K2) \\n\\n \\text{With } K_1 < K_2",
                         advantages: [
                             "Significant premium reduction",
                             "Clear payoff diagram",
@@ -193,7 +191,7 @@
                             risk: "Large losses if spot collapses"
                         },
                         payoff: "\\text{Payoff} = \\max(0, S_T - K_{call}) - \\max(0, K_{put} - S_T)",
-                        replication: "\\text{Risk Reversal} = \\text{Forward} + \\text{Skew position}",
+                        replication: "\\text{Risk Reversal} = \\text{Call OTM}(K_1) - \\text{Put OTM}(K_2) \\n\\n \\text{With } K_2 < K_1",
                         advantages: [
                             "Little to no upfront cost",
                             "Captures upside skew",
@@ -293,7 +291,7 @@
                             greeks: "Path-dependent"
                         },
                         payoff: "\\text{Payoff} = \\mathbf{1}_{\\{\\text{KO not triggered}\\}}\\max(S_T-K, 0) - \\text{Premium}",
-                        replication: "\\text{Up-and-Out} = \\text{Vanilla Call} - \\text{Up-and-In Call}",
+                        replication: "\\text{CUO} = \\text{Call}(K_1) - \\text{Call}(K_2) - \\text{Call Digit}(K_2) \\n\\n With K_2 > K_1",
                         advantages: [
                             "Reduced cost versus vanilla",
                             "Customisable barriers/rebates",
@@ -320,6 +318,7 @@
                             settlement: "Cash"
                         },
                         payoff: "\\text{Payoff} = \\mathbf{1}_{\\{\\text{barrier hit}\\}}\\max(S_T-K,0) - \\text{Premium}",
+                        replication: "\\text{CUI} = \\text{Call} - \\text{CUO}",
                         advantages: [
                             "Targeted upside exposure",
                             "Cheaper than vanilla in calm markets",
@@ -346,7 +345,7 @@
                             settlement: "Cash or physical"
                         },
                         payoff: "\\text{Payoff} = \\mathbf{1}_{\\{\\text{KI triggered}\\}}\\max(K-S_T,0) - \\text{Premium}",
-                        replication: "\\text{Down-and-In} = \\text{Vanilla Put} - \\text{Down-and-Out Put}",
+                        replication: "\\text{Down-and-In} = \\text{Put} - \\text{PDO}",
                         advantages: [
                             "Cheaper tail risk hedge",
                             "Activates only in stressed scenario",
@@ -373,6 +372,7 @@
                             greeks: "Path dependent"
                         },
                         payoff: "\\text{Payoff} = \\mathbf{1}_{\\{\\text{KO non déclenché}\\}}\\max(K-S_T,0) - \\text{Premium}",
+                        replication: "\\text{PDO} = \\text{Put}(K_1) - \\text{Put}(K_2) - \\text{Put Digit}(K_2) \\n\\n \\text{With} K_2 < K_1",
                         advantages: [
                             "Cheaper than standard puts",
                             "Targets moderate declines",
@@ -464,7 +464,7 @@
                             vega: "Positive (long volatility)",
                             theta: "Negative (time decay hurts)"
                         },
-                        payoff: "\\text{Payoff} = \\max(S_T - K, 0) + \\max(K - S_T, 0) - \\text{Total Premium}",
+                        payoff: "\\text{Payoff} = \\max(S_T - K, 0) + \\max(K - S_T, 0)",
                         replication: "\\text{Straddle} = \\text{Call}(K) + \\text{Put}(K)",
                         advantages: [
                             "Unlimited profit potential both ways",
@@ -491,7 +491,7 @@
                             theta: "Negative but less severe",
                             delta: "Initially near zero"
                         },
-                        payoff: "\\text{Payoff} = \\max(S_T - K_{call}, 0) + \\max(K_{put} - S_T, 0) - \\text{Total Premium}",
+                        payoff: "\\text{Payoff} = \\max(S_T - K_{call}, 0) + \\max(K_{put} - S_T, 0)",
                         replication: "\\text{Strangle} = \\text{OTM Call} + \\text{OTM Put}",
                         advantages: [
                             "Lower upfront cost than straddle",
@@ -572,7 +572,7 @@
                             margin: "Required due to short options"
                         },
                         payoff: "\\text{Payoff} = \\text{Premium} - \\max(0, K_{put2} - S_T) + \\max(0, K_{put1} - S_T) - \\max(0, S_T - K_{call1}) + \\max(0, S_T - K_{call2})",
-                        replication: "\\text{Iron Condor} = \\text{Short Strangle} + \\text{Protective Wings}",
+                        replication: "\\text{Iron Condor} = \\text{Short Strangle} + \\text{Call}(K_2) + \\text{Put}(K_1)",
                         advantages: [
                             "Defined risk with protective wings",
                             "Premium collected upfront",
@@ -584,32 +584,6 @@
                             "Assignment risk on short legs"
                         ],
                         investorType: "Income traders comfortable with range-bound scenarios and defined risk."
-                    },
-                    {
-                        name: "Iron Butterfly",
-                        short: "Tighter range income strategy with higher profit potential.",
-                        hasPayoff: true,
-                        definition: "Sell ATM straddle and buy protective wings (OTM put and call). Profits from minimal movement around current price.",
-                        characteristics: {
-                            construction: "Short straddle + long protective wings",
-                            strikes: "ATM straddle + OTM protections",
-                            premium: "Net credit",
-                            maxProfit: "At ATM strike",
-                            maxLoss: "Wing width - premium",
-                            sweet_spot: "Very low volatility"
-                        },
-                        payoff: "\\text{Payoff} = \\text{Premium} - \\max(0, K - S_T) - \\max(0, S_T - K) + \\max(0, K_{put} - S_T) + \\max(0, S_T - K_{call})",
-                        advantages: [
-                            "Higher premium than iron condor",
-                            "Defined maximum loss",
-                            "Profits from pinning at strike"
-                        ],
-                        risks: [
-                            "Narrower profit range",
-                            "Loses on any significant move",
-                            "More gamma risk than condor"
-                        ],
-                        investorType: "Advanced traders betting on minimal price movement."
                     },
                     {
                         name: "Covered Call",
@@ -668,7 +642,7 @@
                             holding: "Typically rolled quarterly"
                         },
                         payoff: "\\text{Payoff} = \\begin{cases} K_{call} - S_0 \\pm \\text{net cost} & \\text{if } S_T > K_{call} \\\\ S_T - S_0 \\pm \\text{net cost} & \\text{if } K_{put} < S_T \\leq K_{call} \\\\ K_{put} - S_0 \\pm \\text{net cost} & \\text{if } S_T \\leq K_{put} \\end{cases}",
-                        replication: "\\text{Collar} = \\text{Long Stock} + \\text{Protective Put} + \\text{Covered Call}",
+                        replication: "\\text{Collar} = \\text{Long Stock} + \\text{Put} - \\text{Call}",
                         advantages: [
                             "Downside protected at known level",
                             "Zero or minimal cost",
@@ -840,6 +814,7 @@
                             maxLoss: "Prime nette"
                         },
                         payoff: "\\text{Payoff} = \\min\\{\\max(S_T - K_1,0), K_2 - K_1\\} - \\text{Prime nette}",
+                        replication: "\\text{Bull Call Spread} = \\text{Call}(K_1) - \\text{Call}(K2) \\n\\n \\text{With } K_1 < K_2",
                         advantages: [
                             "Coût inférieur au call simple",
                             "Profil de gain/perte borné"
@@ -864,6 +839,7 @@
                             delta: "Négatif"
                         },
                         payoff: "\\text{Payoff} = \\min\\{\\max(K_2 - S_T, 0), K_2 - K_1\\} - \\text{Prime nette}",
+                        replication: "\\text{Bear Put Spread} = \\text{Put}(K_2) - \\text{Put}(K_1) \\n\\n \\text{With } K_1 < K_2",
                         advantages: [
                             "Protection contre une baisse modérée",
                             "Prime contenue"
@@ -887,6 +863,7 @@
                             useCase: "Skew FX / overlay actions"
                         },
                         payoff: "\\text{Payoff} = \\max(0, S_T - K_{call}) - \\max(0, K_{put} - S_T)",
+                        replication: "\\text{Risk Reversal} = \\text{Call OTM}(K_1) - \\text{Put OTM}(K_2) \\n\\n \\text{With } K_2 < K_1",
                         advantages: [
                             "Peu de prime upfront",
                             "Capture la skew haussière"
@@ -915,6 +892,7 @@
                             settlement: "Cash"
                         },
                         payoff: "\\text{Payoff} = \\mathbf{1}_{\\{S_T>K\\}}Q - \\text{Prime}",
+                        replication: "\\text{Binary Call} = \\lim_{dK \\to 0} \\frac{1}{2\\, dK} \\big[ Call(K - dK) - Call(K + dK) \\big]",
                         advantages: [
                             "Lecture directe des probabilités",
                             "Structure simple"
@@ -937,6 +915,7 @@
                             rebate: "Optionnel"
                         },
                         payoff: "\\text{Payoff} = \\mathbf{1}_{\\{KO\\,non\\,déclenché\\}}\\max(S_T-K,0) - \\text{Prime}",
+                        replication: "\\text{CUO} = \\text{Call}(K_1) - \\text{Call}(K_2) - \\text{Call Digit}(K_2) \\n\\n \\text{With} K_2 > K_1",
                         advantages: [
                             "Prime réduite",
                             "Customisation via rebated"
@@ -959,6 +938,7 @@
                             settlement: "Cash ou livraison"
                         },
                         payoff: "\\text{Payoff} = \\mathbf{1}_{\\{KI\\}}\\max(K-S_T,0) - \\text{Prime}",
+                        replication: "\\text{PDI} = \\text{Put} - \\text{PDO}",
                         advantages: [
                             "Couverture peu coûteuse",
                             "Protection dans scénarios extrêmes"
@@ -1038,7 +1018,7 @@
                             vega: "Positif (long volatilité)",
                             theta: "Négatif (érosion temporelle)"
                         },
-                        payoff: "\\text{Payoff} = \\max(S_T - K, 0) + \\max(K - S_T, 0) - \\text{Prime totale}",
+                        payoff: "\\text{Payoff} = \\max(S_T - K, 0) + \\max(K - S_T, 0)",
                         replication: "\\text{Straddle} = \\text{Call}(K) + \\text{Put}(K)",
                         advantages: [
                             "Profit illimité dans les deux sens",
@@ -1065,7 +1045,7 @@
                             theta: "Négatif mais moins sévère",
                             delta: "Initialement proche de zéro"
                         },
-                        payoff: "\\text{Payoff} = \\max(S_T - K_{call}, 0) + \\max(K_{put} - S_T, 0) - \\text{Prime totale}",
+                        payoff: "\\text{Payoff} = \\max(S_T - K_{call}, 0) + \\max(K_{put} - S_T, 0)",
                         replication: "\\text{Strangle} = \\text{Call OTM} + \\text{Put OTM}",
                         advantages: [
                             "Coût initial inférieur au straddle",
@@ -1093,6 +1073,7 @@
                             theta: "Positif (bénéfice de la décote)"
                         },
                         payoff: "\\text{Payoff} = \\text{Prime} - \\max(S_T - K_{call}, 0) - \\max(K_{put} - S_T, 0)",
+                        replication: "\\text{Short Strangle = - Long Strangle}",
                         advantages: [
                             "Revenu de prime immédiat",
                             "Profits en marchés range-bound",
@@ -1146,7 +1127,7 @@
                             margin: "Requise pour options courtes"
                         },
                         payoff: "\\text{Payoff} = \\text{Prime} - \\max(0, K_{put2} - S_T) + \\max(0, K_{put1} - S_T) - \\max(0, S_T - K_{call1}) + \\max(0, S_T - K_{call2})",
-                        replication: "\\text{Iron Condor} = \\text{Short Strangle} + \\text{Ailes protectrices}",
+                        replication: "\\text{Iron Condor} = \\text{Short Strangle} + \\text{Call}(K_2) + \\text{Put}(K_1)",
                         advantages: [
                             "Risque défini avec ailes protectrices",
                             "Prime encaissée d'avance",
@@ -1158,32 +1139,6 @@
                             "Risque d'assignment sur jambes courtes"
                         ],
                         investorType: "Traders revenu acceptant scénarios range-bound et risque défini."
-                    },
-                    {
-                        name: "Iron Butterfly",
-                        short: "Stratégie revenu range serré avec potentiel profit élevé.",
-                        hasPayoff: true,
-                        definition: "Vendre straddle ATM et acheter ailes protectrices (put et call OTM). Profite de mouvement minimal autour prix actuel.",
-                        characteristics: {
-                            construction: "Straddle court + ailes longues protectrices",
-                            strikes: "Straddle ATM + protections OTM",
-                            premium: "Crédit net",
-                            maxProfit: "Au strike ATM",
-                            maxLoss: "Largeur aile - prime",
-                            sweet_spot: "Très faible volatilité"
-                        },
-                        payoff: "\\text{Payoff} = \\text{Prime} - \\max(0, K - S_T) - \\max(0, S_T - K) + \\max(0, K_{put} - S_T) + \\max(0, S_T - K_{call})",
-                        advantages: [
-                            "Prime supérieure à iron condor",
-                            "Perte maximale définie",
-                            "Profite de pinning au strike"
-                        ],
-                        risks: [
-                            "Zone profit plus étroite",
-                            "Perd sur tout mouvement significatif",
-                            "Plus de risque gamma que condor"
-                        ],
-                        investorType: "Traders avancés pariant sur mouvement prix minimal."
                     },
                     {
                         name: "Covered Call",
@@ -1242,7 +1197,7 @@
                             holding: "Typiquement renouvelé trimestriellement"
                         },
                         payoff: "\\text{Payoff} = \\begin{cases} K_{call} - S_0 \\pm \\text{coût net} & \\text{si } S_T > K_{call} \\\\ S_T - S_0 \\pm \\text{coût net} & \\text{si } K_{put} < S_T \\leq K_{call} \\\\ K_{put} - S_0 \\pm \\text{coût net} & \\text{si } S_T \\leq K_{put} \\end{cases}",
-                        replication: "\\text{Collar} = \\text{Actions longues} + \\text{Put protecteur} + \\text{Covered Call}",
+                        replication: "\\text{Collar} = \\text{Actions longues} + \\text{Put} - \\text{Call}",
                         advantages: [
                             "Baisse protégée à niveau connu",
                             "Coût zéro ou minimal",

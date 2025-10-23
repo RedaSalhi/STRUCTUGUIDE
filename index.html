@@ -13,19 +13,28 @@
         <div class="landing-orb orb-3"></div>
     </div>
 
-    <header class="landing-header">
-            <nav class="landing-nav">
-                <a href="index.html" class="nav-link active" id="nav-home">Home</a>
+    <header class="header compare-header">
+        <div class="header-content">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <div>
+                    <h1 id="landing-title">Structured Products Platform</h1>
+                    <p id="landing-description"></p>
+                </div>
+            </div>
+            <nav class="nav-links" aria-label="Navigation principale">
+                <a href="index.html" class="nav-link active" aria-current="page" id="nav-home">Home</a>
                 <a href="structu/structured.html" class="nav-link" id="nav-structured">Structured</a>
                 <a href="options/options.html" class="nav-link" id="nav-options">Options</a>
                 <a href="compare/compare.html" class="nav-link" id="nav-compare">Comparator</a>
                 <a href="quiz/quiz.html" class="nav-link" id="nav-quiz">Quiz</a>
             </nav>
-        <button class="lang-toggle" onclick="toggleLanguage()">
-            <span id="lang-text">FR</span>
-        </button>
-        <h1 id="landing-title">Structured Products Platform</h1>
-        <p id="landing-description">Explore comprehensive guides, payoffs, and visualisations for structured notes and listed options.</p>
+            <button class="lang-toggle" onclick="toggleLanguage()" aria-label="Changer de langue">
+                <span id="lang-text">FR</span>
+            </button>
+        </div>
     </header>
 
     <main class="landing-content">
@@ -47,7 +56,7 @@
     </main>
 
     <footer class="landing-footer">
-        <p id="footer-text">Crafted for structurers, sales, and quants &mdash; stay curious and keep structuring.</p>
+        <p id="footer-text">Crafted for structurers, sales, and quants &mdash; stay curious.</p>
         <p class="footer-copyright">© 2025 REDA SALHI - Tous droits réservés.</p>
     </footer>
 
@@ -72,7 +81,7 @@
                 cardCompareTitle: "Strategy Comparator",
                 cardCompareDesc: "Overlay payoffs, benchmark metrics, and sharpen your expertise with interactive tools.",
                 cardCompareLink: "Launch Comparator",
-                footerText: "Crafted for structurers, sales, and quants — stay curious and keep structuring."
+                footerText: "Crafted for structurers, sales, and quants — stay curious."
             },
             fr: {
                 navHome: "Accueil",
@@ -91,7 +100,7 @@
                 cardCompareTitle: "Comparateur de Stratégies",
                 cardCompareDesc: "Superposez les payoffs, comparez les métriques clés et entraînez-vous grâce à un quiz interactif.",
                 cardCompareLink: "Ouvrir le Comparateur",
-                footerText: "Conçu pour les structurateurs, les ventes et les quants — restez curieux et continuez à structurer."
+                footerText: "Conçu pour les structurateurs, les ventes et les quants — restez curieux."
             }
         };
 

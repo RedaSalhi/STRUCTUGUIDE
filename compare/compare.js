@@ -19,14 +19,14 @@ const UI_TRANSLATIONS = {
     navHome: 'Home',
     navStructured: 'Structured',
     navOptions: 'Options',
-    navCompare: 'Comparator',
+    navCompare: 'Comparison Lab',
     navQuiz: 'Quiz',
+    headerTitle: 'Comparison Lab',
     pageTitle: 'Strategy Comparator - Structured Products & Options',
     heroTitle: 'Structured & Options Strategy Comparator',
-    heroDescription: 'Compare two strategies instantly, overlay payoffs, benchmark key metrics, discover tailored recommendations and test yourself with an interactive quiz.',
+    heroDescription: 'Compare two strategies instantly, overlay payoffs, benchmark key metrics and discover tailored recommendations.',
     tabComparison: 'Comparison',
     tabRecommendations: 'Recommendations',
-    tabQuiz: 'Interactive Quiz',
     strategy1Title: 'Strategy 1',
     strategy2Title: 'Strategy 2',
     strategy1Type: 'Structured',
@@ -34,30 +34,11 @@ const UI_TRANSLATIONS = {
     detailsButton: 'View details',
     metricLabel: 'Metric',
     chartLoading: 'Loading chart...',
-    quizValidate: 'Validate',
-    quizSkip: 'Skip',
-    quizNext: 'Next',
-    quizResultsTitle: 'Results',
-    quizErrorsTitle: 'Questions to review',
-    quizRestart: 'Restart',
-    quizReviewErrors: 'Review mistakes',
-    quizSkippedLabel: 'Question skipped',
-    userAnswerLabel: 'Your answer:',
-    correctAnswerLabel: 'Correct answer:',
-    footerDisclaimer: 'Information provided for educational purposes. Past performance is not indicative of future results.',
+    footerDisclaimer: 'Information provided for educational purposes.',
     footerCopyright: '© 2025 REDA SALHI - Tous droits réservés.',
     modalTitle: 'Strategy details',
     toggleLabel: 'Change language',
-    scoreLabel: 'Score',
     scoreLabelSuffix: ':',
-    finalScoreLabel: 'Overall score',
-    badgeLabel: 'Badge',
-    feedbackSelect: 'Please select an answer before validating.',
-    feedbackCorrectPrefix: '✅ Correct! ',
-    feedbackIncorrectPrefix: '❌ Incorrect! ',
-    feedbackIncorrectAnswer: 'Answer: ',
-    quizRestartConfirm: 'Do you really want to reset the quiz? Your progress will be lost.',
-    quizNoErrors: 'No mistakes to review, great job!',
     riskLabel: 'Risk',
     underlyingReference: 'Underlying (reference)',
     noDataChip: 'No data',
@@ -69,12 +50,12 @@ const UI_TRANSLATIONS = {
     navOptions: 'Options',
     navCompare: 'Comparateur',
     navQuiz: 'Quiz',
+    headerTitle: 'Comparaison Lab',
     pageTitle: 'Comparateur Stratégies - Produits Structurés & Options',
     heroTitle: 'Comparateur Stratégies Structurées & Options',
-    heroDescription: 'Analysez instantanément deux stratégies, visualisez leurs payoffs, comparez leurs métriques clés, découvrez des recommandations adaptées et testez vos connaissances via un quiz interactif.',
+    heroDescription: 'Analysez instantanément deux stratégies, visualisez leurs payoffs, comparez leurs métriques clés et découvrez des recommandations adaptées.',
     tabComparison: 'Comparaison',
     tabRecommendations: 'Recommandations',
-    tabQuiz: 'Quiz interactif',
     strategy1Title: 'Stratégie 1',
     strategy2Title: 'Stratégie 2',
     strategy1Type: 'Structuré',
@@ -82,30 +63,11 @@ const UI_TRANSLATIONS = {
     detailsButton: 'Voir les détails',
     metricLabel: 'Métrique',
     chartLoading: 'Chargement du graphique...',
-    quizValidate: 'Valider',
-    quizSkip: 'Passer',
-    quizNext: 'Suivant',
-    quizResultsTitle: 'Résultats',
-    quizErrorsTitle: 'Questions à revoir',
-    quizRestart: 'Recommencer',
-    quizReviewErrors: 'Revoir mes erreurs',
-    quizSkippedLabel: 'Question passée',
-    userAnswerLabel: 'Votre réponse :',
-    correctAnswerLabel: 'Bonne réponse :',
-    footerDisclaimer: 'Informations fournies à titre pédagogique. Les performances passées ne préjugent pas des performances futures.',
+    footerDisclaimer: 'Informations fournies à titre pédagogique.',
     footerCopyright: '© 2025 REDA SALHI - Tous droits réservés.',
     modalTitle: 'Détails de la stratégie',
     toggleLabel: 'Changer de langue',
-    scoreLabel: 'Score',
     scoreLabelSuffix: ' :',
-    finalScoreLabel: 'Score global',
-    badgeLabel: 'Badge',
-    feedbackSelect: 'Veuillez sélectionner une réponse avant de valider.',
-    feedbackCorrectPrefix: '✅ Correct ! ',
-    feedbackIncorrectPrefix: '❌ Incorrect ! ',
-    feedbackIncorrectAnswer: 'Réponse : ',
-    quizRestartConfirm: 'Voulez-vous vraiment réinitialiser le quiz ? Votre progression sera perdue.',
-    quizNoErrors: 'Aucune erreur à revoir, bravo !',
     riskLabel: 'Risque',
     underlyingReference: 'Sous-jacent (référence)',
     noDataChip: 'Aucune donnée',
@@ -114,19 +76,6 @@ const UI_TRANSLATIONS = {
 };
 
 let currentLanguage = 'en';
-let quizState;
-const BADGE_LABELS = {
-  en: {
-    beginner: 'Beginner 🌀',
-    intermediate: 'Intermediate 🚀',
-    expert: 'Expert 🏆'
-  },
-  fr: {
-    beginner: 'Débutant 🌀',
-    intermediate: 'Intermédiaire 🚀',
-    expert: 'Expert 🏆'
-  }
-};
 
 let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
 
@@ -977,958 +926,6 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     }
   ];
 
-  const quizCategories = [
-    {
-      id: 'capital-protection',
-      name: {
-        en: 'Capital Protection',
-        fr: 'Protection du capital'
-      },
-      color: 'rgba(37,99,235,0.4)',
-      questions: [
-        {
-          question: {
-            en: 'What is the main advantage of a Capital Protection Note?',
-            fr: 'Quel est l’avantage principal d’une Capital Protection Note ?'
-          },
-          options: [
-            { en: 'Guaranteed high return', fr: 'Rendement élevé garanti' },
-            { en: '100% capital protection', fr: 'Protection du capital à 100%' },
-            { en: 'No fees', fr: 'Pas de frais' },
-            { en: 'Full liquidity', fr: 'Liquidité totale' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'The Capital Protection Note guarantees repayment of the initial capital at maturity.',
-            fr: 'La Capital Protection Note garantit le remboursement du capital initial à maturité.'
-          }
-        },
-        {
-          question: {
-            en: 'In a CPPI, what happens if the cushion becomes negative?',
-            fr: 'Dans un CPPI, que se passe-t-il si le coussin devient négatif ?'
-          },
-          options: [
-            { en: 'The product turns short', fr: 'Le produit devient short' },
-            { en: 'The strategy shifts into risk-free assets', fr: 'La stratégie passe en désallocation vers sans-risque' },
-            { en: 'Leverage is increased', fr: 'On augmente le levier' },
-            { en: 'Nothing changes', fr: 'Rien ne change' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'If the cushion turns negative, the strategy deallocates from risky assets (cash lock).',
-            fr: 'Si le coussin devient négatif, la stratégie se désalloue des actifs risqués (cash-lock).'
-          }
-        },
-        {
-          question: {
-            en: 'Which instrument is combined with a zero-coupon bond to structure a guaranteed product?',
-            fr: 'Quel instrument est combiné avec un zéro coupon pour structurer un produit garanti ?'
-          },
-          options: [
-            { en: 'Call option', fr: 'Option call' },
-            { en: 'Put option', fr: 'Option put' },
-            { en: 'Interest rate swap', fr: 'Swap de taux' },
-            { en: 'Futures', fr: 'Futures' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'A call is purchased to capture upside while securing the principal.',
-            fr: 'On achète un call pour capter l’upside tout en garantissant le nominal.'
-          }
-        },
-        {
-          question: {
-            en: 'What is the main residual risk of a capital-guaranteed product?',
-            fr: 'Quel est le principal risque résiduel d’un produit à capital garanti ?'
-          },
-          options: [
-            { en: 'Volatility', fr: 'Volatilité' },
-            { en: 'Issuer credit risk', fr: 'Risque de crédit de l’émetteur' },
-            { en: 'Currency risk', fr: 'Risque de change' },
-            { en: 'Taxation', fr: 'Fiscalité' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'The guarantee depends on the issuer’s solvency, hence credit risk.',
-            fr: 'La garantie dépend de la solvabilité de l’émetteur (risque de crédit).'
-          }
-        },
-        {
-          question: {
-            en: 'Which market parameter makes protection cheaper?',
-            fr: 'Quel paramètre de marché rend la protection moins chère ?'
-          },
-          options: [
-            { en: 'High interest rates', fr: 'Taux élevés' },
-            { en: 'High volatility', fr: 'Volatilité élevée' },
-            { en: 'Low rates', fr: 'Taux bas' },
-            { en: 'High dividends', fr: 'Dividendes élevés' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Higher rates reduce the cost of the zero-coupon bond, freeing budget for options.',
-            fr: 'Des taux élevés permettent d’acheter le zéro coupon moins cher, libérant du budget.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'autocalls',
-      name: {
-        en: 'Autocalls',
-        fr: 'Autocalls'
-      },
-      color: 'rgba(124,58,237,0.4)',
-      questions: [
-        {
-          question: {
-            en: 'What is an autocall?',
-            fr: 'Qu’est-ce qu’un autocall ?'
-          },
-          options: [
-            { en: 'An automatic call', fr: 'Un call automatique' },
-            { en: 'A conditional early-redemption product', fr: 'Un produit à remboursement anticipé conditionnel' },
-            { en: 'A barrier option', fr: 'Une option barrière' },
-            { en: 'A listed warrant', fr: 'Un warrant listé' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'An autocall can redeem before maturity if the underlying meets the trigger level.',
-            fr: 'L’autocall peut se rembourser avant maturité si le sous-jacent dépasse un niveau.'
-          }
-        },
-        {
-          question: {
-            en: 'What is the impact of a lower protection barrier on an autocall’s potential return?',
-            fr: 'Quel impact a une barrière de protection plus basse sur le rendement potentiel d’un Autocall ?'
-          },
-          options: [
-            { en: 'It increases the offered return', fr: 'Elle augmente le rendement offert' },
-            { en: 'It reduces the offered return', fr: 'Elle réduit le rendement offert' },
-            { en: 'No impact', fr: 'Elle n’a aucun impact' },
-            { en: 'It removes any capital loss risk', fr: 'Elle supprime le risque de perte en capital' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'Lower barriers mean more protection for investors, so issuers offer lower coupons.',
-            fr: 'Plus la barrière de protection est basse, plus la protection du capital est élevée — l’émetteur prend moins de risque, donc le rendement offert (coupon potentiel) est plus faible.'
-          }
-        },
-        {
-          question: {
-            en: 'Which observation triggers a classic autocall?',
-            fr: 'Quelle observation déclenche un autocall classique ?'
-          },
-          options: [
-            { en: 'Underlying below the protection barrier', fr: 'Sous-jacent < barrière' },
-            { en: 'Underlying at or above the call level', fr: 'Sous-jacent ≥ niveau de rappel' },
-            { en: 'Volatility spikes higher', fr: 'Volatilité augmente' },
-            { en: 'Time to maturity below three months', fr: 'Temps restant < 3 mois' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'Redemption is triggered if the underlying reaches the predetermined call level.',
-            fr: 'Le remboursement est déclenché si le sous-jacent atteint le niveau de rappel fixé.'
-          }
-        },
-        {
-          question: {
-            en: 'What is the main risk for an autocall in a bearish market?',
-            fr: 'Quel est le principal risque d’un Autocall en marché baissier ?'
-          },
-          options: [
-            { en: 'Capital loss', fr: 'Perte en capital' },
-            { en: 'Non-payment of coupons', fr: 'Non paiement des coupons' },
-            { en: 'Higher volatility', fr: 'Hausse de volatilité' },
-            { en: 'Liquidity risk', fr: 'Risque de liquidité' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'If the protection barrier is breached and the underlying finishes low, capital losses occur.',
-            fr: 'Si la barrière de protection est touchée et que le sous-jacent reste bas à maturité, il peut y avoir perte en capital.'
-          }
-        },
-        {
-          question: {
-            en: 'Which parameter makes autocall coupons more attractive?',
-            fr: 'Quel paramètre rend les coupons autocall plus attractifs ?'
-          },
-          options: [
-            { en: 'High implied volatility', fr: 'Volatilité implicite élevée' },
-            { en: 'Low interest rates', fr: 'Taux d’intérêt bas' },
-            { en: 'Low dividends', fr: 'Dividendes faibles' },
-            { en: 'A very stable underlying', fr: 'Sous-jacent très stable' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Higher implied volatility increases the coupon offered to compensate for stronger barrier risk.',
-            fr: 'une volatilité plus forte augmente la probabilité que le sous-jacent ne franchisse pas les barrières d’autocall, ce qui retarde l’autocall. Pour compenser ce risque, le coupon offert à l’investisseur est plus élevé.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'income',
-      name: {
-        en: 'Income Strategies',
-        fr: 'Stratégies de revenu'
-      },
-      color: 'rgba(16,185,129,0.4)',
-      questions: [
-        {
-          question: {
-            en: 'Which product offers a high fixed coupon in exchange for downside risk?',
-            fr: 'Quel produit offre un coupon fixe élevé en échange d’un risque de baisse ?'
-          },
-          options: [
-            { en: 'Bonus Certificate', fr: 'Bonus' },
-            { en: 'Reverse Convertible', fr: 'Reverse Convertible' },
-            { en: 'Autocall', fr: 'Autocall' },
-            { en: 'Discount Certificate', fr: 'Discount' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'The reverse convertible collects a fixed coupon while taking on short put exposure.',
-            fr: 'Le Reverse Convertible encaisse un coupon fixe contre un short put implicite.'
-          }
-        },
-        {
-          question: {
-            en: 'What is the objective of a covered call?',
-            fr: 'Quel est l’objectif d’un Covered Call ?'
-          },
-          options: [
-            { en: 'Protect the portfolio', fr: 'Protéger le portefeuille' },
-            { en: 'Generate income (a premium)', fr: 'Générer un revenu (une prime)' },
-            { en: 'Amplify upside', fr: 'Amplifier la hausse' },
-            { en: 'Reduce volatility', fr: 'Réduire la volatilité' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'Selling the call brings in a premium and creates additional income.',
-            fr: 'La vente de call permet d’encaisser une prime et de générer du revenu.'
-          }
-        },
-        {
-          question: {
-            en: 'Which product is the most sensitive to dividend expectations?',
-            fr: 'Lequel de ces produits est le plus sensible aux dividendes ?'
-          },
-          options: [
-            { en: 'Reverse Convertible', fr: 'Reverse Convertible' },
-            { en: 'Autocall', fr: 'Autocall' },
-            { en: 'Bonus Certificate', fr: 'Bonus Certificate' },
-            { en: 'Discount Certificate', fr: 'Discount' }
-          ],
-          correct: 3,
-          explanation: {
-            en: 'Discount certificates are highly sensitive to expected dividends (reverse convertibles also at pricing).',
-            fr: 'Les Discount Certificates sont très sensibles aux dividendes anticipés (RC également qu’au pricing).'
-          }
-        },
-        {
-          question: {
-            en: 'Which additional risk do you take with a structured income product?',
-            fr: 'Quel risque additionnel prend-on sur un produit de revenu structuré ?'
-          },
-          options: [
-            { en: 'Issuer credit risk', fr: 'Risque de crédit émetteur' },
-            { en: 'Systematic currency risk', fr: 'Risque de change systématique' },
-            { en: 'Interest-rate risk only', fr: 'Risque de taux exclusivement' },
-            { en: 'Correlation risk', fr: 'Risque de corrélation' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Structured notes are debt instruments subject to the issuer’s credit risk.',
-            fr: 'Les produits structurés sont des titres de créance soumis au risque de crédit.'
-          }
-        },
-        {
-          question: {
-            en: 'Which market environment favours income strategies?',
-            fr: 'Quel environnement de marché favorise les stratégies de revenu ?'
-          },
-          options: [
-            { en: 'High volatility within a range', fr: 'Volatilité élevée et range' },
-            { en: 'Strong bull trend', fr: 'Trend haussier fort' },
-            { en: 'Strong bear trend', fr: 'Trend baissier fort' },
-            { en: 'Completely flat market', fr: 'Marché totalement plat' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Elevated option premiums increase the coupons offered.',
-            fr: 'Les primes optionnelles élevées augmentent les coupons offerts.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'barriers',
-      name: {
-        en: 'Barrier Structures',
-        fr: 'Structures à barrière'
-      },
-      color: 'rgba(234,179,8,0.4)',
-      questions: [
-        {
-          question: {
-            en: 'What is a knock-in barrier?',
-            fr: 'Qu’est-ce qu’une barrière knock-in ?'
-          },
-          options: [
-            { en: 'A level that deactivates an option', fr: 'Un niveau qui désactive une option' },
-            { en: 'A level that activates an option', fr: 'Un niveau qui active une option' },
-            { en: 'A deactivation barrier', fr: 'Une barrière de désactivation' },
-            { en: 'A cap level', fr: 'Un niveau de cap' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'A knock-in only activates the option if the barrier is touched.',
-            fr: 'La knock-in active une option seulement si la barrière est touchée.'
-          }
-        },
-        {
-          question: {
-            en: 'Which structure depends on the barrier never being breached?',
-            fr: 'Quelle structure dépend de l’absence de franchissement de barrière ?'
-          },
-          options: [
-            { en: 'Bonus certificate', fr: 'Bonus' },
-            { en: 'Straddle', fr: 'Straddle' },
-            { en: 'Bull spread', fr: 'Bull Spread' },
-            { en: 'Covered put', fr: 'Put couvert' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'The bonus certificate requires the deactivation barrier never to be hit.',
-            fr: 'Le Bonus requiert que la barrière de désactivation ne soit jamais touchée.'
-          }
-        },
-        {
-          question: {
-            en: 'What are the implications of a continuously monitored barrier?',
-            fr: 'Quelles sont les implications d’une barrière continue ?'
-          },
-          options: [
-            { en: 'Observation only at maturity', fr: 'Observation uniquement finale' },
-            { en: 'Observation at any time', fr: 'Observation à tout instant' },
-            { en: 'Lower barrier level', fr: 'Barrière plus basse' },
-            { en: 'Less risk', fr: 'Moins de risque' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'A continuous barrier is monitored at all times, increasing the chance of activation.',
-            fr: 'La barrière continue est surveillée en tout temps, augmentant le risque de déclenchement.'
-          }
-        },
-        {
-          question: {
-            en: 'Which product typically has a knock-out barrier?',
-            fr: 'Quel produit typique comporte une barrière de knock-out ?'
-          },
-          options: [
-            { en: 'Turbo certificate', fr: 'Tracker (Turbo)' },
-            { en: 'Straddle', fr: 'Straddle' },
-            { en: 'Put spread', fr: 'Put spread' },
-            { en: 'Zero-coupon bond', fr: 'Zero coupon' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Turbos include a knock-out barrier that closes the position.',
-            fr: 'Les turbos possèdent une barrière de knock-out qui clôt la position.'
-          }
-        },
-        {
-          question: {
-            en: 'What happens to time value after a knock-out event?',
-            fr: 'Que devient la valeur temps après knock-out ?'
-          },
-          options: [
-            { en: 'It increases', fr: 'Elle augmente' },
-            { en: 'It disappears', fr: 'Elle disparaît' },
-            { en: 'It stays neutral', fr: 'Elle est neutre' },
-            { en: 'It turns negative', fr: 'Elle devient négative' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'Once knocked out, the position is closed and the remaining time value drops to zero.',
-            fr: 'Après KO, la position est close, la valeur temps résiduelle s annule.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'leverage',
-      name: {
-        en: 'Leverage',
-        fr: 'Effet de levier'
-      },
-      color: 'rgba(59,130,246,0.4)',
-      questions: [
-        {
-          question: {
-            en: 'Which structured product replicates a fixed daily leverage on an index performance?',
-            fr: 'Quel type de produit structuré permet de répliquer un levier quotidien fixe sur la performance d’un indice ?'
-          },
-          options: [
-            { en: 'Outperformance certificate', fr: 'Outperformance Certificate' },
-            { en: 'Autocall', fr: 'Autocall' },
-            { en: 'Reverse convertible', fr: 'Reverse Convertible' },
-            { en: 'Capped bonus', fr: 'Bonus Cappé' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Outperformance certificates deliver a fixed daily leverage, such as +3x.',
-            fr: 'Les Outperformance Certificates appliquent un levier fixe quotidien sur la performance du sous-jacent, par exemple +3x ou +2x.'
-          }
-        },
-        {
-          question: {
-            en: 'What is the main risk for an investor holding a call warrant?',
-            fr: 'Quel est le principal risque pour un investisseur sur un Call Warrant ?'
-          },
-          options: [
-            { en: 'Underlying decline', fr: 'Baisse du sous-jacent' },
-            { en: 'Rise in implied volatility', fr: 'Hausse de la volatilité implicite' },
-            { en: 'Higher interest rates', fr: 'Hausse des taux d’intérêt' },
-            { en: 'Lower dividends', fr: 'Baisse du dividende' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'If the underlying falls, the warrant quickly loses value as delta drops and time value erodes.',
-            fr: 'Le Call Warrant donne le droit d’acheter un sous-jacent à un prix fixé. Si le sous-jacent baisse, le warrant perd rapidement de la valeur car son delta diminue et sa valeur temps s’érode, pouvant devenir nulle à l’échéance.'
-          }
-        },
-        {
-          question: {
-            en: 'Which parameter reduces the leverage of a deep in-the-money call?',
-            fr: 'Quel paramètre réduit le levier d’un call très in-the-money ?'
-          },
-          options: [
-            { en: 'Delta close to 1', fr: 'Delta proche de 1' },
-            { en: 'Positive theta', fr: 'Theta positif' },
-            { en: 'Negative vega', fr: 'Vega négatif' },
-            { en: 'High rho', fr: 'Rho élevé' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'A call that is very ITM behaves like the underlying and therefore loses its leverage effect.',
-            fr: 'Un call très ITM a un delta proche de 1 et se comporte comme le sous-jacent, ce qui réduit l’effet de levier.'
-          }
-        },
-        {
-          question: {
-            en: 'Which structure provides asymmetric leverage?',
-            fr: 'Quel montage structurel procure un levier asymétrique ?'
-          },
-          options: [
-            { en: 'Shark fin', fr: 'Shark Fin' },
-            { en: 'Covered call', fr: 'Covered Call' },
-            { en: 'Straddle', fr: 'Straddle' },
-            { en: 'Short strangle', fr: 'Strangle short' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'The bullish or bearish shark fin mixes leverage with a knock-out feature.',
-            fr: 'La Bullish/Bearish Shark Fin combine levier à la hausse/baisse et KO. (Sauf Sharkfin Twin Win)'
-          }
-        },
-        {
-          question: {
-            en: 'How can you reduce the cost of a leverage strategy?',
-            fr: 'Comment réduire le coût d’une stratégie levier ?'
-          },
-          options: [
-            { en: 'Sell a further-out option', fr: 'Vendre une option plus éloignée' },
-            { en: 'Buy more options', fr: 'Acheter plus d’options' },
-            { en: 'Extend the maturity', fr: 'Allonger la maturité' },
-            { en: 'Ignore the risk', fr: 'Ignorer le risque' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Selling a further strike (forming a spread) helps finance part of the premium.',
-            fr: 'La vente d’une option plus éloignée (spread) finance partiellement la prime.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'vanilla',
-      name: {
-        en: 'Vanilla Options',
-        fr: 'Options vanilles'
-      },
-      color: 'rgba(148,163,184,0.4)',
-      questions: [
-        {
-          question: {
-            en: 'Which Greek letter measures sensitivity to time decay?',
-            fr: 'Quelle lettre grecque mesure la sensibilité au temps ?'
-          },
-          options: [
-            { en: 'Delta', fr: 'Delta' },
-            { en: 'Gamma', fr: 'Gamma' },
-            { en: 'Theta', fr: 'Theta' },
-            { en: 'Vega', fr: 'Vega' }
-          ],
-          correct: 2,
-          explanation: {
-            en: 'Theta captures the erosion of time value.',
-            fr: 'Theta mesure l érosion de la valeur temps.'
-          }
-        },
-        {
-          question: {
-            en: 'A call is in the money when:',
-            fr: 'Un call est dans la monnaie si :'
-          },
-          options: [
-            { en: 'Strike > spot', fr: 'Strike > spot' },
-            { en: 'Strike = spot', fr: 'Strike = spot' },
-            { en: 'Strike < spot', fr: 'Strike < spot' },
-            { en: 'Strike = 0', fr: 'Strike = 0' }
-          ],
-          correct: 2,
-          explanation: {
-            en: 'A call is ITM when the spot exceeds the strike.',
-            fr: 'Pour un call, être ITM signifie que le spot est supérieur au strike.'
-          }
-        },
-        {
-          question: {
-            en: 'What does Gamma measure?',
-            fr: 'Que fait Gamma ?'
-          },
-          options: [
-            { en: 'Sensitivity to spot', fr: 'Sensibilité au spot' },
-            { en: 'Sensitivity of delta', fr: 'Sensibilité du delta' },
-            { en: 'Sensitivity to volatility', fr: 'Sensibilité à la volatilité' },
-            { en: 'Sensitivity to rates', fr: 'Sensibilité aux taux' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'Gamma measures how much delta changes for a move in the underlying.',
-            fr: 'Gamma mesure la variation du delta pour un mouvement de spot.'
-          }
-        },
-        {
-          question: {
-            en: 'Which position benefits from a rise in volatility?',
-            fr: 'Quelle position profite d’une hausse de volatilité ?'
-          },
-          options: [
-            { en: 'Long straddle', fr: 'Long straddle' },
-            { en: 'Short straddle', fr: 'Short straddle' },
-            { en: 'Covered call', fr: 'Covered call' },
-            { en: 'Covered put', fr: 'Put couvert' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Being long options (for example a straddle) means being long vega.',
-            fr: 'Être long sur options (straddle) est long vega.'
-          }
-        },
-        {
-          question: {
-            en: 'Which parameter affects Vega?',
-            fr: 'Quel paramètre influence Vega ?'
-          },
-          options: [
-            { en: 'Interest rates', fr: 'Taux' },
-            { en: 'Time to maturity', fr: 'Temps avant échéance' },
-            { en: 'Dividends', fr: 'Dividendes' },
-            { en: 'Rho', fr: 'Rho' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'Longer maturities increase Vega.',
-            fr: 'Plus la maturité est longue, plus Vega est élevé.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'volatility',
-      name: {
-        en: 'Volatility Management',
-        fr: 'Gestion de volatilité'
-      },
-      color: 'rgba(249,115,22,0.4)',
-      questions: [
-        {
-          question: {
-            en: 'Which product captures a normalisation of volatility?',
-            fr: 'Quel produit capture une normalisation de volatilité ?'
-          },
-          options: [
-            { en: 'Long calendar spread', fr: 'Calendar spread long' },
-            { en: 'Long straddle', fr: 'Straddle long' },
-            { en: 'Long risk reversal', fr: 'Risk reversal long' },
-            { en: 'Long butterfly', fr: 'Butterfly long' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'A long calendar (short near-term vol / long longer-term vol) plays the flattening of the vol curve.',
-            fr: 'Être long calendrier (short vol court terme / long vol long terme) joue l’aplatissement de la courbe de volatilité.'
-          }
-        },
-        {
-          question: {
-            en: 'What is the key risk of a short straddle?',
-            fr: 'Quel risque porte un short straddle ?'
-          },
-          options: [
-            { en: 'Limited risk', fr: 'Risque limité' },
-            { en: 'Unlimited risk', fr: 'Risque illimité' },
-            { en: 'No risk', fr: 'Pas de risque' },
-            { en: 'Interest-rate risk only', fr: 'Risque de taux uniquement' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'Selling a straddle exposes you to theoretically unlimited losses.',
-            fr: 'La vente d’un straddle expose à des pertes illimitées.'
-          }
-        },
-        {
-          question: {
-            en: 'Which instrument tracks realised volatility?',
-            fr: 'Quel instrument suit la volatilité réalisée ?'
-          },
-          options: [
-            { en: 'Variance swap', fr: 'Variance swap' },
-            { en: 'Forward', fr: 'Forward' },
-            { en: 'Future', fr: 'Future' },
-            { en: 'Interest rate swap', fr: 'Swap de taux' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'A variance swap pays the difference between realised variance and the strike.',
-            fr: 'Un variance swap verse la différence entre variance réalisée et strike.'
-          }
-        },
-        {
-          question: {
-            en: 'How do you hedge the vega of a long straddle?',
-            fr: 'Comment couvrir Vega d’un straddle long ?'
-          },
-          options: [
-            { en: 'Buy more options', fr: 'Acheter plus d’options' },
-            { en: 'Extend the maturity', fr: 'Rallonger la maturité' },
-            { en: 'Short the underlying', fr: 'Shorter le sous-jacent' },
-            { en: 'Short vega by selling options', fr: 'Short vega via vente d’options' }
-          ],
-          correct: 3,
-          explanation: {
-            en: 'Vega hedging typically requires selling options (short vega).',
-            fr: 'La couverture de Vega nécessite souvent des options vendues.'
-          }
-        },
-        {
-          question: {
-            en: 'Which environment hurts a long straddle?',
-            fr: 'Quel environnement nuit à un long straddle ?'
-          },
-          options: [
-            { en: 'Volatility increases', fr: 'Volatilité monte' },
-            { en: 'Large move in the spot', fr: 'Gros mouvement sur le spot' },
-            { en: 'Volatility drops after purchase', fr: 'Volatilité chute après achat' },
-            { en: 'Higher rates', fr: 'Hausse des taux' }
-          ],
-          correct: 2,
-          explanation: {
-            en: 'A drop in volatility or a static spot erodes the premium paid.',
-            fr: 'Une baisse de volatilité ou un spot immobile érode la prime payée.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'protection',
-      name: {
-        en: 'Hedging & Protection',
-        fr: 'Couverture & hedging'
-      },
-      color: 'rgba(168,85,247,0.4)',
-      questions: [
-        {
-          question: {
-            en: 'Which setup protects a portfolio while capping upside?',
-            fr: 'Quel montage protège un portefeuille tout en vendant la hausse ?'
-          },
-          options: [
-            { en: 'Collar', fr: 'Collar' },
-            { en: 'Straddle', fr: 'Straddle' },
-            { en: 'Strangle', fr: 'Strangle' },
-            { en: 'Spread', fr: 'Spread' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'A collar combines a protective put with a covered call.',
-            fr: 'Un collar combine achat de protected put et de covered call.'
-          }
-        },
-        {
-          question: {
-            en: 'A client holds European equities and fears a drop in the euro. What could you propose?',
-            fr: 'Un client détient un portefeuille d’actions européennes et craint une baisse de l’euro. Que proposer ?'
-          },
-          options: [
-            { en: 'Buy EUR/USD calls', fr: 'Achat de call EUR/USD' },
-            { en: 'Sell EUR/USD futures', fr: 'Vente de futures EUR/USD' },
-            { en: 'Buy EUR/USD puts', fr: 'Achat de put EUR/USD' },
-            { en: 'Buy a USD/EUR forward', fr: 'Achat de forward USD/EUR' }
-          ],
-          correct: 3,
-          explanation: {
-            en: 'Buying a USD/EUR forward locks the future conversion rate and hedges the FX risk.',
-            fr: 'Pour couvrir le risque de change, il peut acheter un forward USD/EUR afin de verrouiller son taux de conversion futur.'
-          }
-        },
-        {
-          question: {
-            en: 'Which instrument hedges currency risk?',
-            fr: 'Quel instrument couvre le risque de change ?'
-          },
-          options: [
-            { en: 'FX forward', fr: 'Forward FX' },
-            { en: 'Interest rate swap', fr: 'Swap de taux' },
-            { en: 'Equity option', fr: 'Option equity' },
-            { en: 'Commodity futures', fr: 'Futures commodities' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'An FX forward neutralises future foreign exchange exposure.',
-            fr: 'Le forward de change neutralise le FX futur.'
-          }
-        },
-        {
-          question: {
-            en: 'How can you reduce the premium of a protective put?',
-            fr: 'Comment réduire la prime d’une put protectrice ?'
-          },
-          options: [
-            { en: 'Sell a call', fr: 'Vendre un call' },
-            { en: 'Buy a higher-priced option', fr: 'Acheter plus cher' },
-            { en: 'Shorten the maturity', fr: 'Raccourcir la maturité' },
-            { en: 'Ignore the risk', fr: 'Ignorer le risque' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Selling a call creates a collar and lowers the net premium.',
-            fr: 'La vente d’un call convertit la stratégie en collar, réduisant la prime nette.'
-          }
-        },
-        {
-          question: {
-            en: 'If a delta-neutral portfolio still loses money, what could be the cause?',
-            fr: 'Lorsqu’un portefeuille est couvert delta-neutre mais perd quand même de l’argent, que peut-on suspecter ?'
-          },
-          options: [
-            { en: 'Incorrect risk-free rate', fr: 'Un mauvais calcul du taux sans risque' },
-            { en: 'Unhedged gamma or vega exposure', fr: 'Un effet de Gamma ou de Vega non couvert' },
-            { en: 'Error in the risk premium', fr: 'Une erreur dans la prime de risque' },
-            { en: 'Currency mismatch', fr: 'Un problème de taux de change' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'Delta hedging does not protect against gamma (convexity) or vega (volatility) risks.',
-            fr: 'Une couverture delta-neutre ne protège pas des variations de Gamma (convexité) ni de Vega (volatilité). Ces risques peuvent expliquer une perte résiduelle.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'income-options',
-      name: {
-        en: 'Yield Enhancement',
-        fr: 'Optimisation de rendement'
-      },
-      color: 'rgba(5,150,105,0.4)',
-      questions: [
-        {
-          question: {
-            en: 'Which option structure collects a premium in exchange for a cap?',
-            fr: 'Quel montage optionnel encaisse une prime en échange d’un cap ?'
-          },
-          options: [
-            { en: 'Covered call', fr: 'Covered Call' },
-            { en: 'Protective put', fr: 'Protective Put' },
-            { en: 'Long straddle', fr: 'Long Straddle' },
-            { en: 'Long calendar', fr: 'Calendar long' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Selling a covered call generates income but caps the upside.',
-            fr: 'La vente de call couvre génère un revenu mais plafonne la hausse.'
-          }
-        },
-        {
-          question: {
-            en: 'What is the payoff of a reverse convertible if the barrier holds?',
-            fr: 'Quel est le payoff d’un Reverse Convertible si la barrière est respectée ?'
-          },
-          options: [
-            { en: 'Total loss', fr: 'Perte totale' },
-            { en: 'Coupon plus nominal', fr: 'Coupon + nominal' },
-            { en: 'Delivery of the underlying', fr: 'Livraison du sous-jacent' },
-            { en: 'Zero', fr: 'Zéro' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'The coupon is guaranteed and the nominal is repaid if the barrier remains untouched.',
-            fr: 'Le coupon est garanti et le nominal est remboursé si la barrière tient.'
-          }
-        },
-        {
-          question: {
-            en: 'Which listed position replicates a discount certificate?',
-            fr: 'Quel produit listé reproduit un Discount Certificate ?'
-          },
-          options: [
-            { en: 'Long call + short put', fr: 'Long call + short put' },
-            { en: 'Long put only', fr: 'Long put seule' },
-            { en: 'Short call + long stock', fr: 'Short call + long action' },
-            { en: 'Futures', fr: 'Futures' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'A discount certificate equals a covered call; likewise a zero-coupon plus short put.',
-            fr: 'Un discount équivaut à un covered call, de même un ZCB + short put'
-          }
-        },
-        {
-          question: {
-            en: 'Why do reverse convertible coupons increase with implied volatility?',
-            fr: 'Pourquoi les coupons offerts par un Reverse Convertible augmentent-ils avec la volatilité implicite ?'
-          },
-          options: [
-            { en: 'Because the issuer sells more puts', fr: 'Parce que l’émetteur vend plus d’options put' },
-            { en: 'Because the sold option premium is higher when volatility rises', fr: 'Parce que la prime d’option vendue vaut plus cher quand la volatilité augmente' },
-            { en: 'Because correlation drops', fr: 'Parce que la corrélation diminue' },
-            { en: 'Because rates rise', fr: 'Parce que les taux montent' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'Higher implied volatility increases the value of the short puts in the structure, boosting coupons.',
-            fr: 'Une volatilité implicite plus élevée augmente la valeur des puts vendues dans la structure, donc le coupon potentiel. (même raisonnement pourautres paramétres)'
-          }
-        },
-        {
-          question: {
-            en: 'Which variable makes selling options more attractive?',
-            fr: 'Quelle variable rend une vente d’option plus attractive ?'
-          },
-          options: [
-            { en: 'High implied volatility', fr: 'Volatilité implicite élevée' },
-            { en: 'Short time to expiry', fr: 'Temps court' },
-            { en: 'Low rates', fr: 'Taux bas' },
-            { en: 'High dividends', fr: 'Dividendes élevés' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Higher implied volatility increases the premium received when selling options.',
-            fr: 'Une volatilité implicite élevée augmente le prix de l’option vendue.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'hybrids',
-      name: {
-        en: 'Exotic & Hybrid',
-        fr: 'Exotiques & hybrides'
-      },
-      color: 'rgba(99,102,241,0.4)',
-      questions: [
-        {
-          question: {
-            en: 'Which product combines several underlyings through correlation?',
-            fr: 'Quel produit combine plusieurs sous-jacents via corrélation ?'
-          },
-          options: [
-            { en: 'Basket autocall', fr: 'Basket autocall' },
-            { en: 'Vanilla call', fr: 'Vanilla call' },
-            { en: 'Put spread', fr: 'Put spread' },
-            { en: 'Forward', fr: 'Forward' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'Basket autocalls rely on the correlation between underlyings.',
-            fr: 'Les autocalls baskets reposent sur la corrélation entre sous-jacents.'
-          }
-        },
-        {
-          question: {
-            en: 'Which payoff depends on a specific path?',
-            fr: 'Quel payoff dépend d’un chemin spécifique ?'
-          },
-          options: [
-            { en: 'Vanilla option', fr: 'Vanilla' },
-            { en: 'Forward', fr: 'Forward' },
-            { en: 'Asian option', fr: 'Asian option' },
-            { en: 'Swap', fr: 'Swap' }
-          ],
-          correct: 2,
-          explanation: {
-            en: 'Asian options are path-dependent because they average the underlying.',
-            fr: 'Les options asiatiques sont path-dependent. (Moyenne)'
-          }
-        },
-        {
-          question: {
-            en: 'Which feature distinguishes cliquet notes?',
-            fr: 'Quelle caractéristique distingue les cliquets ?'
-          },
-          options: [
-            { en: 'Single strike', fr: 'Strike unique' },
-            { en: 'Coupons fixed step by step', fr: 'Fixation de coupons par paliers' },
-            { en: 'No barrier', fr: 'Pas de barrière' },
-            { en: 'Linearity', fr: 'Linearité' }
-          ],
-          correct: 1,
-          explanation: {
-            en: 'Cliquet structures record successive performances or coupons.',
-            fr: 'Les cliquets enregistrent des coupons/performances successives.'
-          }
-        },
-        {
-          question: {
-            en: 'What is the main risk of a commodity/equity hybrid product?',
-            fr: 'Quel est le principal risque d’un produit hybride commodity/action ?'
-          },
-          options: [
-            { en: 'Uncertain correlation', fr: 'Corrélation incertaine' },
-            { en: 'Lack of volatility', fr: 'Absence de volatilité' },
-            { en: 'Negative rates', fr: 'Taux négatifs' },
-            { en: 'Dividends', fr: 'Dividendes' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'The correlation between assets can deteriorate and hurt the payoff.',
-            fr: 'La corrélation entre actifs peut se dégrader et impacter le payoff.'
-          }
-        },
-        {
-          question: {
-            en: 'Which product uses realised variance as the underlying?',
-            fr: 'Quel produit utilise la variance réalisée comme sous-jacent ?'
-          },
-          options: [
-            { en: 'Variance swap', fr: 'Variance swap' },
-            { en: 'Autocall', fr: 'Autocall' },
-            { en: 'Zero-coupon bond', fr: 'Zero coupon' },
-            { en: 'FX forward', fr: 'Forward FX' }
-          ],
-          correct: 0,
-          explanation: {
-            en: 'A variance swap has realised variance as its underlying.',
-            fr: 'La variance réalisée est l’actif sous-jacent d’un variance swap.'
-          }
-        }
-      ]
-    }
-  ];
 
   const dom = {};
   let comparisonChart;
@@ -1936,17 +933,18 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
 
   document.addEventListener('DOMContentLoaded', () => {
     cacheDom();
+    buildRecommendations();
     populateSelects();
     setupTabs();
     initChart();
     initComparison();
     initModal();
-    initQuiz();
     updateCurrentYear();
     initializeLanguage();
   });
 
   function cacheDom() {
+    dom.headerTitle = document.getElementById('header-title');
     dom.navHome = document.getElementById('nav-home');
     dom.navStructured = document.getElementById('nav-structured');
     dom.navOptions = document.getElementById('nav-options');
@@ -1958,7 +956,6 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     dom.heroDescription = document.getElementById('compare-hero-description');
     dom.tabComparisonLabel = document.getElementById('tab-comparison-label');
     dom.tabRecommendationsLabel = document.getElementById('tab-recommendations-label');
-    dom.tabQuizLabel = document.getElementById('tab-quiz-label');
     dom.strategy1Title = document.getElementById('strategy-1-title');
     dom.strategy2Title = document.getElementById('strategy-2-title');
     dom.detailsButton1 = document.getElementById('details-button-1');
@@ -1984,25 +981,6 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     dom.modalTitle = document.getElementById('modal-title');
     dom.modalDescription = document.getElementById('modal-description');
     dom.modalPoints = document.getElementById('modal-points');
-    dom.quizCategoryTitle = document.getElementById('quiz-category-title');
-    dom.quizCategoryBadge = document.getElementById('quiz-category-badge');
-    dom.quizProgressCount = document.getElementById('quiz-progress-count');
-    dom.quizScore = document.getElementById('quiz-score');
-    dom.quizQuestion = document.getElementById('quiz-question-text');
-    dom.quizOptions = document.getElementById('quiz-options-container');
-    dom.quizFeedback = document.getElementById('quiz-feedback');
-    dom.quizValidate = document.getElementById('quiz-validate');
-    dom.quizSkip = document.getElementById('quiz-skip');
-    dom.quizResultsTitle = document.getElementById('quiz-results-title');
-    dom.quizResults = document.getElementById('quiz-results');
-    dom.quizFinalScore = document.getElementById('quiz-final-score');
-    dom.quizBadge = document.getElementById('quiz-badge');
-    dom.resultsBreakdown = document.getElementById('results-breakdown');
-    dom.quizRestart = document.getElementById('quiz-restart');
-    dom.quizReviewErrors = document.getElementById('quiz-review-errors');
-    dom.quizErrorsTitle = document.getElementById('quiz-errors-title');
-    dom.quizErrorsSection = document.getElementById('quiz-errors');
-    dom.quizErrorsContainer = document.getElementById('errors-container');
   }
 
   function initializeLanguage() {
@@ -2040,6 +1018,7 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
       dom.langToggle.setAttribute('aria-label', t.toggleLabel);
     }
 
+    if (dom.headerTitle) dom.headerTitle.textContent = t.headerTitle;
     if (dom.navHome) dom.navHome.textContent = t.navHome;
     if (dom.navStructured) dom.navStructured.textContent = t.navStructured;
     if (dom.navOptions) dom.navOptions.textContent = t.navOptions;
@@ -2052,7 +1031,6 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
 
     if (dom.tabComparisonLabel) dom.tabComparisonLabel.textContent = t.tabComparison;
     if (dom.tabRecommendationsLabel) dom.tabRecommendationsLabel.textContent = t.tabRecommendations;
-    if (dom.tabQuizLabel) dom.tabQuizLabel.textContent = t.tabQuiz;
 
     if (dom.strategy1Title) dom.strategy1Title.textContent = t.strategy1Title;
     if (dom.strategy2Title) dom.strategy2Title.textContent = t.strategy2Title;
@@ -2067,13 +1045,6 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     if (dom.strategy2Label) dom.strategy2Label.textContent = t.strategy2Title;
     if (dom.chartLoading) dom.chartLoading.textContent = t.chartLoading;
 
-    if (dom.quizValidate) dom.quizValidate.textContent = t.quizValidate;
-    if (dom.quizSkip) dom.quizSkip.textContent = t.quizSkip;
-    if (dom.quizResultsTitle) dom.quizResultsTitle.textContent = t.quizResultsTitle;
-    if (dom.quizErrorsTitle) dom.quizErrorsTitle.textContent = t.quizErrorsTitle;
-    if (dom.quizRestart) dom.quizRestart.textContent = t.quizRestart;
-    if (dom.quizReviewErrors) dom.quizReviewErrors.textContent = t.quizReviewErrors;
-
     if (dom.footerDisclaimer) dom.footerDisclaimer.textContent = t.footerDisclaimer;
     if (dom.footerCopyright) {
       dom.footerCopyright.innerHTML = t.footerCopyright;
@@ -2085,8 +1056,6 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     underlyingReferenceLabel = t.underlyingReference || UI_TRANSLATIONS.en.underlyingReference;
 
     buildRecommendations();
-    updateQuizScoreDisplay();
-    updateFinalScoreDisplay();
 
     if (dom.strategySelect1 && dom.strategySelect1.options.length && dom.strategySelect2 && dom.strategySelect2.options.length) {
       initComparison();
@@ -2104,26 +1073,6 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     }
     applyTranslations();
   }
-
-  function updateQuizScoreDisplay() {
-    if (!dom.quizScore || !quizState) return;
-    const t = UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.en;
-    const answered = quizState.answered;
-    const percent = answered === 0 ? 0 : Math.round((quizState.totalCorrect / answered) * 100);
-    dom.quizScore.textContent = `${t.scoreLabel}${t.scoreLabelSuffix} ${quizState.totalCorrect} / ${answered} (${percent}%)`;
-  }
-
-  function updateFinalScoreDisplay(scorePercent = null) {
-    if (!dom.quizFinalScore || !quizState) return;
-    const t = UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.en;
-    const total = quizState.totalQuestions || 0;
-    const percent = scorePercent !== null ? scorePercent : (total === 0 ? 0 : Math.round((quizState.totalCorrect / total) * 100));
-    dom.quizFinalScore.textContent = `${t.finalScoreLabel}${t.scoreLabelSuffix} ${quizState.totalCorrect} / ${total} (${percent}%)`;
-    if (dom.quizBadge) {
-      dom.quizBadge.textContent = `${t.badgeLabel}${t.scoreLabelSuffix} ${resolveBadge(percent)}`;
-    }
-  }
-
   function populateSelects() {
     const structuredOptions = strategyUniverse.structured
       .map((strategy) => `<option value="${strategy.id}">${strategy.name}</option>`)
@@ -2247,27 +1196,25 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
         },
         plugins: {
           legend: {
-            position: 'bottom',
             labels: {
               color: '#e2e8f0'
             }
           },
           tooltip: {
             callbacks: {
-              label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(1)}%`
+              title: (items) => {
+                const value = items[0]?.parsed?.x;
+                return value != null ? `Spot: ${value}%` : '';
+              },
+              label: (item) => {
+                const dataset = item.dataset;
+                const yValue = item.parsed.y;
+                return `${dataset.label}: ${yValue.toFixed(2)}%`;
+              }
             }
           },
           annotation: {
             annotations: {}
-          }
-        },
-        elements: {
-          line: {
-            tension: 0.22
-          },
-          point: {
-            radius: 0,
-            hoverRadius: 4
           }
         }
       }
@@ -2422,7 +1369,9 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     }
 
     comparisonChart.data.datasets = datasets;
-    comparisonChart.options.plugins.annotation.annotations = annotations;
+    if (comparisonChart.options.plugins.annotation) {
+      comparisonChart.options.plugins.annotation.annotations = annotations;
+    }
     comparisonChart.update();
 
     requestAnimationFrame(() => {
@@ -2518,256 +1467,4 @@ let underlyingReferenceLabel = UI_TRANSLATIONS.en.underlyingReference;
     }
   }
 
-  quizState = {
-    categoryIndex: 0,
-    questionIndex: 0,
-    totalCorrect: 0,
-    totalQuestions: quizCategories.reduce((acc, cat) => acc + cat.questions.length, 0),
-    answered: 0,
-    history: [],
-    validated: false
-  };
-
-  function initQuiz() {
-    dom.quizValidate.addEventListener('click', handleQuizValidate);
-    dom.quizSkip.addEventListener('click', handleQuizSkip);
-    dom.quizRestart.addEventListener('click', handleQuizRestart);
-    dom.quizReviewErrors.addEventListener('click', handleQuizReviewErrors);
-
-    renderQuizQuestion();
-  }
-
-  function getCurrentQuestion() {
-    const category = quizCategories[quizState.categoryIndex];
-    const question = category.questions[quizState.questionIndex];
-    return { category, question };
-  }
-
-  function renderQuizQuestion() {
-    const { category, question } = getCurrentQuestion();
-    const t = UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.en;
-
-    const localizedCategoryName = resolveLocalized(category.name);
-    dom.quizCategoryTitle.textContent = localizedCategoryName;
-    dom.quizCategoryBadge.textContent = localizedCategoryName;
-    dom.quizCategoryBadge.style.backgroundColor = category.color;
-    dom.quizProgressCount.textContent = `Question ${quizState.questionIndex + 1} / ${category.questions.length}`;
-    dom.quizQuestion.textContent = resolveLocalized(question.question);
-
-    dom.quizOptions.innerHTML = question.options
-      .map((option, index) => {
-        const optionText = resolveLocalized(option);
-        const ariaLabel = optionText.replace(/"/g, '&quot;');
-        return `
-          <label class="quiz-option">
-            <input type="radio" name="quiz-option" value="${index}" aria-label="${ariaLabel}">
-            <span>${optionText}</span>
-          </label>
-        `;
-      })
-      .join('');
-
-    dom.quizFeedback.classList.add('hidden');
-    dom.quizFeedback.textContent = '';
-    dom.quizFeedback.classList.remove('success', 'error');
-
-    quizState.validated = false;
-    dom.quizValidate.textContent = t.quizValidate;
-    dom.quizSkip.textContent = t.quizSkip;
-    dom.quizSkip.disabled = false;
-
-    updateQuizScoreDisplay();
-  }
-
-  function handleQuizValidate() {
-    if (quizState.validated) {
-      goToNextQuizStep();
-      return;
-    }
-
-    const t = UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.en;
-    const selected = dom.quizOptions.querySelector('input[name="quiz-option"]:checked');
-    if (!selected) {
-      dom.quizFeedback.classList.remove('hidden', 'success');
-      dom.quizFeedback.classList.add('error');
-      dom.quizFeedback.textContent = t.feedbackSelect;
-      return;
-    }
-
-    const selectedIndex = Number(selected.value);
-    const { category, question } = getCurrentQuestion();
-    const isCorrect = selectedIndex === question.correct;
-
-    quizState.answered += 1;
-    if (isCorrect) {
-      quizState.totalCorrect += 1;
-    }
-
-    const selectedOption = question.options[selectedIndex];
-    const correctOption = question.options[question.correct];
-    quizState.history.push({
-      categoryName: category.name,
-      question: question.question,
-      selectedOption,
-      selectedIndex,
-      correctOption,
-      correctIndex: question.correct,
-      explanation: question.explanation,
-      isCorrect,
-      skipped: false
-    });
-
-    dom.quizFeedback.classList.remove('hidden');
-    dom.quizOptions.querySelectorAll('input').forEach((input) => {
-      input.disabled = true;
-    });
-
-    const explanationText = resolveLocalized(question.explanation);
-    if (isCorrect) {
-      dom.quizFeedback.classList.add('success');
-      dom.quizFeedback.textContent = `${t.feedbackCorrectPrefix}${explanationText}`;
-    } else {
-      dom.quizFeedback.classList.add('error');
-      const correctAnswerText = resolveLocalized(correctOption);
-      dom.quizFeedback.textContent = `${t.feedbackIncorrectPrefix}${t.feedbackIncorrectAnswer}${correctAnswerText}. ${explanationText}`;
-    }
-
-    quizState.validated = true;
-    dom.quizValidate.textContent = t.quizNext;
-    dom.quizSkip.disabled = true;
-
-    updateQuizScoreDisplay();
-  }
-
-  function handleQuizSkip() {
-    if (!quizState.validated) {
-      const { category, question } = getCurrentQuestion();
-      quizState.history.push({
-        categoryName: category.name,
-        question: question.question,
-        selectedOption: null,
-        selectedIndex: null,
-        correctOption: question.options[question.correct],
-        correctIndex: question.correct,
-        explanation: question.explanation,
-        isCorrect: false,
-        skipped: true
-      });
-    }
-    goToNextQuizStep();
-  }
-
-  function goToNextQuizStep() {
-    const category = quizCategories[quizState.categoryIndex];
-    if (quizState.questionIndex < category.questions.length - 1) {
-      quizState.questionIndex += 1;
-      renderQuizQuestion();
-      return;
-    }
-
-    if (quizState.categoryIndex < quizCategories.length - 1) {
-      quizState.categoryIndex += 1;
-      quizState.questionIndex = 0;
-      renderQuizQuestion();
-      return;
-    }
-
-    finalizeQuiz();
-  }
-
-  function finalizeQuiz() {
-    dom.quizResults.classList.add('active');
-    const scorePercent = Math.round((quizState.totalCorrect / quizState.totalQuestions) * 100);
-    updateFinalScoreDisplay(scorePercent);
-    dom.quizValidate.disabled = true;
-    dom.quizSkip.disabled = true;
-
-    buildResultsBreakdown();
-  }
-
-  function resolveBadge(scorePercent) {
-    const labels = BADGE_LABELS[currentLanguage] || BADGE_LABELS.en;
-    if (scorePercent > 80) return labels.expert;
-    if (scorePercent >= 60) return labels.intermediate;
-    return labels.beginner;
-  }
-
-  function buildResultsBreakdown() {
-    const perCategory = quizCategories.map((category, index) => {
-      const history = quizState.history.slice(index * category.questions.length, (index + 1) * category.questions.length);
-      const correctAnswers = history.filter((item) => item.isCorrect).length;
-      const percent = Math.round((correctAnswers / category.questions.length) * 100);
-      return { category, correctAnswers, percent };
-    });
-
-    dom.resultsBreakdown.innerHTML = perCategory
-      .map(({ category, correctAnswers, percent }) => {
-        const localizedName = resolveLocalized(category.name);
-        return `
-          <div class="breakdown-card">
-            <strong>${localizedName}</strong>
-            <p>${correctAnswers} / ${category.questions.length}</p>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width:${percent}%; background:${category.color};"></div>
-            </div>
-          </div>
-        `
-        ;
-      })
-      .join('');
-  }
-
-  function handleQuizRestart() {
-    const t = UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.en;
-    const confirmation = window.confirm(t.quizRestartConfirm);
-    if (!confirmation) return;
-    resetQuizState();
-    dom.quizResults.classList.remove('active');
-    dom.quizErrorsSection.classList.remove('active');
-    renderQuizQuestion();
-    updateFinalScoreDisplay();
-  }
-
-  function resetQuizState() {
-    quizState.categoryIndex = 0;
-    quizState.questionIndex = 0;
-    quizState.totalCorrect = 0;
-    quizState.answered = 0;
-    quizState.history = [];
-    quizState.validated = false;
-    dom.quizValidate.disabled = false;
-    dom.quizSkip.disabled = false;
-  }
-
-  function handleQuizReviewErrors() {
-    const mistakes = quizState.history.filter((item) => !item.isCorrect);
-    const t = UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.en;
-    if (!mistakes.length) {
-      dom.quizErrorsSection.classList.add('active');
-      dom.quizErrorsContainer.innerHTML = `<p>${t.quizNoErrors}</p>`;
-      return;
-    }
-
-    dom.quizErrorsSection.classList.add('active');
-    dom.quizErrorsContainer.innerHTML = mistakes
-      .map((item) => {
-        const categoryName = resolveLocalized(item.categoryName);
-        const questionText = resolveLocalized(item.question);
-        const userAnswer = item.skipped ? t.quizSkippedLabel : resolveLocalized(item.selectedOption);
-        const correctAnswer = resolveLocalized(item.correctOption);
-        const explanationText = resolveLocalized(item.explanation);
-        const displayedAnswer = userAnswer || '—';
-        return `
-          <div class="error-item">
-            <strong>${categoryName}</strong>
-            <p>${questionText}</p>
-            <p><em>${t.userAnswerLabel}</em> ${displayedAnswer}</p>
-            <p><em>${t.correctAnswerLabel}</em> ${correctAnswer}</p>
-            <p>${explanationText}</p>
-          </div>
-        `
-        ;
-      })
-      .join('');
-  }
 })();

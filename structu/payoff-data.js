@@ -311,93 +311,6 @@ window.PAYOFF_DATA = {
         ]
     },
 
-    "Cliquet": {
-        type: "capital-protection",
-        xRange: [40, 160],
-        yRange: [100, 190],
-        params: {
-            participation: 1.5,
-            cap: 150
-        },
-        calculate: function(S, S0 = 100) {
-            const p = this.params;
-            const level = (S / S0) * 100;
-            if (level >= 100) {
-                const payoff = 100 + p.participation * (level - 100);
-                return Math.min(p.cap, payoff);
-            }
-            return 100;
-        },
-        annotations: [
-            { y: 100, label: "Capital Guarantee", color: "#10b981", horizontal: true },
-            { y: 150, label: "Capped Sum of Gains", color: "#8b5cf6", horizontal: true }
-        ],
-        zones: [
-            { from: 40, to: 100, color: "rgba(16, 185, 129, 0.12)", label: "Protected" },
-            { from: 100, to: 160, color: "rgba(59, 130, 246, 0.12)", label: "Accumulated Upside" }
-        ]
-    },
-
-    "Ariane": {
-        type: "capital-protection",
-        xRange: [40, 160],
-        yRange: [100, 160],
-        params: {
-            bonusHigh: 8,
-            bonusBase: 4,
-            softBarrier: 80,
-            hardBarrier: 60
-        },
-        calculate: function(S, S0 = 100) {
-            const p = this.params;
-            const level = (S / S0) * 100;
-            if (level >= 100) {
-                return 100 + p.bonusHigh;
-            }
-            if (level >= p.softBarrier) {
-                return 100 + p.bonusBase;
-            }
-            if (level >= p.hardBarrier) {
-                return 100;
-            }
-            return 100;
-        },
-        annotations: [
-            { y: 108, label: "Full Coupon", color: "#22c55e", horizontal: true },
-            { y: 104, label: "Base Coupon", color: "#f59e0b", horizontal: true },
-            { x: 80, label: "Soft Barrier", color: "#f97316" },
-            { x: 60, label: "Hard Barrier", color: "#ef4444" }
-        ],
-        zones: [
-            { from: 40, to: 60, color: "rgba(239, 68, 68, 0.12)", label: "Coupon reduced" },
-            { from: 60, to: 80, color: "rgba(251, 191, 36, 0.12)", label: "Base coupon only" },
-            { from: 80, to: 160, color: "rgba(16, 185, 129, 0.12)", label: "Full coupon" }
-        ]
-    },
-
-    "Profiler": {
-        type: "capital-protection",
-        xRange: [60, 150],
-        yRange: [100, 190],
-        params: {
-            participation: 140
-        },
-        calculate: function(S, S0 = 100) {
-            const level = (S / S0) * 100;
-            if (level <= 100) return 100;
-            const upside = (level - 100) * (this.params.participation / 100);
-            return 100 + upside;
-        },
-        annotations: [
-            { y: 100, label: "Capital Guarantee", color: "#10b981", horizontal: true },
-            { y: 160, label: "Best-portfolio Boost", color: "#8b5cf6", horizontal: true }
-        ],
-        zones: [
-            { from: 60, to: 100, color: "rgba(16, 185, 129, 0.12)", label: "Capital protected" },
-            { from: 100, to: 150, color: "rgba(99, 102, 241, 0.12)", label: "Best-of upside" }
-        ]
-    },
-
     "Capuccino": {
         type: "capital-protection",
         xRange: [80, 160],
@@ -452,30 +365,6 @@ window.PAYOFF_DATA = {
         ]
     },
 
-    "Rainbow": {
-        type: "capital-protection",
-        xRange: [60, 160],
-        yRange: [100, 160],
-        params: {
-            multiplier: 80,
-            cap: 160
-        },
-        calculate: function(S, S0 = 100) {
-            const p = this.params;
-            const level = (S / S0) * 100;
-            if (level <= 100) return 100;
-            const payoff = 100 + (p.multiplier / 100) * (level - 100);
-            return Math.min(p.cap, payoff);
-        },
-        annotations: [
-            { y: 100, label: "Capital", color: "#10b981", horizontal: true },
-            { y: 150, label: "Scaled Basket", color: "#8b5cf6", horizontal: true }
-        ],
-        zones: [
-            { from: 60, to: 100, color: "rgba(16, 185, 129, 0.12)", label: "Protected" },
-            { from: 100, to: 160, color: "rgba(59, 130, 246, 0.12)", label: "Weighted upside" }
-        ]
-    },
 
     "Lookback": {
         type: "capital-protection",
@@ -745,25 +634,6 @@ window.PAYOFF_DATA = {
             if (perfPct <= 100) return 100; // capital protection at maturity
             // Asian averaging dampens upside: model as 70% participation beyond the strike
             return 100 + 0.7 * (perfPct - 100);
-        },
-        annotations: [
-            { x: 100, label: "Strike", color: "#6366f1" },
-            { y: 100, label: "Capital", color: "#10b981" }
-        ]
-    },
-
-    "Himalaya": {
-        type: "capital-protection",
-        xRange: [40, 160],
-        yRange: [80, 160],
-        params: {
-            participation: 100
-        },
-        calculate: function(S, S0 = 100) {
-            const perfPct = (S / S0) * 100;
-            if (perfPct <= 100) return 100;
-            // Simplified: show upside participation; real path lock-ins not modeled here
-            return 100 + (perfPct - 100);
         },
         annotations: [
             { x: 100, label: "Strike", color: "#6366f1" },
