@@ -377,6 +377,16 @@
             currentLanguage = currentLanguage === 'en' ? 'fr' : 'en';
             document.getElementById('lang-text').textContent = currentLanguage === 'en' ? 'FR' : 'EN';
             updateContent();
+
+            // If modal is open, update its content with the new language
+            if (currentProduct && currentCategoryKey && currentProductIndex >= 0) {
+                const categoryData = window.PRODUCTS_DATA[currentLanguage][currentCategoryKey];
+                if (categoryData && categoryData.products && categoryData.products[currentProductIndex]) {
+                    // Use the same index to get the equivalent product in the new language
+                    const productInNewLang = categoryData.products[currentProductIndex];
+                    openModal(productInNewLang, categoryData.title, currentCategoryKey);
+                }
+            }
         }
 
         function updateContent() {

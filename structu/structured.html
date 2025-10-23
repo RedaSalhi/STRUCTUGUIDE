@@ -340,10 +340,38 @@
             }
         };
 
+        // Helper function to normalize product names for comparison (ignore accents, case, punctuation)
+        function normalizeProductName(name) {
+            return name
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '') // Remove accents
+                .replace(/[^a-z0-9]+/g, ' ')      // Replace non-alphanumeric with space
+                .trim();
+        }
+
         function toggleLanguage() {
             currentLanguage = currentLanguage === 'en' ? 'fr' : 'en';
             document.getElementById('lang-text').textContent = currentLanguage === 'en' ? 'FR' : 'EN';
             updateContent();
+
+            // If modal is open, update its content with the new language
+            if (currentProduct && currentCategoryKey) {
+                const categoryData = window.PRODUCTS_DATA[currentLanguage][currentCategoryKey];
+                if (categoryData) {
+                    // Normalize current product name for comparison
+                    const normalizedCurrentName = normalizeProductName(currentProduct.name);
+
+                    // Find the equivalent product in the new language by normalized name
+                    const productInNewLang = categoryData.products.find(p =>
+                        normalizeProductName(p.name) === normalizedCurrentName
+                    );
+
+                    if (productInNewLang) {
+                        openModal(productInNewLang, categoryData.title, currentCategoryKey);
+                    }
+                }
+            }
         }
 
         function updateContent() {

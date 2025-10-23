@@ -774,7 +774,7 @@ body.compare-page .compare-footer {
     backdrop-filter: blur(8px);
     z-index: 200;
     padding: 2rem;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 .modal.active {

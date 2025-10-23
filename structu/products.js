@@ -1982,7 +1982,261 @@ window.PRODUCTS_DATA = {
                         "Maturity: if S_T < 60 → redemption = €1,000 × (S_T/S_0) (e.g., S_T=50 → €500)."
                       ]
                     }
-                  }                                                                                                                                                                                                                                                         
+                  },
+                  {
+                    name: "Phoenix One Day One Chance",
+                    short: "Conditional coupons with 'One Day One Chance' feature; enhanced early redemption probability",
+                    definition: "Phoenix One Day One Chance is a conditional yield product offering potential coupon payments even if the underlying has experienced temporary declines. Its originality lies in the 'One Day One Chance' mechanism, which increases the probability of coupon payment and early redemption: a single favorable observation is sufficient to trigger payment or recall.",
+                    characteristics: {
+                      underlying: "Equities or indices",
+                      maturity: "3 to 8 years",
+                      protection: "Conditional, with capital protection threshold (e.g., 60%)",
+                      barriers: "Early redemption threshold: 100% of initial level; Capital protection threshold: 60%",
+                      coupon: "Conditional — paid if the underlying closes above the barrier on at least one observation date",
+                      observation: "Monthly or quarterly"
+                    },
+                    replication: "\\text{Phoenix One Day One Chance} = \\text{ZCB} + \\text{Conditional coupons} + \\text{Down-and-In Put}",
+                    payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{if at least one observation } S_t \\ge \\text{Autocall threshold} \\\\ 100\\%, & \\text{if } S_T \\ge \\text{Capital protection threshold} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{if } S_T < \\text{Protection threshold} \\end{cases}",
+                    advantages: [
+                      "'One Day One Chance' effect increases coupon payment probability",
+                      "Potential regular coupons even in mildly bearish markets",
+                      "Automatic early redemption possible"
+                    ],
+                    risks: [
+                      "Capital loss if underlying closes below barrier at maturity",
+                      "Issuer credit risk",
+                      "Capped return"
+                    ],
+                    investorType: "Dynamic investors seeking high yield with increased coupon probability in exchange for partial capital loss risk.",
+                    example: {
+                      title: "Phoenix One Day One Chance - Example",
+                      parameters: {
+                        underlying: "CAC 40",
+                        maturity: "6 years",
+                        protectionThreshold: "60%",
+                        coupon: "10% p.a."
+                      },
+                      scenarios: [
+                        "If underlying ≥ 100% at least once → early redemption + cumulative coupons",
+                        "If S_T ≥ 60% → redemption at 100%",
+                        "If S_T < 60% → proportional loss to decline"
+                      ]
+                    }
+                  },
+                  {
+                    name: "Autocall One Star",
+                    short: "Autocall indexed to a basket where redemption depends on worst performer ('Worst-of')",
+                    definition: "Autocall One Star is a structured product indexed to a basket of stocks, where redemption depends on the performance of the least performing stock (the 'Worst-of'). This mechanism, called 'One Star', accentuates the risk of loss but allows a higher coupon in compensation.",
+                    characteristics: {
+                      underlying: "Basket of stocks",
+                      maturity: "4 to 6 years",
+                      protection: "Conditional (often 60%)",
+                      barriers: "Early redemption threshold: 100%; Protection threshold: 60%",
+                      coupon: "Conditional — paid if least performing stock is above barrier",
+                      observation: "Quarterly or annual"
+                    },
+                    replication: "\\text{Autocall One Star} = \\text{ZCB} + \\text{Worst-of Coupons} + \\text{Down-and-In Put}",
+                    payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{if least performing } S_{\\text{worst},t} \\ge \\text{Autocall threshold} \\\\ 100\\%, & \\text{if } S_{\\text{worst},T} \\ge \\text{Protection threshold} \\\\ \\tfrac{S_{\\text{worst},T}}{S_{\\text{worst},0}}\\times 100\\%, & \\text{if } S_{\\text{worst},T} < \\text{Protection threshold} \\end{cases}",
+                    advantages: [
+                      "Attractive coupons",
+                      "Early redemption possible",
+                      "Conditional capital protection"
+                    ],
+                    risks: [
+                      "Capital loss if least performer closes below barrier",
+                      "Exposure to correlation risk between underlyings",
+                      "Issuer credit risk"
+                    ],
+                    investorType: "Dynamic investors accepting worst-of capital loss risk in exchange for high coupons.",
+                    example: {
+                      title: "Autocall One Star - Example",
+                      parameters: {
+                        underlying: "Basket of TotalEnergies, BNP Paribas, Sanofi stocks",
+                        maturity: "5 years",
+                        recallBarrier: "100%",
+                        protectionBarrier: "60%",
+                        coupon: "9% p.a."
+                      }
+                    }
+                  },
+                  {
+                    name: "Phoenix Memory Darwin",
+                    short: "Phoenix with memory effect and Darwin mechanism for evolving thresholds",
+                    definition: "Phoenix Memory Darwin is a structured product combining a Phoenix mechanism (conditional coupon payments) and a memory effect, which allows recovery of previously unpaid coupons when conditions become favorable again. The Darwin mechanism increases early redemption probability through evolving thresholds.",
+                    characteristics: {
+                      underlying: "Index or basket of stocks",
+                      maturity: "3 to 8 years",
+                      protection: "Conditional",
+                      barriers: "Evolving early redemption thresholds (Darwin); Protection barrier: 60%",
+                      coupon: "Conditional, with memory effect",
+                      observation: "Quarterly or annual"
+                    },
+                    replication: "\\text{Phoenix Memory Darwin} = \\text{ZCB} + \\text{Memory-effect coupons} + \\text{Down-and-In Put}",
+                    payoff: "\\text{Payoff}=\\begin{cases} 100\\% + \\text{Cumulative coupons}, & \\text{if } S_t \\ge \\text{Recall threshold} \\\\ 100\\%, & \\text{if } S_T \\ge \\text{Protection threshold} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{if } S_T < \\text{Protection threshold} \\end{cases}",
+                    advantages: [
+                      "Memory effect: missed coupons are recovered",
+                      "Darwin thresholds increase early redemption probability",
+                      "Automatic redemption if conditions met"
+                    ],
+                    risks: [
+                      "Partial or total capital loss below barrier",
+                      "Issuer credit risk"
+                    ],
+                    investorType: "Dynamic investors seeking periodic yield and better product resilience in volatile markets.",
+                    example: {
+                      title: "Phoenix Memory Darwin - Example",
+                      parameters: {
+                        underlying: "Euro STOXX 50",
+                        maturity: "6 years",
+                        darwinThreshold: "decreasing from 100% to 80%",
+                        coupon: "8% p.a. with memory effect"
+                      }
+                    }
+                  },
+                  {
+                    name: "Autocall Magnet",
+                    short: "Autocall with Magnet effect that lowers recall threshold in bearish markets",
+                    definition: "Autocall Magnet is a variation of the classic Autocall incorporating a 'Magnet effect', which automatically lowers the recall threshold in bearish markets, thereby increasing the probability of early redemption. The rest of the mechanism remains identical to a traditional autocall.",
+                    characteristics: {
+                      underlying: "Equities or indices",
+                      maturity: "4 to 6 years",
+                      protection: "Conditional (often 60%)",
+                      barriers: "Early redemption threshold: redefined downward via Magnet effect; Protection threshold: 60%",
+                      coupon: "Conditional — paid if underlying exceeds adjusted threshold",
+                      observation: "Quarterly or annual"
+                    },
+                    replication: "\\text{Autocall Magnet} = \\text{ZCB} + \\text{Conditional coupons} + \\text{Down-and-In Put}",
+                    payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{if } S_t \\ge \\text{Magnet threshold} \\\\ 100\\%, & \\text{if } S_T \\ge \\text{Protection threshold} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{if } S_T < \\text{Protection threshold} \\end{cases}",
+                    advantages: [
+                      "Downwardly revisable recall threshold",
+                      "Increased early redemption probability",
+                      "Conditional capital protection"
+                    ],
+                    risks: [
+                      "Capital loss if underlying closes below barrier",
+                      "Issuer credit risk",
+                      "Capped return"
+                    ],
+                    investorType: "Dynamic investors accepting equity risk for improved yield in moderate bearish contexts.",
+                    example: {
+                      title: "Autocall Magnet - Example",
+                      parameters: {
+                        underlying: "Euro STOXX 50",
+                        maturity: "5 years",
+                        initialThreshold: "100%, can be lowered to 90% via Magnet effect",
+                        protectionBarrier: "60%",
+                        coupon: "8% p.a."
+                      }
+                    }
+                  },
+                  {
+                    name: "Autocall Degressive (Decreasing Barrier)",
+                    short: "Autocall with decreasing recall barrier over time",
+                    definition: "Autocall Degressive is a variant of the classic Autocall incorporating a recall barrier that decreases over time. This structure aims to progressively increase the probability of early redemption: the longer the product lasts, the lower the recall threshold becomes, facilitating automatic redemption triggering and coupon payment.",
+                    characteristics: {
+                      underlying: "Equities or indices",
+                      maturity: "4 to 8 years",
+                      protection: "Conditional (often 60%)",
+                      barriers: "Decreasing recall threshold: 100% year 1, then 95%, 90%, 85%, etc.; Capital protection barrier: 60%",
+                      coupon: "Conditional — paid upon early recall",
+                      observation: "Quarterly or annual"
+                    },
+                    replication: "\\text{Autocall Degressive} = \\text{ZCB} + \\text{Decreasing conditional coupons} + \\text{Down-and-In Put}",
+                    payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{if } S_t \\ge \\text{Degressive autocall threshold at date } t \\\\ 100\\%, & \\text{if } S_T \\ge \\text{Protection barrier} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{if } S_T < \\text{Protection barrier} \\end{cases}",
+                    advantages: [
+                      "More accessible recall barrier over time",
+                      "Attractive yield even in mildly bearish markets",
+                      "Conditional capital protection"
+                    ],
+                    risks: [
+                      "Partial capital loss if final barrier is breached",
+                      "Issuer credit risk",
+                      "Capped gains"
+                    ],
+                    investorType: "Dynamic investors seeking progressive yield and increased early redemption probability.",
+                    example: {
+                      title: "Autocall Degressive - Example",
+                      parameters: {
+                        underlying: "Euro STOXX 50",
+                        maturity: "6 years",
+                        recallThreshold: "100%, then -5% per year",
+                        protectionBarrier: "60%",
+                        coupon: "8% p.a."
+                      }
+                    }
+                  },
+                  {
+                    name: "Autocall Strike Min",
+                    short: "Autocall based on minimum strike level in basket for enhanced redemption probability",
+                    definition: "Autocall Strike Min is an Autocall-type product based on a basket of underlyings, whose initial reference level is set at the lowest of the starting levels ('Strike Minimum'). This mechanism increases early redemption probability while maintaining attractive coupons.",
+                    characteristics: {
+                      underlying: "Basket of stocks or indices",
+                      maturity: "4 to 6 years",
+                      protection: "Conditional (often 60%)",
+                      barriers: "Early redemption threshold: based on lowest initial levels; Protection barrier: 60%",
+                      coupon: "Conditional, triggered if all underlyings are above Strike Min",
+                      observation: "Quarterly or annual"
+                    },
+                    replication: "\\text{Autocall Strike Min} = \\text{ZCB} + \\text{Conditional coupons (Worst-of)} + \\text{Down-and-In Put}",
+                    payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{if all underlyings } \\ge \\text{Strike Min} \\\\ 100\\%, & \\text{if } S_T \\ge \\text{Protection barrier} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{if } S_T < \\text{Protection barrier} \\end{cases}",
+                    advantages: [
+                      "Lower initial threshold → increased early redemption probability",
+                      "Attractive coupons",
+                      "Conditional protection"
+                    ],
+                    risks: [
+                      "Capital loss if one underlying closes below barrier",
+                      "Risk related to correlation between underlyings",
+                      "Issuer credit risk"
+                    ],
+                    investorType: "Dynamic investors seeking high coupons with favorable entry threshold.",
+                    example: {
+                      title: "Autocall Strike Min - Example",
+                      parameters: {
+                        underlying: "Basket of European stocks",
+                        maturity: "5 years",
+                        strikeMin: "Weakest stock at launch",
+                        protectionBarrier: "60%",
+                        coupon: "9% p.a."
+                      }
+                    }
+                  },
+                  {
+                    name: "Autocall Glide",
+                    short: "Autocall with gliding (progressively decreasing) recall threshold",
+                    definition: "Autocall Glide is a conditional yield structured product whose particularity lies in a gliding recall threshold (glide): it progressively decreases over periods, making early redemption increasingly probable. This mechanism combines high yield and activation flexibility.",
+                    characteristics: {
+                      underlying: "Equities or indices",
+                      maturity: "4 to 7 years",
+                      protection: "Conditional (around 60%)",
+                      barriers: "Gliding recall threshold: 100% at start, then progressive decrease (e.g., -2% per year); Protection barrier: 60%",
+                      coupon: "Conditional — triggered if underlying exceeds gliding threshold",
+                      observation: "Quarterly or annual"
+                    },
+                    replication: "\\text{Autocall Glide} = \\text{ZCB} + \\text{Gliding conditional coupons} + \\text{Down-and-In Put}",
+                    payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{if } S_t \\ge \\text{Glide threshold at date } t \\\\ 100\\%, & \\text{if } S_T \\ge \\text{Protection barrier} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{if } S_T < \\text{Protection barrier} \\end{cases}",
+                    advantages: [
+                      "Gliding threshold increases early redemption probability",
+                      "High coupons",
+                      "Conditional capital protection"
+                    ],
+                    risks: [
+                      "Risk of capital loss below barrier",
+                      "Issuer credit risk",
+                      "Capped return"
+                    ],
+                    investorType: "Dynamic investors seeking product adaptable to different market conditions.",
+                    example: {
+                      title: "Autocall Glide - Example",
+                      parameters: {
+                        underlying: "S&P 500",
+                        maturity: "5 years",
+                        glideThreshold: "100% at T1, 98% at T2, 96% at T3, etc.",
+                        protectionBarrier: "60%",
+                        coupon: "8% p.a."
+                      }
+                    }
+                  }
             ]
         },
         "leverage": {
@@ -4888,6 +5142,260 @@ window.PRODUCTS_DATA = {
                         "Maturité: si 60 ≤ S_T < 80 → €1 000 (pas de coupon final).",
                         "Maturité: si S_T < 60 → remboursement = €1 000 × (S_T/S_0) (ex: S_T=50 → €500)."
                     ]
+                }
+            },
+            {
+                name: "Phoenix One Day One Chance",
+                short: "Coupons conditionnels avec mécanisme 'One Day One Chance'; probabilité de remboursement anticipé améliorée",
+                definition: "Le Phoenix One Day One Chance est un produit de rendement conditionnel offrant la possibilité d'un versement de coupon même si le sous-jacent a connu des baisses temporaires. Son originalité réside dans le mécanisme 'One Day One Chance', qui augmente la probabilité de versement des coupons et de remboursement anticipé : une seule observation favorable suffit pour déclencher le paiement ou le rappel.",
+                characteristics: {
+                  underlying: "Actions ou indices",
+                  maturity: "3 à 8 ans",
+                  protection: "Conditionnelle, avec un seuil de protection en capital (ex: 60%)",
+                  barriers: "Seuil de rappel anticipé: 100% du niveau initial; Seuil de protection du capital: 60%",
+                  coupon: "Conditionnel — versé si le sous-jacent clôture au-dessus de la barrière à au moins une date d'observation",
+                  observation: "Mensuelle ou trimestrielle"
+                },
+                replication: "\\text{Phoenix One Day One Chance} = \\text{OZC} + \\text{Coupons conditionnels} + \\text{Put Down-and-In}",
+                payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si au moins une observation } S_t \\ge \\text{Seuil Autocall} \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Seuil de protection en capital} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Seuil de protection} \\end{cases}",
+                advantages: [
+                  "Effet 'One Day One Chance' augmente la probabilité de versement du coupon",
+                  "Coupons réguliers potentiels même en marché légèrement baissier",
+                  "Remboursement anticipé automatique possible"
+                ],
+                risks: [
+                  "Perte en capital si le sous-jacent clôture sous la barrière à maturité",
+                  "Risque de crédit de l'émetteur",
+                  "Rendement plafonné"
+                ],
+                investorType: "Profil dynamique, recherchant un rendement élevé avec une probabilité accrue de coupon en contrepartie d'un risque de perte partielle du capital.",
+                example: {
+                  title: "Phoenix One Day One Chance - Exemple concret",
+                  parameters: {
+                    underlying: "CAC 40",
+                    maturity: "6 ans",
+                    protectionThreshold: "60%",
+                    coupon: "10% par an"
+                  },
+                  scenarios: [
+                    "Si le sous-jacent ≥ 100% au moins une fois: rappel anticipé + coupons cumulés",
+                    "Si S_T ≥ 60%: remboursement à 100%",
+                    "Si S_T < 60%: perte proportionnelle à la baisse"
+                  ]
+                }
+            },
+            {
+                name: "Autocall One Star",
+                short: "Autocall indexé sur un panier où le remboursement dépend du moins performant ('Worst-of')",
+                definition: "L'Autocall One Star est un produit structuré indexé sur un panier d'actions, où le remboursement dépend de la performance de l'action la moins performante (le 'Worst-of'). Ce mécanisme, appelé 'One Star', accentue le risque de perte mais permet un coupon plus élevé en compensation.",
+                characteristics: {
+                  underlying: "Panier d'actions",
+                  maturity: "4 à 6 ans",
+                  protection: "Conditionnelle (souvent 60%)",
+                  barriers: "Seuil de rappel anticipé: 100%; Seuil de protection: 60%",
+                  coupon: "Conditionnel — versé si la moins performante des actions est au-dessus de la barrière",
+                  observation: "Trimestrielle ou annuelle"
+                },
+                replication: "\\text{Autocall One Star} = \\text{OZC} + \\text{Coupons sur Worst-of} + \\text{Put Down-and-In}",
+                payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si la moins performante } S_{\\text{worst},t} \\ge \\text{Seuil Autocall} \\\\ 100\\%, & \\text{si } S_{\\text{worst},T} \\ge \\text{Seuil de protection} \\\\ \\tfrac{S_{\\text{worst},T}}{S_{\\text{worst},0}}\\times 100\\%, & \\text{si } S_{\\text{worst},T} < \\text{Seuil de protection} \\end{cases}",
+                advantages: [
+                  "Coupons attractifs",
+                  "Remboursement anticipé possible",
+                  "Protection conditionnelle du capital"
+                ],
+                risks: [
+                  "Perte en capital si la moins performante clôture sous la barrière",
+                  "Exposition au risque de corrélation entre sous-jacents",
+                  "Risque de crédit de l'émetteur"
+                ],
+                investorType: "Profil dynamique, acceptant un risque de perte sur le Worst-of en échange de coupons élevés.",
+                example: {
+                  title: "Autocall One Star - Exemple concret",
+                  parameters: {
+                    underlying: "Panier d'actions TotalEnergies, BNP Paribas, Sanofi",
+                    maturity: "5 ans",
+                    recallBarrier: "100%",
+                    protectionBarrier: "60%",
+                    coupon: "9% par an"
+                  }
+                }
+            },
+            {
+                name: "Phoenix Mémoire Darwin",
+                short: "Phoenix avec effet mémoire et mécanisme Darwin pour seuils évolutifs",
+                definition: "Le Phoenix Mémoire Darwin est un produit structuré combinant un mécanisme Phoenix (versement de coupons conditionnels) et un effet mémoire, qui permet de récupérer les coupons non versés précédemment lorsque les conditions redeviennent favorables. Le mécanisme Darwin augmente la probabilité de remboursement anticipé grâce à des seuils évolutifs.",
+                characteristics: {
+                  underlying: "Indice ou panier d'actions",
+                  maturity: "3 à 8 ans",
+                  protection: "Conditionnelle",
+                  barriers: "Seuils de rappel anticipé évolutifs (Darwin); Barrière de protection: 60%",
+                  coupon: "Conditionnel, avec effet mémoire",
+                  observation: "Trimestrielle ou annuelle"
+                },
+                replication: "\\text{Phoenix Mémoire Darwin} = \\text{OZC} + \\text{Coupons à effet mémoire} + \\text{Put Down-and-In}",
+                payoff: "\\text{Payoff}=\\begin{cases} 100\\% + \\text{Coupons cumulés}, & \\text{si } S_t \\ge \\text{Seuil de rappel} \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Seuil de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Seuil de protection} \\end{cases}",
+                advantages: [
+                  "Effet mémoire: les coupons manqués sont récupérés",
+                  "Seuils Darwin augmentent la probabilité de rappel anticipé",
+                  "Remboursement automatique si conditions atteintes"
+                ],
+                risks: [
+                  "Perte partielle ou totale du capital sous la barrière",
+                  "Risque de crédit de l'émetteur"
+                ],
+                investorType: "Profil dynamique, cherchant un rendement périodique et une meilleure résilience du produit en marchés volatils.",
+                example: {
+                  title: "Phoenix Mémoire Darwin - Exemple concret",
+                  parameters: {
+                    underlying: "Euro STOXX 50",
+                    maturity: "6 ans",
+                    darwinThreshold: "décroissant de 100% à 80%",
+                    coupon: "8% par an avec effet mémoire"
+                  }
+                }
+            },
+            {
+                name: "Autocall Magnet",
+                short: "Autocall avec effet Magnet qui abaisse le seuil de rappel en marchés baissiers",
+                definition: "L'Autocall Magnet est une variation de l'Autocall classique intégrant un 'effet Magnet', qui permet d'abaisser automatiquement le seuil de rappel en cas de marchés baissiers, augmentant ainsi la probabilité de remboursement anticipé. Le reste du mécanisme reste identique à un autocall traditionnel.",
+                characteristics: {
+                  underlying: "Actions ou indices",
+                  maturity: "4 à 6 ans",
+                  protection: "Conditionnelle (souvent 60%)",
+                  barriers: "Seuil de rappel anticipé: redéfini à la baisse grâce à l'effet Magnet; Seuil de protection: 60%",
+                  coupon: "Conditionnel — versé si le sous-jacent dépasse le seuil ajusté",
+                  observation: "Trimestrielle ou annuelle"
+                },
+                replication: "\\text{Autocall Magnet} = \\text{OZC} + \\text{Coupons conditionnels} + \\text{Put Down-and-In}",
+                payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si } S_t \\ge \\text{Seuil Magnet} \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Seuil de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Seuil de protection} \\end{cases}",
+                advantages: [
+                  "Seuil de rappel révisable à la baisse",
+                  "Probabilité accrue de remboursement anticipé",
+                  "Protection conditionnelle du capital"
+                ],
+                risks: [
+                  "Perte en capital si le sous-jacent clôture sous la barrière",
+                  "Risque de crédit de l'émetteur",
+                  "Rendement plafonné"
+                ],
+                investorType: "Profil dynamique, acceptant un risque actions pour un rendement amélioré en contexte de marchés baissiers modérés.",
+                example: {
+                  title: "Autocall Magnet - Exemple concret",
+                  parameters: {
+                    underlying: "Euro STOXX 50",
+                    maturity: "5 ans",
+                    initialThreshold: "100%, pouvant être abaissé à 90% via l'effet Magnet",
+                    protectionBarrier: "60%",
+                    coupon: "8% par an"
+                  }
+                }
+            },
+            {
+                name: "Autocall Dégressif",
+                short: "Autocall avec barrière de rappel décroissante dans le temps",
+                definition: "L'Autocall Dégressif est une variante de l'Autocall classique intégrant une barrière de rappel qui diminue au fil du temps. Cette structure vise à augmenter progressivement la probabilité de remboursement anticipé: plus le produit dure, plus le seuil de rappel baisse, facilitant ainsi le déclenchement du remboursement automatique et du versement de coupons.",
+                characteristics: {
+                  underlying: "Actions ou indices",
+                  maturity: "4 à 8 ans",
+                  protection: "Conditionnelle (souvent 60%)",
+                  barriers: "Seuil de rappel dégressif: 100% la 1re année, puis 95%, 90%, 85%, etc.; Barrière de protection du capital: 60%",
+                  coupon: "Conditionnel — versé en cas de rappel anticipé",
+                  observation: "Trimestrielle ou annuelle"
+                },
+                replication: "\\text{Autocall Dégressif} = \\text{OZC} + \\text{Coupons conditionnels dégressifs} + \\text{Put Down-and-In}",
+                payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si } S_t \\ge \\text{Seuil Autocall dégressif à la date } t \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Barrière de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Barrière de protection} \\end{cases}",
+                advantages: [
+                  "Barrière de rappel plus accessible avec le temps",
+                  "Rendement attractif même en marché légèrement baissier",
+                  "Protection conditionnelle du capital"
+                ],
+                risks: [
+                  "Perte partielle du capital si la barrière finale est franchie",
+                  "Risque de crédit de l'émetteur",
+                  "Gains plafonnés"
+                ],
+                investorType: "Profil dynamique, souhaitant bénéficier d'un rendement progressif et d'une probabilité accrue de remboursement anticipé.",
+                example: {
+                  title: "Autocall Dégressif - Exemple concret",
+                  parameters: {
+                    underlying: "Euro STOXX 50",
+                    maturity: "6 ans",
+                    recallThreshold: "100%, puis -5% par an",
+                    protectionBarrier: "60%",
+                    coupon: "8% par an"
+                  }
+                }
+            },
+            {
+                name: "Autocall Strike Min",
+                short: "Autocall basé sur le niveau de strike minimum du panier pour probabilité de remboursement améliorée",
+                definition: "L'Autocall Strike Min est un produit de type Autocall basé sur un panier de sous-jacents, dont le niveau de référence initial est fixé sur le plus bas des niveaux de départ ('Strike Minimum'). Ce mécanisme permet d'augmenter la probabilité de remboursement anticipé tout en maintenant des coupons attractifs.",
+                characteristics: {
+                  underlying: "Panier d'actions ou d'indices",
+                  maturity: "4 à 6 ans",
+                  protection: "Conditionnelle (souvent 60%)",
+                  barriers: "Seuil de rappel anticipé: basé sur le plus bas des niveaux initiaux; Barrière de protection: 60%",
+                  coupon: "Conditionnel, déclenché si tous les sous-jacents sont au-dessus du Strike Min",
+                  observation: "Trimestrielle ou annuelle"
+                },
+                replication: "\\text{Autocall Strike Min} = \\text{OZC} + \\text{Coupons conditionnels (Worst-of)} + \\text{Put Down-and-In}",
+                payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si tous les sous-jacents } \\ge \\text{Strike Min} \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Barrière de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Barrière de protection} \\end{cases}",
+                advantages: [
+                  "Seuil initial plus bas → probabilité accrue de rappel anticipé",
+                  "Coupons attractifs",
+                  "Protection conditionnelle"
+                ],
+                risks: [
+                  "Perte du capital si un sous-jacent clôture sous la barrière",
+                  "Risque lié à la corrélation entre sous-jacents",
+                  "Risque de crédit de l'émetteur"
+                ],
+                investorType: "Profil dynamique, recherchant des coupons élevés avec un seuil d'entrée favorable.",
+                example: {
+                  title: "Autocall Strike Min - Exemple concret",
+                  parameters: {
+                    underlying: "Panier d'actions européennes",
+                    maturity: "5 ans",
+                    strikeMin: "Action la plus faible au lancement",
+                    protectionBarrier: "60%",
+                    coupon: "9% par an"
+                  }
+                }
+            },
+            {
+                name: "Autocall Glide",
+                short: "Autocall avec seuil de rappel glissant (progressivement décroissant)",
+                definition: "L'Autocall Glide est un produit structuré à rendement conditionnel dont la particularité réside dans un seuil de rappel glissant (glide): celui-ci diminue progressivement au fil des périodes, rendant le remboursement anticipé de plus en plus probable. Ce mécanisme combine rendement élevé et flexibilité d'activation.",
+                characteristics: {
+                  underlying: "Actions ou indices",
+                  maturity: "4 à 7 ans",
+                  protection: "Conditionnelle (environ 60%)",
+                  barriers: "Seuil de rappel glissant: 100% au départ, puis décroissance progressive (ex: -2% par an); Barrière de protection: 60%",
+                  coupon: "Conditionnel — déclenché si le sous-jacent dépasse le seuil glissant",
+                  observation: "Trimestrielle ou annuelle"
+                },
+                replication: "\\text{Autocall Glide} = \\text{OZC} + \\text{Coupons conditionnels glissants} + \\text{Put Down-and-In}",
+                payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si } S_t \\ge \\text{Seuil Glide à la date } t \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Barrière de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Barrière de protection} \\end{cases}",
+                advantages: [
+                  "Seuil glissant augmente la probabilité de rappel anticipé",
+                  "Coupons élevés",
+                  "Protection conditionnelle du capital"
+                ],
+                risks: [
+                  "Risque de perte en capital sous la barrière",
+                  "Risque de crédit de l'émetteur",
+                  "Rendement plafonné"
+                ],
+                investorType: "Profil dynamique, cherchant un produit adaptable à différentes conditions de marché.",
+                example: {
+                  title: "Autocall Glide - Exemple concret",
+                  parameters: {
+                    underlying: "S&P 500",
+                    maturity: "5 ans",
+                    glideThreshold: "100% à T1, 98% à T2, 96% à T3, etc.",
+                    protectionBarrier: "60%",
+                    coupon: "8% par an"
+                  }
                 }
             }
         ]

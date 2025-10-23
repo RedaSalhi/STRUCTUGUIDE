@@ -1595,6 +1595,319 @@ window.PAYOFF_DATA = {
             { from: 70, to: 100, color: "rgba(251, 191, 36, 0.12)", label: "Capital protected" },
             { from: 100, to: 160, color: "rgba(16, 185, 129, 0.12)", label: "Autocall region" }
         ]
+    },
+
+    // =============================
+    // New Autocall Products
+    // =============================
+
+    "Phoenix One Day One Chance": {
+        type: "phoenix",
+        xRange: [40, 160],
+        yRange: [20, 180],
+        params: {
+            autocallBarrier: 100,
+            protectionBarrier: 60,
+            coupon: 10
+        },
+        calculate: function(S, S0 = 100, year = 3) {
+            const perfPct = (S / S0) * 100;
+
+            if (perfPct >= this.params.autocallBarrier) {
+                // One Day One Chance: single observation triggers autocall
+                return 100 + (year * this.params.coupon);
+            } else if (perfPct >= this.params.protectionBarrier) {
+                return 100;
+            } else {
+                return perfPct;
+            }
+        },
+        annotations: [
+            { x: 100, label: "Autocall (One Day)", color: "#10b981" },
+            { x: 60, label: "Protection", color: "#ef4444" }
+        ],
+        zones: [
+            { from: 0, to: 60, color: "rgba(239, 68, 68, 0.15)", label: "Loss Zone" },
+            { from: 60, to: 100, color: "rgba(251, 191, 36, 0.1)", label: "Protected" },
+            { from: 100, to: 140, color: "rgba(16, 185, 129, 0.1)", label: "Autocall Zone" }
+        ]
+    },
+
+    "Autocall One Star": {
+        type: "phoenix",
+        xRange: [40, 160],
+        yRange: [20, 180],
+        params: {
+            autocallBarrier: 100,
+            protectionBarrier: 60,
+            coupon: 9
+        },
+        calculate: function(S, S0 = 100, year = 3) {
+            const perfPct = (S / S0) * 100;
+
+            if (perfPct >= this.params.autocallBarrier) {
+                return 100 + (year * this.params.coupon);
+            } else if (perfPct >= this.params.protectionBarrier) {
+                return 100;
+            } else {
+                // Worst-of mechanism: linear loss below barrier
+                return perfPct;
+            }
+        },
+        annotations: [
+            { x: 100, label: "Autocall (Worst-of)", color: "#10b981" },
+            { x: 60, label: "Protection", color: "#ef4444" }
+        ],
+        zones: [
+            { from: 0, to: 60, color: "rgba(239, 68, 68, 0.15)", label: "Worst-of Loss" },
+            { from: 60, to: 100, color: "rgba(251, 191, 36, 0.1)", label: "Protected" },
+            { from: 100, to: 140, color: "rgba(16, 185, 129, 0.1)", label: "Autocall" }
+        ]
+    },
+
+    "Phoenix Mémoire Darwin": {
+        type: "phoenix",
+        xRange: [40, 160],
+        yRange: [20, 180],
+        params: {
+            autocallBarrier: 100,
+            protectionBarrier: 60,
+            coupon: 8
+        },
+        calculate: function(S, S0 = 100, year = 3) {
+            const perfPct = (S / S0) * 100;
+
+            // Darwin mechanism: decreasing barrier over time (approximated)
+            const adjustedBarrier = this.params.autocallBarrier - (year * 3.33);
+
+            if (perfPct >= adjustedBarrier) {
+                // Memory effect: all coupons paid
+                return 100 + (year * this.params.coupon);
+            } else if (perfPct >= this.params.protectionBarrier) {
+                return 100;
+            } else {
+                return perfPct;
+            }
+        },
+        annotations: [
+            { x: 100, label: "Initial Darwin Barrier", color: "#10b981" },
+            { x: 60, label: "Protection", color: "#ef4444" }
+        ],
+        zones: [
+            { from: 0, to: 60, color: "rgba(239, 68, 68, 0.15)", label: "Loss Zone" },
+            { from: 60, to: 100, color: "rgba(251, 191, 36, 0.1)", label: "Protected + Memory" },
+            { from: 100, to: 140, color: "rgba(16, 185, 129, 0.1)", label: "Darwin Autocall" }
+        ]
+    },
+
+    "Autocall Magnet": {
+        type: "phoenix",
+        xRange: [40, 160],
+        yRange: [20, 180],
+        params: {
+            initialBarrier: 100,
+            magnetBarrier: 90,
+            protectionBarrier: 60,
+            coupon: 8
+        },
+        calculate: function(S, S0 = 100, year = 3) {
+            const perfPct = (S / S0) * 100;
+
+            // Magnet effect: barrier can be lowered to 90%
+            const effectiveBarrier = perfPct < this.params.initialBarrier ?
+                this.params.magnetBarrier : this.params.initialBarrier;
+
+            if (perfPct >= effectiveBarrier) {
+                return 100 + (year * this.params.coupon);
+            } else if (perfPct >= this.params.protectionBarrier) {
+                return 100;
+            } else {
+                return perfPct;
+            }
+        },
+        annotations: [
+            { x: 100, label: "Initial Barrier", color: "#10b981" },
+            { x: 90, label: "Magnet Barrier", color: "#3b82f6" },
+            { x: 60, label: "Protection", color: "#ef4444" }
+        ],
+        zones: [
+            { from: 0, to: 60, color: "rgba(239, 68, 68, 0.15)", label: "Loss Zone" },
+            { from: 60, to: 90, color: "rgba(251, 191, 36, 0.1)", label: "Protected" },
+            { from: 90, to: 100, color: "rgba(59, 130, 246, 0.1)", label: "Magnet Zone" },
+            { from: 100, to: 140, color: "rgba(16, 185, 129, 0.1)", label: "Autocall" }
+        ]
+    },
+
+    "Autocall Dégressif": {
+        type: "phoenix",
+        xRange: [40, 160],
+        yRange: [20, 180],
+        params: {
+            initialBarrier: 100,
+            protectionBarrier: 60,
+            coupon: 8,
+            annualDecrement: 5
+        },
+        calculate: function(S, S0 = 100, year = 3) {
+            const perfPct = (S / S0) * 100;
+
+            // Degressive barrier: decreases 5% per year
+            const currentBarrier = this.params.initialBarrier - (year * this.params.annualDecrement);
+
+            if (perfPct >= currentBarrier) {
+                return 100 + (year * this.params.coupon);
+            } else if (perfPct >= this.params.protectionBarrier) {
+                return 100;
+            } else {
+                return perfPct;
+            }
+        },
+        annotations: [
+            { x: 100, label: "Y1 Barrier", color: "#10b981" },
+            { x: 85, label: "Y3 Barrier", color: "#3b82f6" },
+            { x: 60, label: "Protection", color: "#ef4444" }
+        ],
+        zones: [
+            { from: 0, to: 60, color: "rgba(239, 68, 68, 0.15)", label: "Loss Zone" },
+            { from: 60, to: 85, color: "rgba(251, 191, 36, 0.1)", label: "Protected" },
+            { from: 85, to: 140, color: "rgba(16, 185, 129, 0.1)", label: "Degressive Autocall" }
+        ]
+    },
+
+    "Autocall Strike Min": {
+        type: "phoenix",
+        xRange: [40, 160],
+        yRange: [20, 180],
+        params: {
+            autocallBarrier: 90,  // Strike Min (lower initial reference)
+            protectionBarrier: 60,
+            coupon: 9
+        },
+        calculate: function(S, S0 = 100, year = 3) {
+            const perfPct = (S / S0) * 100;
+
+            // Strike Min: based on lowest initial level (e.g., 90%)
+            if (perfPct >= this.params.autocallBarrier) {
+                return 100 + (year * this.params.coupon);
+            } else if (perfPct >= this.params.protectionBarrier) {
+                return 100;
+            } else {
+                return perfPct;
+            }
+        },
+        annotations: [
+            { x: 90, label: "Strike Min", color: "#10b981" },
+            { x: 60, label: "Protection", color: "#ef4444" }
+        ],
+        zones: [
+            { from: 0, to: 60, color: "rgba(239, 68, 68, 0.15)", label: "Loss Zone" },
+            { from: 60, to: 90, color: "rgba(251, 191, 36, 0.1)", label: "Protected" },
+            { from: 90, to: 140, color: "rgba(16, 185, 129, 0.1)", label: "Autocall from Min" }
+        ]
+    },
+
+    "Autocall Glide": {
+        type: "phoenix",
+        xRange: [40, 160],
+        yRange: [20, 180],
+        params: {
+            initialBarrier: 100,
+            protectionBarrier: 60,
+            coupon: 8,
+            glideRate: 2
+        },
+        calculate: function(S, S0 = 100, year = 3) {
+            const perfPct = (S / S0) * 100;
+
+            // Gliding barrier: decreases 2% per year
+            const glidingBarrier = this.params.initialBarrier - (year * this.params.glideRate);
+
+            if (perfPct >= glidingBarrier) {
+                return 100 + (year * this.params.coupon);
+            } else if (perfPct >= this.params.protectionBarrier) {
+                return 100;
+            } else {
+                return perfPct;
+            }
+        },
+        annotations: [
+            { x: 100, label: "T1 Glide", color: "#10b981" },
+            { x: 94, label: "T3 Glide", color: "#3b82f6" },
+            { x: 60, label: "Protection", color: "#ef4444" }
+        ],
+        zones: [
+            { from: 0, to: 60, color: "rgba(239, 68, 68, 0.15)", label: "Loss Zone" },
+            { from: 60, to: 94, color: "rgba(251, 191, 36, 0.1)", label: "Protected" },
+            { from: 94, to: 140, color: "rgba(16, 185, 129, 0.1)", label: "Gliding Autocall" }
+        ]
+    },
+
+    "Phoenix Memory Darwin": {
+        type: "phoenix",
+        xRange: [40, 160],
+        yRange: [20, 180],
+        params: {
+            autocallBarrier: 100,
+            protectionBarrier: 60,
+            coupon: 8
+        },
+        calculate: function(S, S0 = 100, year = 3) {
+            const perfPct = (S / S0) * 100;
+
+            // Darwin mechanism with memory
+            const adjustedBarrier = this.params.autocallBarrier - (year * 3.33);
+
+            if (perfPct >= adjustedBarrier) {
+                return 100 + (year * this.params.coupon);
+            } else if (perfPct >= this.params.protectionBarrier) {
+                return 100;
+            } else {
+                return perfPct;
+            }
+        },
+        annotations: [
+            { x: 100, label: "Initial Darwin", color: "#10b981" },
+            { x: 60, label: "Protection", color: "#ef4444" }
+        ],
+        zones: [
+            { from: 0, to: 60, color: "rgba(239, 68, 68, 0.15)", label: "Loss Zone" },
+            { from: 60, to: 100, color: "rgba(251, 191, 36, 0.1)", label: "Protected + Memory" },
+            { from: 100, to: 140, color: "rgba(16, 185, 129, 0.1)", label: "Darwin Autocall" }
+        ]
+    },
+
+    "Autocall Degressive (Decreasing Barrier)": {
+        type: "phoenix",
+        xRange: [40, 160],
+        yRange: [20, 180],
+        params: {
+            initialBarrier: 100,
+            protectionBarrier: 60,
+            coupon: 8,
+            annualDecrement: 5
+        },
+        calculate: function(S, S0 = 100, year = 3) {
+            const perfPct = (S / S0) * 100;
+            const currentBarrier = this.params.initialBarrier - (year * this.params.annualDecrement);
+
+            if (perfPct >= currentBarrier) {
+                return 100 + (year * this.params.coupon);
+            } else if (perfPct >= this.params.protectionBarrier) {
+                return 100;
+            } else {
+                return perfPct;
+            }
+        },
+        annotations: [
+            { x: 100, label: "Initial", color: "#10b981" },
+            { x: 85, label: "Year 3", color: "#3b82f6" },
+            { x: 60, label: "Protection", color: "#ef4444" }
+        ],
+        zones: [
+            { from: 0, to: 60, color: "rgba(239, 68, 68, 0.15)", label: "Loss" },
+            { from: 60, to: 85, color: "rgba(251, 191, 36, 0.1)", label: "Protected" },
+            { from: 85, to: 140, color: "rgba(16, 185, 129, 0.1)", label: "Degressive Call" }
+        ]
     }
 };
 
