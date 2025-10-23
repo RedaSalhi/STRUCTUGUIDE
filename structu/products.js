@@ -2056,7 +2056,13 @@ window.PRODUCTS_DATA = {
                         recallBarrier: "100%",
                         protectionBarrier: "60%",
                         coupon: "9% p.a."
-                      }
+                      },
+                      scenarios: [
+                        "Year 2: All stocks ≥ 100% → early redemption at €1,000 + 2×9% = €1,180",
+                        "Year 3: Worst-of (Sanofi) at 85% → product continues, no coupon",
+                        "Maturity: Worst-of at 70% → redemption at €1,000 (above 60% barrier)",
+                        "Maturity: Worst-of at 50% → redemption at €500 (50% of nominal)"
+                      ]
                     }
                   },
                   {
@@ -2090,7 +2096,13 @@ window.PRODUCTS_DATA = {
                         maturity: "6 years",
                         darwinThreshold: "decreasing from 100% to 80%",
                         coupon: "8% p.a. with memory effect"
-                      }
+                      },
+                      scenarios: [
+                        "Year 1: Index at 95% (below 100% barrier) → no coupon, 8% stored in memory",
+                        "Year 2: Index at 98% (Darwin barrier now 97%) → autocall + 2×8% = €1,160",
+                        "Year 3: Index at 85% → product continues, memory accumulates (24% total)",
+                        "Maturity: Index at 92% (above 90% Darwin barrier) → €1,000 + all memory coupons"
+                      ]
                     }
                   },
                   {
@@ -2126,7 +2138,13 @@ window.PRODUCTS_DATA = {
                         initialThreshold: "100%, can be lowered to 90% via Magnet effect",
                         protectionBarrier: "60%",
                         coupon: "8% p.a."
-                      }
+                      },
+                      scenarios: [
+                        "Year 1: Index at 105% → autocall at €1,000 + 8% = €1,080",
+                        "Year 2: Index at 92% (Magnet activates, barrier now 90%) → autocall at €1,160",
+                        "Year 3: Index at 88% → product continues, no coupon",
+                        "Maturity: Index at 65% → redemption at €1,000 (above 60% protection)"
+                      ]
                     }
                   },
                   {
@@ -2162,7 +2180,13 @@ window.PRODUCTS_DATA = {
                         recallThreshold: "100%, then -5% per year",
                         protectionBarrier: "60%",
                         coupon: "8% p.a."
-                      }
+                      },
+                      scenarios: [
+                        "Year 1: Index at 102% (barrier 100%) → autocall at €1,080",
+                        "Year 2: Index at 97% (barrier 95%) → autocall at €1,160",
+                        "Year 4: Index at 88% (barrier 85%) → autocall at €1,320",
+                        "Maturity: Index at 72% → redemption at €1,000 (above 60% protection)"
+                      ]
                     }
                   },
                   {
@@ -2195,16 +2219,22 @@ window.PRODUCTS_DATA = {
                       parameters: {
                         underlying: "Basket of European stocks",
                         maturity: "5 years",
-                        strikeMin: "Weakest stock at launch",
+                        strikeMin: "Weakest stock at launch (90% of others)",
                         protectionBarrier: "60%",
                         coupon: "9% p.a."
-                      }
+                      },
+                      scenarios: [
+                        "Year 1: All stocks ≥ Strike Min (90%) → autocall at €1,090",
+                        "Year 2: One stock at 85% of Strike Min → product continues",
+                        "Year 4: All stocks ≥ Strike Min → autocall at €1,360",
+                        "Maturity: Worst stock at 55% of Strike Min → redemption at €550"
+                      ]
                     }
                   },
                   {
-                    name: "Autocall Glide",
+                    name: "Autocall Glider",
                     short: "Autocall with gliding (progressively decreasing) recall threshold",
-                    definition: "Autocall Glide is a conditional yield structured product whose particularity lies in a gliding recall threshold (glide): it progressively decreases over periods, making early redemption increasingly probable. This mechanism combines high yield and activation flexibility.",
+                    definition: "Autocall Glider is a conditional yield structured product whose particularity lies in a gliding recall threshold (glider): it progressively decreases over periods, making early redemption increasingly probable. This mechanism combines high yield and activation flexibility.",
                     characteristics: {
                       underlying: "Equities or indices",
                       maturity: "4 to 7 years",
@@ -2213,8 +2243,8 @@ window.PRODUCTS_DATA = {
                       coupon: "Conditional — triggered if underlying exceeds gliding threshold",
                       observation: "Quarterly or annual"
                     },
-                    replication: "\\text{Autocall Glide} = \\text{ZCB} + \\text{Gliding conditional coupons} + \\text{Down-and-In Put}",
-                    payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{if } S_t \\ge \\text{Glide threshold at date } t \\\\ 100\\%, & \\text{if } S_T \\ge \\text{Protection barrier} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{if } S_T < \\text{Protection barrier} \\end{cases}",
+                    replication: "\\text{Autocall Glider} = \\text{ZCB} + \\text{Gliding conditional coupons} + \\text{Down-and-In Put}",
+                    payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{if } S_t \\ge \\text{Glider threshold at date } t \\\\ 100\\%, & \\text{if } S_T \\ge \\text{Protection barrier} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{if } S_T < \\text{Protection barrier} \\end{cases}",
                     advantages: [
                       "Gliding threshold increases early redemption probability",
                       "High coupons",
@@ -2234,7 +2264,13 @@ window.PRODUCTS_DATA = {
                         glideThreshold: "100% at T1, 98% at T2, 96% at T3, etc.",
                         protectionBarrier: "60%",
                         coupon: "8% p.a."
-                      }
+                      },
+                      scenarios: [
+                        "Year 1: Index at 101% (barrier 100%) → autocall at €1,080",
+                        "Year 2: Index at 97% (barrier 98%) → product continues",
+                        "Year 3: Index at 97% (barrier now 96%) → autocall at €1,240",
+                        "Maturity: Index at 68% → redemption at €1,000 (above 60%)"
+                      ]
                     }
                   }
             ]
@@ -4509,7 +4545,7 @@ window.PRODUCTS_DATA = {
                     coupon: "Conditionnel; payé quand condition autocall remplie (ex: 9% p.a.)",
                     observation: "Annuelle, trimestrielle ou mensuelle"
                 },
-                replication: "\\text{Autocallable} = \\text{OZC} + \\text{Option autocall (KO)} + \\text{Coupons call digitaux} - \\text{PDI court}",
+                replication: "\\text{Autocallable} = \\text{ZCB} + \\text{Option autocall (KO)} + \\text{Coupons call digitaux} - \\text{PDI court}",
                 payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & S_{t_i} \\ge \\text{Barrière autocall à $i$ (appelé)} \\\\ 100\\%, & S_T \\ge \\text{Barrière protection (non appelé)} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & S_T < \\text{Barrière protection} \\end{cases}",
                 advantages: [
                     "Coupons potentiellement élevés",
@@ -4719,7 +4755,7 @@ window.PRODUCTS_DATA = {
                     coupon: "Fixe, payé sur remboursement anticipé",
                     observation: "Annuelle/semestrielle/trimestrielle"
                 },
-                replication: "\\text{Premium Express} = \\text{OZC} + \\text{Option autocall (KO)} + \\text{Call digital barrière réduite} - \\text{PDI court}",
+                replication: "\\text{Premium Express} = \\text{ZCB} + \\text{Option autocall (KO)} + \\text{Call digital barrière réduite} - \\text{PDI court}",
                 payoff: "\\text{Payoff}=\\begin{cases} 100\\% + n\\,\\times\\,\\text{Coupon}, & S_{t_n} \\ge B_{\\text{call}}<100\\% \\\\ 100\\%, & \\text{sinon (pas de call, capital garanti)} \\end{cases}",
                 advantages: [
                     "Probabilité très élevée remboursement anticipé",
@@ -4760,7 +4796,7 @@ window.PRODUCTS_DATA = {
                     earlyRedemption: "Oui - autocall",
                     barriers: "Barrière coupon X%, Seuil autocall Z%, Barrière capital Y% (tous vs initial)"
                 },
-                replication: "\\text{Phoenix} = \\text{OZC} + \\text{Option autocall (KO)} + \\text{Série de coupons digitaux conditionnels} - \\text{PDI court}",
+                replication: "\\text{Phoenix} = \\text{ZCB} + \\text{Option autocall (KO)} + \\text{Série de coupons digitaux conditionnels} - \\text{PDI court}",
                 payoff: "\\text{Coupon}(t)=\\begin{cases}\\text{Coupon fixe}, & S_t\\!\\ge\\text{Barrière Coupon}\\\\ 0, & S_t\\!<\\text{Barrière Coupon}\\end{cases}\\\\[4pt]\\text{À observation: }\\text{Payoff}=\\begin{cases}100\\%+\\text{Coupon période}, & S_t\\!\\ge\\text{Seuil Autocall}\\\\ \\text{continuer}, & \\text{sinon}\\end{cases}\\\\[4pt]\\text{À maturité (si non appelé): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_T\\!\\ge\\text{Barrière Capital}\\\\ \\tfrac{S_T}{S_0}\\times100\\%, & S_T\\!<\\text{Barrière Capital}\\end{cases}",
                 advantages: [
                     "Coupons conditionnels attractifs dans marchés stables ou légèrement baissiers",
@@ -4804,7 +4840,7 @@ window.PRODUCTS_DATA = {
                     earlyRedemption: "Oui - autocall",
                     barriers: "Barrière capital Y%, Seuil autocall Z% (vs initial)"
                 },
-                replication: "\\text{Phoenix Coupon Fixe} = \\text{OZC} + \\text{Option autocall (KO)} + \\text{Coupons fixes} - \\text{PDI court}",
+                replication: "\\text{Phoenix Coupon Fixe} = \\text{ZCB} + \\text{Option autocall (KO)} + \\text{Coupons fixes} - \\text{PDI court}",
                 payoff: "\\text{Coupon}(t)=\\text{Coupon fixe chaque période}.\\\\[4pt]\\text{À observation: }\\text{Payoff}=\\begin{cases}100\\%+\\text{Coupon période}, & S_t\\!\\ge\\text{Seuil Autocall}\\\\ \\text{continuer}, & \\text{sinon}\\end{cases}\\\\[4pt]\\text{À maturité (si non appelé): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_T\\!\\ge\\text{Barrière Capital}\\\\ \\tfrac{S_T}{S_0}\\times100\\%, & S_T\\!<\\text{Barrière Capital}\\end{cases}",
                 advantages: [
                     "Flux revenu fixe prévisible",
@@ -4845,7 +4881,7 @@ window.PRODUCTS_DATA = {
                     coupons: "Conditionnel; doublé quand au/au-dessus seuil rappel",
                     earlyRedemption: "Oui - autocall"
                 },
-                replication: "\\text{Phoenix Double} = \\text{OZC} + \\text{Option autocall (KO)} + \\text{Coupons digitaux conditionnels à paliers} - \\text{PDI court}",
+                replication: "\\text{Phoenix Double} = \\text{ZCB} + \\text{Option autocall (KO)} + \\text{Coupons digitaux conditionnels à paliers} - \\text{PDI court}",
                 payoff: "\\text{Coupon}(t)=\\begin{cases}2\\times\\text{Coupon}, & S_t\\!\\ge\\text{Seuil Rappel}\\\\ \\text{Coupon}, & \\text{Barrière Coupon}\\le S_t<\\text{Seuil Rappel}\\\\ 0, & S_t<\\text{Barrière Coupon}\\end{cases}\\\\[4pt]\\text{À observation: }\\text{Payoff}=\\begin{cases}100\\%+2\\times\\text{Coupon}, & S_t\\!\\ge\\text{Seuil Rappel}\\\\ \\text{continuer}, & \\text{sinon}\\end{cases}\\\\[4pt]\\text{À maturité (si non appelé): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_T\\!\\ge\\text{Barrière Capital}\\\\ \\tfrac{S_T}{S_0}\\times100\\%, & S_T\\!<\\text{Barrière Capital}\\end{cases}",
                 advantages: [
                     "Revenus supérieurs quand sous-jacent traite au-dessus seuil rappel",
@@ -4888,7 +4924,7 @@ window.PRODUCTS_DATA = {
                     coupons: "Conditionnel sur worst-of vs barrière coupon",
                     earlyRedemption: "Oui - autocall sur worst-of"
                 },
-                replication: "\\text{Phoenix Combo} = \\text{OZC} + \\text{Option autocall Worst-of (KO)} + \\text{Coupons digitaux conditionnels Worst-of} - \\text{PDI court (Worst-of)}",
+                replication: "\\text{Phoenix Combo} = \\text{ZCB} + \\text{Option autocall Worst-of (KO)} + \\text{Coupons digitaux conditionnels Worst-of} - \\text{PDI court (Worst-of)}",
                 payoff: "\\text{Soit }S_{\\min}(t)=\\min_i S_i(t).\\\\ \\text{Coupon}(t)=\\begin{cases}\\text{Coupon}, & S_{\\min}(t)\\!\\ge\\text{Barrière Coupon}\\\\ 0, & \\text{sinon}\\end{cases}\\\\[4pt]\\text{À observation: }\\text{Payoff}=\\begin{cases}100\\%+\\text{Coupon période}, & S_{\\min}(t)\\!\\ge\\text{Seuil Rappel}\\\\ \\text{continuer}, & \\text{sinon}\\end{cases}\\\\[4pt]\\text{À maturité (si non appelé): }\\text{Payoff}(T)=\\begin{cases}100\\%, & S_{\\min}(T)\\!\\ge\\text{Barrière Capital}\\\\ \\tfrac{S_{\\min}(T)}{S_0}\\times100\\%, & S_{\\min}(T)\\!<\\text{Barrière Capital}\\end{cases}",
                 advantages: [
                     "Exposition panier diversifié avec mécanismes Phoenix",
@@ -5062,7 +5098,7 @@ window.PRODUCTS_DATA = {
                     coupons: "Coupon rappel s'accumule quotidiennement jusqu'à call; coupon conditionnel à T si S_T ≥ barrière coupon",
                     earlyRedemption: "Oui - autocall quotidien"
                 },
-                replication: "\\text{Athena Daily} = \\text{OZC} + \\text{Option autocall (KO, quotidienne)} + \\text{Coupons digitaux conditionnels} - \\text{PDI court}",
+                replication: "\\text{Athena Daily} = \\text{ZCB} + \\text{Option autocall (KO, quotidienne)} + \\text{Coupons digitaux conditionnels} - \\text{PDI court}",
                 payoff: "\\text{Payoff}=\\begin{cases}100\\%+C^{\\text{rappel}}_i,& S_t\\ge B_{\\text{call}}\\text{ un jour }i\\text{ (ou à }T\\text{)}\\\\ 100\\%+C_{\\text{cond}},& B_{\\text{coupon}}\\le S_T< B_{\\text{call}}\\\\ 100\\%,& B_{\\text{capital}}\\le S_T< B_{\\text{coupon}}\\\\ 100\\%\\times\\tfrac{S_T}{S_0},& S_T< B_{\\text{capital}}\\end{cases}\\\\[4pt]\\text{avec }C^{\\text{rappel}}_i=i\\,c\\;(\\text{accumulation quotidienne}),\\;C_{\\text{cond}}=\\text{% contractuel à }T.",
                 advantages: [
                     "Observations quotidiennes augmentent probabilité call",
@@ -5110,7 +5146,7 @@ window.PRODUCTS_DATA = {
                     coupon: "Conditionnel; payé quand worst-of ≥ barrière coupon",
                     earlyRedemption: "Oui - autocall si worst-of ≥ barrière rappel à observation"
                 },
-                replication: "\\text{KIKO} = \\text{OZC} + \\text{coupons digitaux conditionnels} + \\text{Put court avec barrière (KI)} + \\text{Option autocall (KO)}",
+                replication: "\\text{KIKO} = \\text{ZCB} + \\text{coupons digitaux conditionnels} + \\text{Put court avec barrière (KI)} + \\text{Option autocall (KO)}",
                 payoff: "\\text{À observation } t: \\begin{cases} 100\\% + \\text{Coupon}, & \\text{si worst-of} \\ge \\text{Barrière rappel (autocall)} \\\\ 100\\% + \\text{Coupon}, & \\text{si worst-of} \\ge \\text{Barrière coupon (pas d'autocall)} \\end{cases} \\\\ \\text{À maturité (si non appelé): } \\begin{cases} 100\\% + \\text{Coupon}, & S_T^{\\ast} \\ge \\text{Barrière coupon} \\\\ 100\\%, & \\text{Barrière capital} \\le S_T^{\\ast} < \\text{Barrière coupon} \\\\ 100\\%\\times \\tfrac{S_T^{\\ast}}{S_0^{\\ast}}, & S_T^{\\ast} < \\text{Barrière capital (KI)} \\end{cases}",
                 advantages: [
                     "Coupons conditionnels attractifs",
@@ -5156,7 +5192,7 @@ window.PRODUCTS_DATA = {
                   coupon: "Conditionnel — versé si le sous-jacent clôture au-dessus de la barrière à au moins une date d'observation",
                   observation: "Mensuelle ou trimestrielle"
                 },
-                replication: "\\text{Phoenix One Day One Chance} = \\text{OZC} + \\text{Coupons conditionnels} + \\text{Put Down-and-In}",
+                replication: "\\text{Phoenix One Day One Chance} = \\text{ZCB} + \\text{Coupons conditionnels} + \\text{Put Down-and-In}",
                 payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si au moins une observation } S_t \\ge \\text{Seuil Autocall} \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Seuil de protection en capital} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Seuil de protection} \\end{cases}",
                 advantages: [
                   "Effet 'One Day One Chance' augmente la probabilité de versement du coupon",
@@ -5196,7 +5232,7 @@ window.PRODUCTS_DATA = {
                   coupon: "Conditionnel — versé si la moins performante des actions est au-dessus de la barrière",
                   observation: "Trimestrielle ou annuelle"
                 },
-                replication: "\\text{Autocall One Star} = \\text{OZC} + \\text{Coupons sur Worst-of} + \\text{Put Down-and-In}",
+                replication: "\\text{Autocall One Star} = \\text{ZCB} + \\text{Coupons sur Worst-of} + \\text{Put Down-and-In}",
                 payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si la moins performante } S_{\\text{worst},t} \\ge \\text{Seuil Autocall} \\\\ 100\\%, & \\text{si } S_{\\text{worst},T} \\ge \\text{Seuil de protection} \\\\ \\tfrac{S_{\\text{worst},T}}{S_{\\text{worst},0}}\\times 100\\%, & \\text{si } S_{\\text{worst},T} < \\text{Seuil de protection} \\end{cases}",
                 advantages: [
                   "Coupons attractifs",
@@ -5217,7 +5253,13 @@ window.PRODUCTS_DATA = {
                     recallBarrier: "100%",
                     protectionBarrier: "60%",
                     coupon: "9% par an"
-                  }
+                  },
+                  scenarios: [
+                    "Année 2: Toutes les actions ≥ 100% → rappel anticipé à 1 000 € + 2×9% = 1 180 €",
+                    "Année 3: Worst-of (Sanofi) à 85% → produit continue, pas de coupon",
+                    "Maturité: Worst-of à 70% → remboursement à 1 000 € (au-dessus de la barrière 60%)",
+                    "Maturité: Worst-of à 50% → remboursement à 500 € (50% du nominal)"
+                  ]
                 }
             },
             {
@@ -5232,7 +5274,7 @@ window.PRODUCTS_DATA = {
                   coupon: "Conditionnel, avec effet mémoire",
                   observation: "Trimestrielle ou annuelle"
                 },
-                replication: "\\text{Phoenix Mémoire Darwin} = \\text{OZC} + \\text{Coupons à effet mémoire} + \\text{Put Down-and-In}",
+                replication: "\\text{Phoenix Mémoire Darwin} = \\text{ZCB} + \\text{Coupons à effet mémoire} + \\text{Put Down-and-In}",
                 payoff: "\\text{Payoff}=\\begin{cases} 100\\% + \\text{Coupons cumulés}, & \\text{si } S_t \\ge \\text{Seuil de rappel} \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Seuil de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Seuil de protection} \\end{cases}",
                 advantages: [
                   "Effet mémoire: les coupons manqués sont récupérés",
@@ -5251,7 +5293,13 @@ window.PRODUCTS_DATA = {
                     maturity: "6 ans",
                     darwinThreshold: "décroissant de 100% à 80%",
                     coupon: "8% par an avec effet mémoire"
-                  }
+                  },
+                  scenarios: [
+                    "Année 1: Indice à 95% (sous barrière 100%) → pas de coupon, 8% en mémoire",
+                    "Année 2: Indice à 98% (barrière Darwin à 97%) → autocall + 2×8% = 1 160 €",
+                    "Année 3: Indice à 85% → produit continue, mémoire s'accumule (24% total)",
+                    "Maturité: Indice à 92% (au-dessus barrière Darwin 90%) → 1 000 € + tous coupons mémoire"
+                  ]
                 }
             },
             {
@@ -5266,7 +5314,7 @@ window.PRODUCTS_DATA = {
                   coupon: "Conditionnel — versé si le sous-jacent dépasse le seuil ajusté",
                   observation: "Trimestrielle ou annuelle"
                 },
-                replication: "\\text{Autocall Magnet} = \\text{OZC} + \\text{Coupons conditionnels} + \\text{Put Down-and-In}",
+                replication: "\\text{Autocall Magnet} = \\text{ZCB} + \\text{Coupons conditionnels} + \\text{Put Down-and-In}",
                 payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si } S_t \\ge \\text{Seuil Magnet} \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Seuil de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Seuil de protection} \\end{cases}",
                 advantages: [
                   "Seuil de rappel révisable à la baisse",
@@ -5287,7 +5335,13 @@ window.PRODUCTS_DATA = {
                     initialThreshold: "100%, pouvant être abaissé à 90% via l'effet Magnet",
                     protectionBarrier: "60%",
                     coupon: "8% par an"
-                  }
+                  },
+                  scenarios: [
+                    "Année 1: Indice à 105% → autocall à 1 000 € + 8% = 1 080 €",
+                    "Année 2: Indice à 92% (Magnet s'active, barrière devient 90%) → autocall à 1 160 €",
+                    "Année 3: Indice à 88% → produit continue, pas de coupon",
+                    "Maturité: Indice à 65% → remboursement à 1 000 € (au-dessus de 60%)"
+                  ]
                 }
             },
             {
@@ -5302,7 +5356,7 @@ window.PRODUCTS_DATA = {
                   coupon: "Conditionnel — versé en cas de rappel anticipé",
                   observation: "Trimestrielle ou annuelle"
                 },
-                replication: "\\text{Autocall Dégressif} = \\text{OZC} + \\text{Coupons conditionnels dégressifs} + \\text{Put Down-and-In}",
+                replication: "\\text{Autocall Dégressif} = \\text{ZCB} + \\text{Coupons conditionnels dégressifs} + \\text{Put Down-and-In}",
                 payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si } S_t \\ge \\text{Seuil Autocall dégressif à la date } t \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Barrière de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Barrière de protection} \\end{cases}",
                 advantages: [
                   "Barrière de rappel plus accessible avec le temps",
@@ -5323,7 +5377,13 @@ window.PRODUCTS_DATA = {
                     recallThreshold: "100%, puis -5% par an",
                     protectionBarrier: "60%",
                     coupon: "8% par an"
-                  }
+                  },
+                  scenarios: [
+                    "Année 1: Indice à 102% (barrière 100%) → autocall à 1 080 €",
+                    "Année 2: Indice à 97% (barrière 95%) → autocall à 1 160 €",
+                    "Année 4: Indice à 88% (barrière 85%) → autocall à 1 320 €",
+                    "Maturité: Indice à 72% → remboursement à 1 000 € (au-dessus de 60%)"
+                  ]
                 }
             },
             {
@@ -5338,7 +5398,7 @@ window.PRODUCTS_DATA = {
                   coupon: "Conditionnel, déclenché si tous les sous-jacents sont au-dessus du Strike Min",
                   observation: "Trimestrielle ou annuelle"
                 },
-                replication: "\\text{Autocall Strike Min} = \\text{OZC} + \\text{Coupons conditionnels (Worst-of)} + \\text{Put Down-and-In}",
+                replication: "\\text{Autocall Strike Min} = \\text{ZCB} + \\text{Coupons conditionnels (Worst-of)} + \\text{Put Down-and-In}",
                 payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si tous les sous-jacents } \\ge \\text{Strike Min} \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Barrière de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Barrière de protection} \\end{cases}",
                 advantages: [
                   "Seuil initial plus bas → probabilité accrue de rappel anticipé",
@@ -5356,16 +5416,22 @@ window.PRODUCTS_DATA = {
                   parameters: {
                     underlying: "Panier d'actions européennes",
                     maturity: "5 ans",
-                    strikeMin: "Action la plus faible au lancement",
+                    strikeMin: "Action la plus faible au lancement (90% des autres)",
                     protectionBarrier: "60%",
                     coupon: "9% par an"
-                  }
+                  },
+                  scenarios: [
+                    "Année 1: Toutes les actions ≥ Strike Min (90%) → autocall à 1 090 €",
+                    "Année 2: Une action à 85% du Strike Min → produit continue",
+                    "Année 4: Toutes les actions ≥ Strike Min → autocall à 1 360 €",
+                    "Maturité: Action la plus faible à 55% du Strike Min → remboursement à 550 €"
+                  ]
                 }
             },
             {
-                name: "Autocall Glide",
+                name: "Autocall Glider",
                 short: "Autocall avec seuil de rappel glissant (progressivement décroissant)",
-                definition: "L'Autocall Glide est un produit structuré à rendement conditionnel dont la particularité réside dans un seuil de rappel glissant (glide): celui-ci diminue progressivement au fil des périodes, rendant le remboursement anticipé de plus en plus probable. Ce mécanisme combine rendement élevé et flexibilité d'activation.",
+                definition: "L'Autocall Glider est un produit structuré à rendement conditionnel dont la particularité réside dans un seuil de rappel glissant (glider): celui-ci diminue progressivement au fil des périodes, rendant le remboursement anticipé de plus en plus probable. Ce mécanisme combine rendement élevé et flexibilité d'activation.",
                 characteristics: {
                   underlying: "Actions ou indices",
                   maturity: "4 à 7 ans",
@@ -5374,8 +5440,8 @@ window.PRODUCTS_DATA = {
                   coupon: "Conditionnel — déclenché si le sous-jacent dépasse le seuil glissant",
                   observation: "Trimestrielle ou annuelle"
                 },
-                replication: "\\text{Autocall Glide} = \\text{OZC} + \\text{Coupons conditionnels glissants} + \\text{Put Down-and-In}",
-                payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si } S_t \\ge \\text{Seuil Glide à la date } t \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Barrière de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Barrière de protection} \\end{cases}",
+                replication: "\\text{Autocall Glider} = \\text{ZCB} + \\text{Coupons conditionnels glissants} + \\text{Put Down-and-In}",
+                payoff: "\\text{Payoff}=\\begin{cases} 100\\% + i\\,\\times\\,\\text{Coupon}, & \\text{si } S_t \\ge \\text{Seuil Glider à la date } t \\\\ 100\\%, & \\text{si } S_T \\ge \\text{Barrière de protection} \\\\ \\tfrac{S_T}{S_0}\\times 100\\%, & \\text{si } S_T < \\text{Barrière de protection} \\end{cases}",
                 advantages: [
                   "Seuil glissant augmente la probabilité de rappel anticipé",
                   "Coupons élevés",
@@ -5395,7 +5461,13 @@ window.PRODUCTS_DATA = {
                     glideThreshold: "100% à T1, 98% à T2, 96% à T3, etc.",
                     protectionBarrier: "60%",
                     coupon: "8% par an"
-                  }
+                  },
+                  scenarios: [
+                    "Année 1: Indice à 101% (barrière 100%) → autocall à 1 080 €",
+                    "Année 2: Indice à 97% (barrière 98%) → produit continue",
+                    "Année 3: Indice à 97% (barrière maintenant 96%) → autocall à 1 240 €",
+                    "Maturité: Indice à 68% → remboursement à 1 000 € (au-dessus de 60%)"
+                  ]
                 }
             }
         ]
